@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
+import { getOfflineQueueCount } from "../offlineQueue";
 
-export type SyncStatusState = "synced" | "syncing" | "error" | "quota_exceeded";
+export type SyncStatusState = "synced" | "syncing" | "error" | "quota_exceeded" | "offline";
 
 export interface SyncStatusData {
   status: SyncStatusState;
@@ -24,34 +25,65 @@ function notify() {
   subscribers.forEach(sub => sub(currentData));
 }
 
-let isInitialized = false;
-let activeMutations = 0;
-let holdTimeout: any = null;
+function getQueueCountSafe(): number {
+  try {
+    return getOfflineQueueCount();
+  } catch {
+    return 0;
+  }
+}
+
+function updateOfflineState() {
+  const queued = getQueueCountSafe();
+  if (typeof navigator !== "undefined" && !navigator.onLine) {
+    currentData = {
+      ...currentData,
+      status: "offline",
+      pendingWrites: Math.max(currentData.pendingWrites, queued),
+      lastError: queued > 0 ? `${queued} cambio(s) esperando conexión.` : currentData.lastError
+    };
+    notify();
+    return true;
+  }
+  return false;
+}
 
 export async function fetchServerSyncStatus(): Promise<SyncStatusData> {
+  if (updateOfflineState()) return currentData;
+
   try {
     const res = await fetch("/api/sync-status");
     if (!res.ok) throw new Error("Error fetching status");
     const data = await res.json();
-    
-    // Si la cuota fue excedida, mostrar quota_exceeded; si hay mutaciones activas, syncing; de lo contrario synced/error
+    const queued = getQueueCountSafe();
+
     const serverStatus: SyncStatusState = (data.status === "quota_exceeded" || data.isQuotaExhausted)
       ? "quota_exceeded"
-      : data.status === "error" 
-        ? "error" 
-        : (data.pendingWrites > 0 || activeMutations > 0) 
-          ? "syncing" 
+      : data.status === "error"
+        ? "error"
+        : (data.pendingWrites > 0 || activeMutations > 0 || queued > 0)
+          ? "syncing"
           : "synced";
 
     currentData = {
       status: serverStatus,
       lastSyncTime: data.lastSuccessfulSyncTime || currentData.lastSyncTime,
-      lastError: data.lastSyncError || null,
-      pendingWrites: data.pendingWrites || activeMutations
+      lastError: data.lastSyncError || (queued > 0 ? `${queued} cambio(s) en cola.` : null),
+      pendingWrites: Math.max(data.pendingWrites || 0, activeMutations, queued)
     };
     notify();
     return currentData;
   } catch (err) {
+    const queued = getQueueCountSafe();
+    if (queued > 0) {
+      currentData = {
+        ...currentData,
+        status: "offline",
+        pendingWrites: queued,
+        lastError: `${queued} cambio(s) pendiente(s) de sincronización.`
+      };
+      notify();
+    }
     return currentData;
   }
 }
@@ -60,7 +92,6 @@ export function initSyncStatusMonitor() {
   if (isInitialized || typeof window === "undefined") return;
   isInitialized = true;
 
-  // Interceptar window.fetch para cambiar a amarillo ("syncing") inmediatamente
   const originalFetch = window.fetch;
   if (originalFetch) {
     const interceptedFetch = async function (this: any, input: RequestInfo | URL, init?: RequestInit) {
@@ -79,13 +110,10 @@ export function initSyncStatusMonitor() {
       }
 
       try {
-        const response = await originalFetch.apply(this, [input, init] as any);
-        return response;
+        return await originalFetch.apply(this, [input, init] as any);
       } finally {
         if (isApiMutation) {
           activeMutations = Math.max(0, activeMutations - 1);
-          
-          // Retener el indicador en amarillo durante al menos 1200ms para claridad visual de la escritura en Firestore
           if (holdTimeout) clearTimeout(holdTimeout);
           holdTimeout = setTimeout(() => {
             fetchServerSyncStatus();
@@ -109,7 +137,24 @@ export function initSyncStatusMonitor() {
     }
   }
 
-  // Sondeo periódico cada 4 segundos
+  const handleQueueEvent = () => {
+    const queued = getQueueCountSafe();
+    currentData = {
+      ...currentData,
+      status: queued > 0 ? "syncing" : (navigator.onLine ? currentData.status : "offline"),
+      pendingWrites: queued,
+      lastError: queued > 0 ? `${queued} cambio(s) pendiente(s) de sincronización.` : currentData.lastError
+    };
+    notify();
+    if (navigator.onLine && queued === 0) fetchServerSyncStatus();
+  };
+
+  window.addEventListener("online", handleQueueEvent);
+  window.addEventListener("offline", handleQueueEvent);
+  window.addEventListener("astrohogar:offline-queue", handleQueueEvent as EventListener);
+  window.addEventListener("astrohogar:mutation-queued", handleQueueEvent as EventListener);
+  window.addEventListener("astrohogar:data-sync", handleQueueEvent as EventListener);
+
   fetchServerSyncStatus();
   setInterval(() => {
     fetchServerSyncStatus();
@@ -125,7 +170,6 @@ export function useSyncStatus() {
       setData({ ...updated });
     };
     subscribers.add(sub);
-    // Ejecución inicial por si acaso
     setData({ ...currentData });
     return () => {
       subscribers.delete(sub);
