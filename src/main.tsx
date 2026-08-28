@@ -1,9 +1,11 @@
-import {StrictMode} from 'react';
+import {StrictMode, useEffect} from 'react';
 import {createRoot} from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
 import { startOfflineSync } from './offlineInit';
 import { enqueueMutation, flushOfflineQueue } from './offlineQueue';
+import { AuthProvider, useAuth } from './auth';
+import GoogleLogin from './components/GoogleLogin';
 
 const HOME_SNAPSHOT_PREFIX = "astrohogar_home_snapshot_v1:";
 
@@ -46,6 +48,44 @@ function getCachedHomeSnapshot(): Response | null {
   }
 }
 
+function AuthGate() {
+  const { user, loading, logout } = useAuth();
+
+  useEffect(() => {
+    if (user?.uid) localStorage.setItem("astro_auth_uid", user.uid);
+  }, [user]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-950 text-white">
+        <div className="text-center">
+          <div className="mx-auto mb-4 h-12 w-12 animate-pulse rounded-2xl bg-white/10 flex items-center justify-center text-2xl">🏡</div>
+          <p className="text-sm text-white/65">Preparando tu nido...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) return <GoogleLogin />;
+
+  return (
+    <div className="min-h-screen">
+      <div className="fixed right-4 top-4 z-[100] flex items-center gap-2 rounded-full border border-white/20 bg-white/90 px-2 py-1.5 shadow-sm backdrop-blur-md">
+        {user.photoURL && <img src={user.photoURL} alt="" className="h-7 w-7 rounded-full" />}
+        <span className="hidden max-w-[180px] truncate text-[11px] font-bold text-slate-700 sm:block">{user.email}</span>
+        <button
+          type="button"
+          onClick={() => logout().catch(() => {})}
+          className="rounded-full px-2 py-1 text-[10px] font-black text-slate-500 hover:bg-slate-100 hover:text-slate-900"
+        >
+          Salir
+        </button>
+      </div>
+      <App />
+    </div>
+  );
+}
+
 // Install a resilient fetch layer before the application starts issuing API calls.
 if (typeof window !== "undefined") {
   const originalFetch = window.fetch.bind(window);
@@ -56,7 +96,7 @@ if (typeof window !== "undefined") {
     const url = request ? request.url : String(input);
     const method = (init?.method || request?.method || "GET").toUpperCase();
     const isApiMutation = url.includes("/api/") && !["GET", "HEAD", "OPTIONS"].includes(method);
-    const isHomeDataRead = url.includes("/api/home-data") && method === "GET";
+    const isHomeDataRead = url.includes("/api/home-data") && method === "GET';
 
     if (!isApiMutation) {
       try {
@@ -77,10 +117,14 @@ if (typeof window !== "undefined") {
 
     const code = localStorage.getItem("astro_home_code") || "";
     const uid = localStorage.getItem("astro_user_id") || "";
+    const authUid = localStorage.getItem("astro_auth_uid") || "";
+    const authEmail = localStorage.getItem("astro_auth_email") || "";
     const canQueue = Boolean(code);
     const headers = new Headers(request ? request.headers : init?.headers);
     if (code) headers.set("x-home-code", code);
     if (uid) headers.set("x-user-id", uid);
+    if (authUid) headers.set("x-auth-uid", authUid);
+    if (authEmail) headers.set("x-auth-email", authEmail);
 
     let body: BodyInit | null | undefined = init?.body;
     if (request && body === undefined && method !== "GET" && method !== "HEAD") {
@@ -114,7 +158,6 @@ if (typeof window !== "undefined") {
         body,
       });
     } catch (error: any) {
-      // Queue only genuine network failures. HTTP errors stay visible to callers.
       const message = String(error?.message || "");
       const networkFailure = error instanceof TypeError && !message.includes("OFFLINE_MUTATION_QUEUED");
 
@@ -132,9 +175,7 @@ if (typeof window !== "undefined") {
         }
       }
 
-      if (queuedOffline) {
-        throw new TypeError("OFFLINE_MUTATION_QUEUED");
-      }
+      if (queuedOffline) throw new TypeError("OFFLINE_MUTATION_QUEUED");
       throw error;
     }
   };
@@ -161,7 +202,6 @@ if (typeof window !== "undefined") {
   });
 }
 
-// Register Service Worker for PWA features and push notification support
 if (typeof window !== "undefined" && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js').then(
@@ -177,6 +217,8 @@ if (typeof window !== "undefined" && 'serviceWorker' in navigator) {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <AuthProvider>
+      <AuthGate />
+    </AuthProvider>
   </StrictMode>,
 );
