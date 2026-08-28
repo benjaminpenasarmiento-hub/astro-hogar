@@ -5,6 +5,47 @@ import './index.css';
 import { startOfflineSync } from './offlineInit';
 import { enqueueMutation, flushOfflineQueue } from './offlineQueue';
 
+const HOME_SNAPSHOT_PREFIX = "astrohogar_home_snapshot_v1:";
+
+function getHomeSnapshotKey(): string {
+  if (typeof window === "undefined") return `${HOME_SNAPSHOT_PREFIX}unknown`;
+  return `${HOME_SNAPSHOT_PREFIX}${localStorage.getItem("astro_home_code") || "default"}`;
+}
+
+function saveHomeSnapshot(response: Response) {
+  response.clone().json().then((data) => {
+    try {
+      localStorage.setItem(getHomeSnapshotKey(), JSON.stringify({
+        savedAt: new Date().toISOString(),
+        data,
+      }));
+      window.dispatchEvent(new CustomEvent("astrohogar:home-snapshot-updated"));
+    } catch {
+      // Ignore storage quota/serialization failures; Firestore remains authoritative.
+    }
+  }).catch(() => {});
+}
+
+function getCachedHomeSnapshot(): Response | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(getHomeSnapshotKey());
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!parsed?.data) return null;
+    return new Response(JSON.stringify(parsed.data), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "X-AstroHogar-Cache": "last-confirmed-snapshot",
+        "X-AstroHogar-Cached-At": parsed.savedAt || "",
+      },
+    });
+  } catch {
+    return null;
+  }
+}
+
 // Install a resilient fetch layer before the application starts issuing API calls.
 if (typeof window !== "undefined") {
   const originalFetch = window.fetch.bind(window);
@@ -15,9 +56,23 @@ if (typeof window !== "undefined") {
     const url = request ? request.url : String(input);
     const method = (init?.method || request?.method || "GET").toUpperCase();
     const isApiMutation = url.includes("/api/") && !["GET", "HEAD", "OPTIONS"].includes(method);
+    const isHomeDataRead = url.includes("/api/home-data") && method === "GET";
 
     if (!isApiMutation) {
-      return originalFetch(input, init);
+      try {
+        const response = await originalFetch(input, init);
+        if (isHomeDataRead && response.ok) saveHomeSnapshot(response);
+        return response;
+      } catch (error) {
+        if (isHomeDataRead) {
+          const cached = getCachedHomeSnapshot();
+          if (cached) {
+            console.warn("[AstroHogar] Mostrando la última copia confirmada mientras se recupera la conexión.");
+            return cached;
+          }
+        }
+        throw error;
+      }
     }
 
     const code = localStorage.getItem("astro_home_code") || "";
@@ -59,8 +114,7 @@ if (typeof window !== "undefined") {
         body,
       });
     } catch (error: any) {
-      // Queue only genuine network failures. HTTP errors are left untouched so the
-      // caller receives the actual backend response and we don't risk duplicates.
+      // Queue only genuine network failures. HTTP errors stay visible to callers.
       const message = String(error?.message || "");
       const networkFailure = error instanceof TypeError && !message.includes("OFFLINE_MUTATION_QUEUED");
 
