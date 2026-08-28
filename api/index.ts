@@ -4,12 +4,11 @@ import {
   collection,
   doc,
   getFirestore,
-  getDoc,
   runTransaction,
-  setDoc,
   type Firestore,
 } from "firebase/firestore";
 import firebaseConfig from "../firebase-applet-config.json";
+import { requireFirebaseAuth } from "../serverAuthMiddleware";
 
 const require = createRequire(import.meta.url);
 const { app } = require("../dist/server.cjs");
@@ -91,7 +90,7 @@ async function acquireHomeLock(db: Firestore, homeCode: string, owner: string): 
   throw new Error("SYNC_LOCK_TIMEOUT");
 }
 
-async function handler(req: any, res: any) {
+async function lockedHandler(req: any, res: any) {
   const method = String(req?.method || "GET").toUpperCase();
   const isMutation = ["POST", "PUT", "PATCH", "DELETE"].includes(method);
 
@@ -133,4 +132,6 @@ async function handler(req: any, res: any) {
   }
 }
 
-export default handler;
+export default async function handler(req: any, res: any) {
+  return requireFirebaseAuth(req, res, () => lockedHandler(req, res));
+}
