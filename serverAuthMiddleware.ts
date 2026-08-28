@@ -61,6 +61,12 @@ export async function requireFirebaseAuth(req: any, res: any, next: any) {
   req.headers["x-auth-uid"] = verifiedUser.localId;
   if (verifiedUser.email) req.headers["x-auth-email"] = verifiedUser.email;
 
+  // Never trust an editable email field from onboarding when the platform already
+  // knows the authenticated Google account.
+  if (req.body && typeof req.body === "object" && verifiedUser.email) {
+    req.body.email = verifiedUser.email;
+  }
+
   if (isPublicAuthPath(path)) return next();
 
   const homeCode = getHomeCode(req);
