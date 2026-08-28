@@ -67,14 +67,27 @@ const serverSource = fs.readFileSync(sourcePath, "utf8");
 let storeSource = fs.readFileSync("serverStore.ts", "utf8");
 
 // Production persistence adapter: Firestore is the authoritative copy on Vercel.
-const persistenceHelpers = `\n\nexport let pendingPersistence: Promise<void> = Promise.resolve();\n\nexport function getPendingPersistence(): Promise<void> {\n  return pendingPersistence;\n}\n\nexport async function refreshActiveHomeFromFirestore(code: string): Promise<void> {\n  if (!firestore || process.env.VERCEL !== "1") return;\n  const cleanCode = normalizeHomeCode(code || getActiveHomeCode());\n  try {\n    const snapshot = await getDoc(doc(firestore, "nests", cleanCode));\n    if (snapshot.exists()) {\n      const remoteData = snapshot.data()?.data;\n      if (remoteData) multiStore[cleanCode] = sanitizeStoreData(remoteData as DBStore);\n    }\n  } catch (err) {\n    console.error("[Firestore Sync] Error refreshing active home:", err);\n  }\n}\n`;
+const persistenceHelpers = `\n\nexport let pendingPersistence: Promise<void> = Promise.resolve();\n\nexport function getPendingPersistence(): Promise<void> {\n  return pendingPersistence;\n}\n\nexport async function refreshActiveHomeFromFirestore(code: string): Promise<void> {\n  if (!firestore || process.env.VERCEL !== "1") return;\n  const cleanCode = normalizeHomeCode(code || getActiveHomeCode());\n  try {\n    const snapshot = await getDoc(doc(firestore, "nests", cleanCode));\n    if (snapshot.exists()) {\n      const remoteData = snapshot.data()?.data;\n      if (remoteData) multiStore[cleanCode] = sanitizeStoreData(remoteData as DBStore);\n    }\n  } catch (err) {\n    console.error("[Firestore Sync] Error refreshing active home:", err);\n  }\n}\n\nlet revisionWriteInFlight: Promise<void> = Promise.resolve();\n\nexport async function recordConfirmedRevision(actorUserId?: string): Promise<void> {\n  if (!firestore || process.env.VERCEL !== "1") return;\n  const cleanCode = normalizeHomeCode(getActiveHomeCode());\n  const nestRef = doc(firestore, "nests", cleanCode);\n  const revisionPromise = revisionWriteInFlight.catch(() => {}).then(async () => {\n    await runTransaction(firestore!, async (tx) => {\n      const snapshot = await tx.get(nestRef);\n      if (!snapshot.exists()) return;\n      const current = snapshot.data() || {};\n      const currentRevision = Number(current.syncRevision || 0);\n      const nextRevision = currentRevision + 1;\n      const savedAt = new Date().toISOString();\n      const historyRef = doc(firestore!, "nests", cleanCode, "history", String(nextRevision));\n      tx.set(historyRef, {\n        homeCode: cleanCode,\n        revision: nextRevision,\n        savedAt,\n        actorUserId: actorUserId || "sistema",\n        source: "astro-hogar",\n        data: current.data || null\n      });\n      tx.set(nestRef, {\n        syncRevision: nextRevision,\n        syncUpdatedAt: savedAt\n      }, { merge: true });\n    });\n    console.log(`[Firestore Sync] Revision confirmada para ${cleanCode}.`);\n  });\n  revisionWriteInFlight = revisionPromise;\n  return revisionPromise;\n}\n`;
 
 const saveToDiskReplacement = `export function saveToDisk() {\n  if (process.env.VERCEL !== "1") {\n    try {\n      fs.writeFileSync(DB_FILE, JSON.stringify(multiStore, null, 2), "utf8");\n      hasUnsyncedChanges = true;\n    } catch (err) {\n      console.error("Error saving database to disk db_sim.json:", err);\n    }\n\n    if (!firestore || isFirestoreQuotaExhausted) {\n      if (isFirestoreQuotaExhausted && quotaExhaustedAt) {\n        const elapsed = Date.now() - quotaExhaustedAt;\n        if (elapsed >= QUOTA_COOLDOWN_MS) {\n          isFirestoreQuotaExhausted = false;\n          quotaExhaustedAt = null;\n        } else return;\n      } else return;\n    }\n\n    if (firestoreSaveTimer) clearTimeout(firestoreSaveTimer);\n    firestoreSaveTimer = setTimeout(() => { saveToFirestore(); }, 5000);\n    return;\n  }\n\n  if (!firestore) {\n    lastSyncError = "Firestore no está inicializado en producción.";\n    hasUnsyncedChanges = true;\n    return;\n  }\n\n  hasUnsyncedChanges = true;\n  pendingPersistence = pendingPersistence\n    .catch(() => {})\n    .then(async () => {\n      await saveToFirestore();\n      if (lastSyncError || isFirestoreQuotaExhausted) {\n        throw new Error(lastSyncError || "Firestore no confirmó la sincronización");\n      }\n    });\n}`;
 
 storeSource = storeSource.replace(
+  'deleteDoc } from "firebase/firestore";',
+  'deleteDoc, runTransaction } from "firebase/firestore";'
+);
+storeSource = storeSource.replace(
   "export let firestore: Firestore | null = null;",
   "export let firestore: Firestore | null = null;" + persistenceHelpers
 );
+
+// Rename the original persistence implementation and wrap it with revision confirmation.
+storeSource = storeSource.replace(
+  "export async function saveToFirestore()",
+  "export async function saveToFirestoreBase()"
+);
+
+storeSource += `\n\nexport async function saveToFirestore() {\n  await saveToFirestoreBase();\n  if (!lastSyncError && !isFirestoreQuotaExhausted) {\n    await recordConfirmedRevision();\n  }\n}\n`;
+
 storeSource = replaceFunction(storeSource, "saveToDisk", saveToDiskReplacement);
 fs.writeFileSync(storeTempPath, storeSource, "utf8");
 
