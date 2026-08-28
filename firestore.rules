@@ -5,6 +5,12 @@ service cloud.firestore {
     match /nests/{homeCode} {
       allow read, write: if true;
     }
+
+    // Revision history created by the production consistency layer.
+    match /nests/{homeCode}/history/{revision} {
+      allow read, write: if true;
+    }
+
     match /milo_daily_updates/{updateId} {
       allow read, write: if true;
     }
@@ -44,10 +50,10 @@ service cloud.firestore {
     match /goals/{wishId} {
       allow read, write: if true;
     }
+
     // Block all other collections
     match /{document=**} {
       allow read, write: if false;
     }
   }
 }
-
