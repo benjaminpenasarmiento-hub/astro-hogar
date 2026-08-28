@@ -6,6 +6,7 @@ import { startOfflineSync } from './offlineInit';
 import { enqueueMutation, flushOfflineQueue } from './offlineQueue';
 import { AuthProvider, useAuth } from './auth';
 import GoogleLogin from './components/GoogleLogin';
+import { auth } from './firebase';
 
 const HOME_SNAPSHOT_PREFIX = "astrohogar_home_snapshot_v1:";
 
@@ -17,10 +18,7 @@ function getHomeSnapshotKey(): string {
 function saveHomeSnapshot(response: Response) {
   response.clone().json().then((data) => {
     try {
-      localStorage.setItem(getHomeSnapshotKey(), JSON.stringify({
-        savedAt: new Date().toISOString(),
-        data,
-      }));
+      localStorage.setItem(getHomeSnapshotKey(), JSON.stringify({ savedAt: new Date().toISOString(), data }));
       window.dispatchEvent(new CustomEvent("astrohogar:home-snapshot-updated"));
     } catch {}
   }).catch(() => {});
@@ -33,14 +31,7 @@ function getCachedHomeSnapshot(): Response | null {
     if (!raw) return null;
     const parsed = JSON.parse(raw);
     if (!parsed?.data) return null;
-    return new Response(JSON.stringify(parsed.data), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-        "X-AstroHogar-Cache": "last-confirmed-snapshot",
-        "X-AstroHogar-Cached-At": parsed.savedAt || "",
-      },
-    });
+    return new Response(JSON.stringify(parsed.data), { status: 200, headers: { "Content-Type": "application/json", "X-AstroHogar-Cache": "last-confirmed-snapshot", "X-AstroHogar-Cached-At": parsed.savedAt || "" } });
   } catch {
     return null;
   }
@@ -86,21 +77,12 @@ if (typeof window !== "undefined") {
     const request = input instanceof Request ? input : null;
     const url = request ? request.url : String(input);
     const method = (init?.method || request?.method || "GET").toUpperCase();
-    const isApiMutation = url.includes("/api/") && !["GET", "HEAD", "OPTIONS"].includes(method);
+    const isApiRequest = url.includes("/api/");
+    const isApiMutation = isApiRequest && !["GET", "HEAD", "OPTIONS"].includes(method);
     const isHomeDataRead = url.includes("/api/home-data") && method === "GET";
 
-    if (!isApiMutation) {
-      try {
-        const response = await originalFetch(input, init);
-        if (isHomeDataRead && response.ok) saveHomeSnapshot(response);
-        return response;
-      } catch (error) {
-        if (isHomeDataRead) {
-          const cached = getCachedHomeSnapshot();
-          if (cached) return cached;
-        }
-        throw error;
-      }
+    if (!isApiRequest) {
+      return originalFetch(input, init);
     }
 
     const code = localStorage.getItem("astro_home_code") || "";
@@ -114,38 +96,49 @@ if (typeof window !== "undefined") {
     if (authUid) headers.set("x-auth-uid", authUid);
     if (authEmail) headers.set("x-auth-email", authEmail);
 
+    try {
+      const firebaseUser = auth.currentUser;
+      if (firebaseUser) {
+        const idToken = await firebaseUser.getIdToken();
+        if (idToken) headers.set("Authorization", `Bearer ${idToken}`);
+      }
+    } catch (error) {
+      console.warn("[AstroHogar Auth] No se pudo obtener el ID token para la petición.", error);
+    }
+
     let body: BodyInit | null | undefined = init?.body;
     if (request && body === undefined && method !== "GET" && method !== "HEAD") {
       try { body = await request.clone().text(); } catch { body = undefined; }
     }
 
-    let queuedOffline = false;
-
     try {
-      if (!navigator.onLine && canQueue) {
+      if (isApiMutation && !navigator.onLine && canQueue) {
         const queued = typeof body === "string" || body === undefined
           ? enqueueMutation({ url, method, headers: Object.fromEntries(headers.entries()), body: typeof body === "string" ? body : undefined })
           : false;
         if (queued) {
-          queuedOffline = true;
           window.dispatchEvent(new CustomEvent("astrohogar:mutation-queued"));
           throw new TypeError("OFFLINE_MUTATION_QUEUED");
         }
       }
 
-      return await originalFetch(input, { ...(init || {}), method, headers, body });
+      const response = await originalFetch(input, { ...(init || {}), method, headers, body });
+      if (isHomeDataRead && response.ok) saveHomeSnapshot(response);
+      return response;
     } catch (error: any) {
       const message = String(error?.message || "");
       const networkFailure = error instanceof TypeError && !message.includes("OFFLINE_MUTATION_QUEUED");
-
-      if (networkFailure && canQueue) {
+      if (isApiMutation && networkFailure && canQueue) {
         const queued = typeof body === "string" || body === undefined
           ? enqueueMutation({ url, method, headers: Object.fromEntries(headers.entries()), body: typeof body === "string" ? body : undefined })
           : false;
         if (queued) window.dispatchEvent(new CustomEvent("astrohogar:mutation-queued"));
       }
-
-      if (queuedOffline) throw new TypeError("OFFLINE_MUTATION_QUEUED");
+      if (isHomeDataRead) {
+        const cached = getCachedHomeSnapshot();
+        if (cached) return cached;
+      }
+      if (message.includes("OFFLINE_MUTATION_QUEUED")) throw new TypeError("OFFLINE_MUTATION_QUEUED");
       throw error;
     }
   };
