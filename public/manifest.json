@@ -1,0 +1,31 @@
+{
+  "short_name": "AstroHogar",
+  "name": "Hogar de Mafe & Benja 🏡",
+  "icons": [
+    {
+      "src": "/icon-192.jpg",
+      "type": "image/jpeg",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.jpg",
+      "type": "image/jpeg",
+      "sizes": "512x512",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.jpg",
+      "type": "image/jpeg",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#FAF7F2",
+  "theme_color": "#FAF7F2",
+  "display": "standalone",
+  "orientation": "portrait",
+  "categories": ["lifestyle", "utilities"],
+  "description": "Nidito de amor inteligente, astrológico y de finanzas compartido de Mafe & Benja 🐱🐾"
+}

@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+.markdown-body strong, .markdown-body b {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-weight: 700;
+}

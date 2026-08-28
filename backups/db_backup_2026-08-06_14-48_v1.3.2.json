@@ -1,0 +1,5271 @@
+{
+  "backupMeta": {
+    "appVersion": "1.3.2",
+    "schemaVersion": 2,
+    "createdAt": "2026-08-06T14:48:24.145Z",
+    "reason": "Test versioned backup"
+  },
+  "data": {
+    "NIDO-YCV5W": {
+      "wishes": [],
+      "calendarItems": [],
+      "plants": [],
+      "documents": [],
+      "budgetAccounts": [],
+      "home": {
+        "id": "home-NIDO-YCV5W",
+        "name": "Hogar de Mafe y Benjamin",
+        "settings": {
+          "aiCatMoodLevel": "normal",
+          "notificationsEnabled": true
+        },
+        "members": [
+          "mafe",
+          "benja"
+        ],
+        "code": "NIDO-YCV5W"
+      },
+      "customEmotions": [],
+      "users": [
+        {
+          "name": "Mafe",
+          "birthPlace": "Bogotá",
+          "zodiacSign": "Escorpio ♏",
+          "venusSign": "Sagitario ♐",
+          "horoscopeConsejo": "Dale un ronroneo cariñoso a Benja hoy.",
+          "marsSign": "Acuario ♒",
+          "birthTime": "08:30",
+          "horoscopeToday": "¡Un día fantástico miau! Sientes la energía del amor puro rodeando el nido.",
+          "id": "mafe",
+          "emoji": "cat_cosmic",
+          "photoUrl": "https://api.dicebear.com/7.x/adventurer/svg?seed=Mafe&backgroundColor=ffd5dc",
+          "mercurySign": "Libra ♎",
+          "ascendantSign": "Sagitario ♐",
+          "birthDate": "1997-10-24",
+          "lunarSign": "Cáncer ♋"
+        },
+        {
+          "ascendantSign": "Leo ♌",
+          "name": "Benja",
+          "horoscopeConsejo": "Estira las patitas y regala una caricia terna a Mafe.",
+          "marsSign": "Géminis ♊",
+          "birthTime": "14:15",
+          "venusSign": "Tauro ♉",
+          "mercurySign": "Aries ♈",
+          "birthPlace": "Bogotá",
+          "zodiacSign": "Aries ♈",
+          "id": "benja",
+          "horoscopeToday": "¡La energía cósmica de Aries te llena de motivación hoy para lograr tus metas!",
+          "birthDate": "1997-03-24",
+          "lunarSign": "Libra ♎",
+          "emoji": "cat_ginger",
+          "photoUrl": "https://api.dicebear.com/7.x/adventurer/svg?seed=Benja&backgroundColor=d1e4ff"
+        }
+      ],
+      "checkins": [],
+      "memories": [],
+      "budgetTemplates": [],
+      "dailyPools": [],
+      "saludChallenges": [
+        {
+          "id": "ch-2026-08-03-conex",
+          "category": "conexion",
+          "title": "Cocinen juntos un plato totalmente nuevo usando ingredientes sorpresa 🍲",
+          "completed": false
+        },
+        {
+          "category": "armonia",
+          "id": "ch-2026-08-03-armon",
+          "completed": false,
+          "title": "Reorganicen o redecoren juntos una zona o esquina para darle luz o plantas 🪴"
+        },
+        {
+          "title": "Tomen un baño tibio o dense un tiempo largo de meditación o té relajante 💤",
+          "completed": false,
+          "category": "bienestar",
+          "id": "ch-2026-08-03-biene"
+        }
+      ],
+      "hasSeededAccounts": false,
+      "dailyAnswers": [],
+      "closedFortnights": [
+        "2026-07-Q1",
+        "2026-07-Q2"
+      ],
+      "budgetEstimates": [],
+      "budgetItems": [
+        {
+          "date": "2026-07-01",
+          "fortnightId": "2026-07-Q1",
+          "description": "Mafe",
+          "account": "Davivienda Mafe",
+          "type": "income",
+          "id": "item-1783035222540-305",
+          "category": "Salario",
+          "amount": 1900000
+        },
+        {
+          "amount": 700000,
+          "id": "item-1783035252877-628",
+          "type": "expense",
+          "fortnightId": "2026-07-Q1",
+          "category": "Otros",
+          "date": "2026-07-01",
+          "description": "Viaje finca",
+          "account": "Davivienda Mafe"
+        },
+        {
+          "id": "item-1783035277102-192",
+          "type": "expense",
+          "description": "Comida amiguita sopas",
+          "fortnightId": "2026-07-Q1",
+          "category": "Otros",
+          "account": "Davivienda Mafe",
+          "date": "2026-07-02",
+          "amount": 50000
+        },
+        {
+          "id": "item-1783035300644-845",
+          "amount": 80000,
+          "description": "Arena",
+          "type": "expense",
+          "fortnightId": "2026-07-Q1",
+          "account": "Davivienda Mafe",
+          "category": "Mascotas",
+          "date": "2026-07-02"
+        },
+        {
+          "fortnightId": "2026-07-Q1",
+          "date": "2026-07-02",
+          "description": "Comida perro",
+          "account": "Davivienda Mafe",
+          "category": "Mascotas",
+          "amount": 250000,
+          "id": "item-1783035322894-391",
+          "type": "expense"
+        },
+        {
+          "date": "2026-07-03",
+          "category": "Creditos",
+          "id": "item-1783035345678-100",
+          "fortnightId": "2026-07-Q1",
+          "type": "expense",
+          "amount": 100000,
+          "account": "Davivienda Mafe",
+          "description": "Credito 4210"
+        },
+        {
+          "id": "item-1783035388801-442",
+          "type": "income",
+          "amount": 2400000,
+          "description": "Benja",
+          "date": "2026-07-01",
+          "category": "Salario",
+          "account": "Davivienda Benjamin",
+          "fortnightId": "2026-07-Q1"
+        },
+        {
+          "fortnightId": "2026-07-Q1",
+          "date": "2026-07-01",
+          "account": "Davivienda Benjamin",
+          "amount": 10000,
+          "description": "Almuerzo Benja",
+          "type": "expense",
+          "id": "item-1783035411200-501",
+          "category": "Otros"
+        },
+        {
+          "account": "Davivienda Benjamin",
+          "id": "item-1783035433311-622",
+          "type": "expense",
+          "destinationAccount": "Davivienda Mafe",
+          "amount": 30000,
+          "date": "2026-07-01",
+          "description": "Transferencia",
+          "fortnightId": "2026-07-Q1",
+          "category": "Transferencia"
+        },
+        {
+          "category": "Transporte",
+          "type": "expense",
+          "fortnightId": "2026-07-Q1",
+          "account": "Davivienda Benjamin",
+          "date": "2026-07-01",
+          "id": "item-1783035455522-733",
+          "amount": 50300,
+          "description": "Pasajes"
+        },
+        {
+          "id": "item-1783035477733-844",
+          "date": "2026-07-02",
+          "account": "Davivienda Benjamin",
+          "amount": 50100,
+          "category": "Otros",
+          "description": "Cigarrillos",
+          "type": "expense",
+          "fortnightId": "2026-07-Q1"
+        },
+        {
+          "fortnightId": "2026-07-Q1",
+          "description": "Barf",
+          "type": "expense",
+          "category": "Mascotas",
+          "id": "item-1783035500044-955",
+          "account": "Davivienda Benjamin",
+          "amount": 100000,
+          "date": "2026-07-02"
+        },
+        {
+          "fortnightId": "2026-07-Q1",
+          "type": "expense",
+          "category": "Comida por fuera",
+          "amount": 43000,
+          "description": "Comida por fuera",
+          "date": "2026-07-02",
+          "id": "item-1783035522255-066",
+          "account": "Davivienda Benjamin"
+        },
+        {
+          "account": "Davivienda Benjamin",
+          "category": "Servicios",
+          "id": "item-1783035544466-177",
+          "date": "2026-07-02",
+          "fortnightId": "2026-07-Q1",
+          "description": "Gas",
+          "amount": 34000,
+          "type": "expense"
+        },
+        {
+          "fortnightId": "2026-07-Q1",
+          "date": "2026-07-02",
+          "description": "Pasajes",
+          "category": "Transporte",
+          "amount": 50300,
+          "type": "expense",
+          "account": "Davivienda Benjamin",
+          "id": "item-1783035566677-288"
+        },
+        {
+          "fortnightId": "2026-07-Q1",
+          "destinationAccount": "Davivienda Mafe",
+          "category": "Transferencia",
+          "description": "Transferencia",
+          "id": "item-1783168853112-401",
+          "account": "Davivienda Benjamin",
+          "amount": 50000,
+          "date": "2026-07-03",
+          "type": "expense"
+        },
+        {
+          "category": "Otros",
+          "description": "Quates",
+          "date": "2026-07-03",
+          "id": "item-1783168875501-120",
+          "fortnightId": "2026-07-Q1",
+          "account": "Davivienda Benjamin",
+          "amount": 28500,
+          "type": "expense"
+        },
+        {
+          "description": "Tigo",
+          "type": "expense",
+          "id": "item-1783168912300-302",
+          "fortnightId": "2026-07-Q1",
+          "amount": 35000,
+          "account": "Davivienda Benjamin",
+          "date": "2026-07-03",
+          "category": "Servicios"
+        },
+        {
+          "fortnightId": "2026-07-Q1",
+          "date": "2026-07-03",
+          "description": "Cris Finca (300 total)",
+          "id": "item-1783168893608-569",
+          "amount": 165000,
+          "type": "income",
+          "category": "Otros",
+          "account": "Davivienda Benjamin"
+        },
+        {
+          "fortnightId": "2026-07-Q1",
+          "description": "Regalos Benja",
+          "type": "expense",
+          "account": "Davivienda Benjamin",
+          "date": "2026-07-03",
+          "amount": 26000,
+          "id": "item-1783168938645-723",
+          "category": "Otros"
+        },
+        {
+          "amount": 200000,
+          "id": "item-1783168966355-50",
+          "account": "Davivienda Mafe",
+          "type": "income",
+          "category": "Otros",
+          "description": "Paula finca",
+          "fortnightId": "2026-07-Q1",
+          "date": "2026-07-03"
+        },
+        {
+          "id": "item-1783168991261-867",
+          "type": "expense",
+          "amount": 50000,
+          "account": "Davivienda Benjamin",
+          "fortnightId": "2026-07-Q1",
+          "date": "2026-07-03",
+          "category": "Comida por fuera",
+          "description": "Alitas"
+        },
+        {
+          "category": "Servicios",
+          "account": "Davivienda Benjamin",
+          "type": "expense",
+          "description": "Wom",
+          "amount": 41000,
+          "id": "item-1783170424157-623",
+          "fortnightId": "2026-07-Q1",
+          "date": "2026-07-03"
+        },
+        {
+          "fortnightId": "2026-07-Q1",
+          "account": "Davivienda Mafe",
+          "description": "Pago del arriendo quincenal",
+          "id": "item-1783257146670-398",
+          "date": "2026-07-05",
+          "amount": 1570000,
+          "category": "Arriendo",
+          "type": "expense"
+        },
+        {
+          "id": "item-1783257551662-117",
+          "fortnightId": "2026-07-Q1",
+          "type": "income",
+          "description": "U Benja",
+          "amount": 140000,
+          "date": "2026-07-05",
+          "account": "Davivienda Benjamin",
+          "category": "Otros"
+        },
+        {
+          "description": "Pizza y desayuno",
+          "category": "Comida por fuera",
+          "account": "Davivienda Benjamin",
+          "type": "expense",
+          "fortnightId": "2026-07-Q1",
+          "id": "item-1783257590077-416",
+          "amount": 100000,
+          "date": "2026-07-05"
+        },
+        {
+          "category": "Universidad",
+          "type": "expense",
+          "account": "Davivienda Benjamin",
+          "date": "2026-07-05",
+          "description": "U Benja",
+          "id": "item-1783257608645-687",
+          "fortnightId": "2026-07-Q1",
+          "amount": 252000
+        },
+        {
+          "account": "Davivienda Benjamin",
+          "fortnightId": "2026-07-Q1",
+          "date": "2026-07-05",
+          "description": "Transferencia",
+          "type": "expense",
+          "category": "Transferencia",
+          "amount": 480000,
+          "id": "item-1783258423352-96",
+          "destinationAccount": "Davivienda Mafe"
+        },
+        {
+          "account": "Davivienda Benjamin",
+          "type": "expense",
+          "id": "item-1783258446655-483",
+          "date": "2026-07-05",
+          "fortnightId": "2026-07-Q1",
+          "category": "Otros",
+          "amount": 200000,
+          "description": "Viaje"
+        },
+        {
+          "description": "Luz",
+          "id": "item-1783283883859-184",
+          "category": "Servicios",
+          "account": "Davivienda Benjamin",
+          "fortnightId": "2026-07-Q1",
+          "date": "2026-07-05",
+          "amount": 118000,
+          "type": "expense"
+        },
+        {
+          "amount": 233000,
+          "type": "expense",
+          "category": "Servicios",
+          "date": "2026-07-05",
+          "fortnightId": "2026-07-Q1",
+          "id": "item-1783283920843-88",
+          "description": "Agua",
+          "account": "Davivienda Benjamin"
+        },
+        {
+          "description": "Almuerzo Benja",
+          "id": "item-1783382824508-810",
+          "amount": 15500,
+          "date": "2026-07-07",
+          "fortnightId": "2026-07-Q1",
+          "account": "Davivienda Benjamin",
+          "category": "Otros",
+          "type": "expense"
+        },
+        {
+          "account": "Davivienda Benjamin",
+          "date": "2026-07-11",
+          "category": "Otros",
+          "type": "expense",
+          "id": "item-1783802708213-519",
+          "fortnightId": "2026-07-Q1",
+          "amount": 121000,
+          "description": "Casa (tintes, puerta, filtro, etc)"
+        },
+        {
+          "description": "Transferencia",
+          "type": "expense",
+          "category": "Transferencia",
+          "destinationAccount": "Davivienda Mafe",
+          "fortnightId": "2026-07-Q1",
+          "date": "2026-07-11",
+          "amount": 100000,
+          "account": "Davivienda Benjamin",
+          "id": "item-1783814179632-975"
+        },
+        {
+          "id": "item-1784140671533-233",
+          "date": "2026-07-13",
+          "description": "Mercado",
+          "account": "Davivienda Mafe",
+          "fortnightId": "2026-07-Q1",
+          "amount": 315000,
+          "category": "Mercado",
+          "type": "expense"
+        },
+        {
+          "date": "2026-07-13",
+          "description": "Comida por fuera",
+          "amount": 165000,
+          "fortnightId": "2026-07-Q1",
+          "type": "expense",
+          "id": "item-1784140705637-179",
+          "category": "Comida por fuera",
+          "account": "Davivienda Mafe"
+        },
+        {
+          "id": "item-1784140781909-784",
+          "type": "expense",
+          "amount": 512000,
+          "fortnightId": "2026-07-Q1",
+          "account": "Davivienda Mafe",
+          "description": "Regalo Benja",
+          "date": "2026-07-13",
+          "category": "Otros"
+        },
+        {
+          "description": "Benja",
+          "fortnightId": "2026-07-Q2",
+          "type": "income",
+          "amount": 1600000,
+          "id": "item-1784140916252-226",
+          "date": "2026-07-15",
+          "category": "Salario",
+          "account": "Davivienda Benjamin"
+        },
+        {
+          "category": "Salario",
+          "fortnightId": "2026-07-Q2",
+          "id": "item-1784140955704-720",
+          "description": "Mafe",
+          "date": "2026-07-15",
+          "amount": 1200000,
+          "account": "Davivienda Mafe",
+          "type": "income"
+        },
+        {
+          "id": "item-1784170472615-672",
+          "account": "Davivienda Benjamin",
+          "type": "expense",
+          "category": "Otros",
+          "description": "Parlante",
+          "amount": 66000,
+          "date": "2026-07-16",
+          "fortnightId": "2026-07-Q2"
+        },
+        {
+          "id": "item-1784580645607-179",
+          "description": "Almuerzo Benjamin",
+          "fortnightId": "2026-07-Q2",
+          "date": "2026-07-20",
+          "category": "Otros",
+          "account": "Davivienda Benjamin",
+          "amount": 24000,
+          "type": "expense"
+        },
+        {
+          "amount": 100000,
+          "id": "item-1784580679047-207",
+          "account": "Davivienda Benjamin",
+          "type": "expense",
+          "fortnightId": "2026-07-Q2",
+          "description": "Regalo trabajo Benjamin",
+          "category": "Otros",
+          "date": "2026-07-20"
+        },
+        {
+          "description": "Transporte Benjamin",
+          "id": "item-1784580727279-901",
+          "account": "Davivienda Benjamin",
+          "fortnightId": "2026-07-Q2",
+          "category": "Transporte",
+          "date": "2026-07-20",
+          "amount": 20000,
+          "type": "expense"
+        },
+        {
+          "amount": 30600,
+          "fortnightId": "2026-07-Q2",
+          "date": "2026-07-20",
+          "description": "Quates y energizantes",
+          "id": "item-1784580804521-516",
+          "type": "expense",
+          "category": "Otros",
+          "account": "Davivienda Benjamin"
+        },
+        {
+          "fortnightId": "2026-07-Q2",
+          "type": "expense",
+          "description": "Medicamentos",
+          "amount": 18600,
+          "account": "Davivienda Benjamin",
+          "category": "Otros",
+          "date": "2026-07-20",
+          "id": "item-1784580832793-490"
+        },
+        {
+          "date": "2026-07-20",
+          "id": "item-1784580857496-749",
+          "amount": 25500,
+          "description": "Ara otros",
+          "type": "expense",
+          "category": "Otros",
+          "account": "Davivienda Benjamin",
+          "fortnightId": "2026-07-Q2"
+        },
+        {
+          "fortnightId": "2026-07-Q2",
+          "amount": 30000,
+          "description": "Trasnferencia",
+          "id": "item-1784580891805-841",
+          "category": "Transferencia",
+          "type": "expense",
+          "account": "Davivienda Benjamin",
+          "destinationAccount": "Davivienda Mafe",
+          "date": "2026-07-20"
+        },
+        {
+          "fortnightId": "2026-07-Q2",
+          "id": "item-1784581207229-748",
+          "date": "2026-07-20",
+          "description": "Viaje",
+          "account": "Davivienda Benjamin",
+          "category": "Otros",
+          "type": "expense",
+          "amount": 176000
+        },
+        {
+          "category": "Otros",
+          "account": "Davivienda Benjamin",
+          "type": "expense",
+          "amount": 26000,
+          "id": "item-1784581230251-618",
+          "fortnightId": "2026-07-Q2",
+          "date": "2026-07-20",
+          "description": "Quates y energizantes"
+        },
+        {
+          "date": "2026-07-20",
+          "account": "Davivienda Benjamin",
+          "type": "expense",
+          "category": "Hogar",
+          "description": "Cosas para nosotros",
+          "amount": 46000,
+          "id": "item-1784581262811-721",
+          "fortnightId": "2026-07-Q2"
+        },
+        {
+          "category": "Otros",
+          "date": "2026-07-20",
+          "description": "Quates y energizantes",
+          "account": "Davivienda Benjamin",
+          "fortnightId": "2026-07-Q2",
+          "amount": 53000,
+          "type": "expense",
+          "id": "item-1784581316175-797"
+        },
+        {
+          "date": "2026-07-20",
+          "category": "Comida por fuera",
+          "description": "Otros",
+          "fortnightId": "2026-07-Q2",
+          "type": "expense",
+          "id": "item-1784581431578-530",
+          "account": "Davivienda Benjamin",
+          "amount": 29000
+        },
+        {
+          "type": "expense",
+          "fortnightId": "2026-07-Q2",
+          "date": "2026-07-20",
+          "description": "Paso de dinero y suma con Nu",
+          "destinationAccount": "Nu",
+          "id": "item-1784581483773-734",
+          "category": "Transferencia",
+          "account": "Davivienda Benjamin",
+          "amount": 1022000
+        },
+        {
+          "account": "Davivienda Mafe",
+          "date": "2026-07-20",
+          "category": "Mascotas",
+          "description": "Comida gatos",
+          "fortnightId": "2026-07-Q2",
+          "type": "expense",
+          "id": "item-1784581568741-864",
+          "amount": 230000
+        },
+        {
+          "id": "item-1784581607452-943",
+          "date": "2026-07-20",
+          "category": "Mascotas",
+          "fortnightId": "2026-07-Q2",
+          "account": "Davivienda Mafe",
+          "type": "expense",
+          "description": "Arena",
+          "amount": 80000
+        },
+        {
+          "type": "expense",
+          "id": "item-1784581830977-278",
+          "fortnightId": "2026-07-Q2",
+          "date": "2026-07-20",
+          "description": "Total + viaje",
+          "category": "Transferencia",
+          "destinationAccount": "Nu",
+          "amount": 800000,
+          "account": "Davivienda Mafe"
+        },
+        {
+          "category": "Arriendo",
+          "account": "Nu",
+          "type": "expense",
+          "amount": 750000,
+          "description": "Pago del arriendo quincenal",
+          "id": "item-1784582396612-41",
+          "date": "2026-07-20",
+          "fortnightId": "2026-07-Q2"
+        },
+        {
+          "date": "2026-07-20",
+          "category": "Servicios",
+          "amount": 106000,
+          "type": "expense",
+          "id": "item-1784582631354-521",
+          "fortnightId": "2026-07-Q2",
+          "account": "Nu",
+          "description": "Claro"
+        },
+        {
+          "description": "Icetex",
+          "account": "Nu",
+          "type": "expense",
+          "fortnightId": "2026-07-Q2",
+          "category": "Creditos",
+          "date": "2026-07-20",
+          "amount": 333000,
+          "id": "item-1784582848242-131"
+        },
+        {
+          "account": "Nu",
+          "description": "Pasajes Benjamin",
+          "category": "Transporte",
+          "fortnightId": "2026-07-Q2",
+          "date": "2026-07-21",
+          "id": "item-1784663966047-797",
+          "type": "expense",
+          "amount": 50400
+        },
+        {
+          "fortnightId": "2026-07-Q2",
+          "description": "Cita médica.",
+          "date": "2026-07-21",
+          "account": "Nu",
+          "amount": 20100,
+          "type": "expense",
+          "category": "Otros",
+          "id": "item-1784664077176-199"
+        },
+        {
+          "description": "Otros",
+          "account": "Nu",
+          "type": "expense",
+          "fortnightId": "2026-07-Q2",
+          "category": "Comida por fuera",
+          "id": "item-1784666147952-374",
+          "amount": 73000,
+          "date": "2026-07-21"
+        },
+        {
+          "type": "expense",
+          "fortnightId": "2026-07-Q2",
+          "account": "Nu",
+          "description": "Otros",
+          "id": "item-1784666191122-499",
+          "amount": 16000,
+          "date": "2026-07-21",
+          "category": "Comida por fuera"
+        },
+        {
+          "account": "Nu",
+          "fortnightId": "2026-07-Q2",
+          "date": "2026-07-21",
+          "description": "Tintura",
+          "amount": 26000,
+          "id": "item-1784666251969-197",
+          "type": "expense",
+          "category": "Otros"
+        },
+        {
+          "amount": 22200,
+          "fortnightId": "2026-07-Q2",
+          "date": "2026-08-02",
+          "description": "Cosas para el hogar",
+          "id": "item-1785707117322-417",
+          "type": "expense",
+          "category": "Hogar",
+          "account": "Nu"
+        },
+        {
+          "id": "item-1785707149666-797",
+          "account": "Nu",
+          "date": "2026-08-02",
+          "fortnightId": "2026-07-Q2",
+          "amount": 10900,
+          "type": "expense",
+          "category": "Otros",
+          "description": "Oxxo"
+        },
+        {
+          "amount": 260000,
+          "category": "Mercado",
+          "id": "item-1785707166193-927",
+          "type": "expense",
+          "fortnightId": "2026-07-Q2",
+          "account": "Nu",
+          "description": "Mercado",
+          "date": "2026-08-02"
+        },
+        {
+          "id": "item-1785707186963-886",
+          "type": "expense",
+          "fortnightId": "2026-07-Q2",
+          "account": "Nu",
+          "date": "2026-08-02",
+          "description": "Quates y energizantes",
+          "amount": 15400,
+          "category": "Otros"
+        },
+        {
+          "date": "2026-08-02",
+          "id": "item-1785707213337-575",
+          "category": "Transporte",
+          "account": "Nu",
+          "description": "Pasajes",
+          "type": "expense",
+          "fortnightId": "2026-07-Q2",
+          "amount": 30400
+        },
+        {
+          "fortnightId": "2026-07-Q2",
+          "id": "item-1785707340011-273",
+          "description": "Cumple Mafe",
+          "category": "Otros",
+          "type": "expense",
+          "account": "Nu",
+          "amount": 84100,
+          "date": "2026-08-02"
+        },
+        {
+          "type": "expense",
+          "account": "Nu",
+          "date": "2026-08-02",
+          "description": "Corte de cabello",
+          "category": "Otros",
+          "amount": 24500,
+          "fortnightId": "2026-07-Q2",
+          "id": "item-1785707374429-487"
+        },
+        {
+          "category": "Mercado",
+          "amount": 30500,
+          "description": "Mercado",
+          "id": "item-1785707440405-968",
+          "type": "expense",
+          "fortnightId": "2026-07-Q2",
+          "date": "2026-08-02",
+          "account": "Daviplata"
+        },
+        {
+          "type": "income",
+          "description": "Benja",
+          "amount": 2000000,
+          "fortnightId": "2026-08-Q1",
+          "id": "item-1785707577480-388",
+          "date": "2026-08-02",
+          "category": "Salario",
+          "account": "Davivienda Benjamin"
+        },
+        {
+          "type": "income",
+          "fortnightId": "2026-08-Q1",
+          "account": "Davivienda Mafe",
+          "description": "Mafe",
+          "amount": 2000000,
+          "date": "2026-08-02",
+          "category": "Salario",
+          "id": "item-1785707593508-237"
+        },
+        {
+          "category": "Mascotas",
+          "account": "Davivienda Benjamin",
+          "type": "expense",
+          "amount": 90000,
+          "id": "item-1785707617238-633",
+          "description": "Barf",
+          "date": "2026-08-02",
+          "fortnightId": "2026-08-Q1"
+        },
+        {
+          "id": "item-1785707641512-584",
+          "type": "expense",
+          "account": "Davivienda Benjamin",
+          "category": "Otros",
+          "fortnightId": "2026-08-Q1",
+          "amount": 11400,
+          "description": "Cigarrillos",
+          "date": "2026-08-02"
+        },
+        {
+          "amount": 150000,
+          "type": "expense",
+          "id": "item-1785707660914-950",
+          "description": "Medicamentos",
+          "date": "2026-08-02",
+          "category": "Mascotas",
+          "fortnightId": "2026-08-Q1",
+          "account": "Davivienda Benjamin"
+        },
+        {
+          "id": "item-1785707735176-424",
+          "amount": 57400,
+          "category": "Comida por fuera",
+          "date": "2026-08-02",
+          "fortnightId": "2026-08-Q1",
+          "account": "Davivienda Benjamin",
+          "description": "Comida por fuera",
+          "type": "expense"
+        },
+        {
+          "category": "Otros",
+          "description": "Oxxo",
+          "account": "Davivienda Benjamin",
+          "amount": 13300,
+          "type": "expense",
+          "fortnightId": "2026-08-Q1",
+          "id": "item-1785707753175-870",
+          "date": "2026-08-02"
+        },
+        {
+          "fortnightId": "2026-08-Q1",
+          "description": "Arena",
+          "id": "item-1785707850614-410",
+          "date": "2026-08-02",
+          "category": "Mascotas",
+          "amount": 80000,
+          "type": "expense",
+          "account": "Davivienda Mafe"
+        },
+        {
+          "id": "item-1785806118299-341",
+          "description": "Comida perro",
+          "amount": 230000,
+          "fortnightId": "2026-08-Q1",
+          "date": "2026-08-04",
+          "category": "Mascotas",
+          "type": "expense",
+          "account": "Davivienda Mafe"
+        }
+      ],
+      "cierresMensuales": [],
+      "emotionCheckins": [],
+      "closetGarments": [],
+      "notifications": [
+        {
+          "userId": "",
+          "title": "Nuevo antojo/deseo",
+          "type": "wish",
+          "readBy": [],
+          "message": "Alguien agregó un deseo: \"Nintendo Switch OLED 🎮\" para \"Mafe\". ✨",
+          "timestamp": "2026-08-06T10:46:09.709Z",
+          "id": "notif-1786013169709-6se4"
+        },
+        {
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "type": "wish",
+          "timestamp": "2026-08-06T10:46:09.688Z",
+          "readBy": [],
+          "userId": "",
+          "id": "notif-1786013169688-xgnq",
+          "title": "Nuevo antojo/deseo"
+        },
+        {
+          "userId": "",
+          "title": "Nuevo antojo/deseo",
+          "type": "wish",
+          "id": "notif-1786013169667-axds",
+          "readBy": [],
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "timestamp": "2026-08-06T10:46:09.667Z"
+        },
+        {
+          "type": "wish",
+          "userId": "",
+          "timestamp": "2026-08-06T10:46:09.645Z",
+          "id": "notif-1786013169645-ptp8",
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "title": "Nuevo antojo/deseo",
+          "readBy": []
+        },
+        {
+          "timestamp": "2026-08-06T10:46:09.616Z",
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "readBy": [],
+          "title": "Nuevo antojo/deseo",
+          "id": "notif-1786013169616-aszc",
+          "type": "wish",
+          "userId": ""
+        },
+        {
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "timestamp": "2026-08-06T10:46:09.599Z",
+          "type": "wish",
+          "readBy": [],
+          "id": "notif-1786013169599-ostj",
+          "title": "Nuevo antojo/deseo",
+          "userId": ""
+        },
+        {
+          "userId": "",
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "title": "Nuevo antojo/deseo",
+          "id": "notif-1786013169578-5u5p",
+          "timestamp": "2026-08-06T10:46:09.578Z",
+          "readBy": [],
+          "type": "wish"
+        },
+        {
+          "message": "Alguien agregó un deseo: \"Nintendo Switch OLED 🎮\" para \"Mafe\". ✨",
+          "userId": "",
+          "type": "wish",
+          "timestamp": "2026-08-06T10:46:09.556Z",
+          "id": "notif-1786013169556-cc9r",
+          "title": "Nuevo antojo/deseo",
+          "readBy": []
+        },
+        {
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "type": "wish",
+          "userId": "",
+          "timestamp": "2026-08-06T10:46:09.527Z",
+          "id": "notif-1786013169527-u9fb",
+          "title": "Nuevo antojo/deseo",
+          "readBy": []
+        },
+        {
+          "readBy": [],
+          "title": "Nuevo antojo/deseo",
+          "timestamp": "2026-08-06T10:46:09.506Z",
+          "id": "notif-1786013169506-rl1s",
+          "userId": "",
+          "message": "Alguien agregó un deseo: \"Nintendo Switch OLED 🎮\" para \"Mafe\". ✨",
+          "type": "wish"
+        },
+        {
+          "title": "Nuevo antojo/deseo",
+          "userId": "",
+          "timestamp": "2026-08-06T10:46:09.484Z",
+          "readBy": [],
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "type": "wish",
+          "id": "notif-1786013169484-qme8"
+        },
+        {
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "userId": "",
+          "type": "wish",
+          "id": "notif-1786013169468-7hnz",
+          "timestamp": "2026-08-06T10:46:09.468Z",
+          "title": "Nuevo antojo/deseo",
+          "readBy": []
+        },
+        {
+          "timestamp": "2026-08-06T10:46:09.444Z",
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "readBy": [],
+          "id": "notif-1786013169444-l9aw",
+          "title": "Nuevo antojo/deseo",
+          "type": "wish",
+          "userId": ""
+        },
+        {
+          "title": "Nuevo antojo/deseo",
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "userId": "",
+          "id": "notif-1786013169429-61pt",
+          "timestamp": "2026-08-06T10:46:09.429Z",
+          "readBy": [],
+          "type": "wish"
+        },
+        {
+          "readBy": [],
+          "message": "Alguien agregó un deseo: \"Nintendo Switch OLED 🎮\" para \"Mafe\". ✨",
+          "timestamp": "2026-08-06T10:46:09.413Z",
+          "title": "Nuevo antojo/deseo",
+          "id": "notif-1786013169413-jecs",
+          "type": "wish",
+          "userId": ""
+        },
+        {
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "readBy": [],
+          "timestamp": "2026-08-06T10:46:09.396Z",
+          "type": "wish",
+          "title": "Nuevo antojo/deseo",
+          "id": "notif-1786013169396-t8ds",
+          "userId": ""
+        },
+        {
+          "title": "Nuevo antojo/deseo",
+          "userId": "",
+          "type": "wish",
+          "readBy": [],
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "timestamp": "2026-08-06T10:46:09.362Z",
+          "id": "notif-1786013169362-upio"
+        },
+        {
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "id": "notif-1786013169341-dhxj",
+          "userId": "",
+          "title": "Nuevo antojo/deseo",
+          "timestamp": "2026-08-06T10:46:09.341Z",
+          "readBy": [],
+          "type": "wish"
+        },
+        {
+          "type": "wish",
+          "userId": "",
+          "id": "notif-1786013169321-p9l3",
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "timestamp": "2026-08-06T10:46:09.321Z",
+          "title": "Nuevo antojo/deseo",
+          "readBy": []
+        },
+        {
+          "timestamp": "2026-08-06T10:46:09.302Z",
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "id": "notif-1786013169302-a148",
+          "userId": "",
+          "title": "Nuevo antojo/deseo",
+          "type": "wish",
+          "readBy": []
+        },
+        {
+          "userId": "",
+          "type": "wish",
+          "id": "notif-1786013169278-rf62",
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "title": "Nuevo antojo/deseo",
+          "timestamp": "2026-08-06T10:46:09.278Z",
+          "readBy": []
+        },
+        {
+          "id": "notif-1786013169262-19nb",
+          "readBy": [],
+          "title": "Nuevo antojo/deseo",
+          "type": "wish",
+          "timestamp": "2026-08-06T10:46:09.262Z",
+          "userId": "",
+          "message": "Alguien agregó un deseo: \"Nintendo Switch OLED 🎮\" para \"Mafe\". ✨"
+        },
+        {
+          "title": "Nueva planta agregada",
+          "userId": "",
+          "message": "Alguien agregó la planta \"Monstera del Nido 🪴\" al nido. 🌿",
+          "readBy": [],
+          "type": "plant",
+          "timestamp": "2026-08-06T10:46:09.242Z",
+          "id": "notif-1786013169242-we5q"
+        },
+        {
+          "id": "notif-1786013169221-4mfm",
+          "timestamp": "2026-08-06T10:46:09.221Z",
+          "userId": "",
+          "type": "wish",
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "title": "Nuevo antojo/deseo",
+          "readBy": []
+        },
+        {
+          "message": "Alguien agregó la planta \"Monstera del Nido 🪴\" al nido. 🌿",
+          "timestamp": "2026-08-06T10:46:09.189Z",
+          "userId": "",
+          "id": "notif-1786013169189-8g5a",
+          "title": "Nueva planta agregada",
+          "type": "plant",
+          "readBy": []
+        },
+        {
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "type": "wish",
+          "userId": "",
+          "timestamp": "2026-08-06T10:46:09.167Z",
+          "id": "notif-1786013169167-3vb2",
+          "title": "Nuevo antojo/deseo",
+          "readBy": []
+        },
+        {
+          "userId": "",
+          "type": "wish",
+          "timestamp": "2026-08-06T10:46:09.151Z",
+          "title": "Nuevo antojo/deseo",
+          "id": "notif-1786013169151-h30u",
+          "readBy": [],
+          "message": "Alguien agregó un deseo: \"Nintendo Switch OLED 🎮\" para \"Mafe\". ✨"
+        },
+        {
+          "userId": "",
+          "type": "wish",
+          "message": "Alguien agregó un deseo: \"Nintendo Switch OLED 🎮\" para \"Mafe\". ✨",
+          "id": "notif-1786013169122-qqyn",
+          "title": "Nuevo antojo/deseo",
+          "timestamp": "2026-08-06T10:46:09.122Z",
+          "readBy": []
+        },
+        {
+          "userId": "",
+          "type": "plant",
+          "title": "Nueva planta agregada",
+          "id": "notif-1786013169104-9yxw",
+          "message": "Alguien agregó la planta \"Monstera del Nido 🪴\" al nido. 🌿",
+          "timestamp": "2026-08-06T10:46:09.104Z",
+          "readBy": []
+        },
+        {
+          "title": "Nuevo antojo/deseo",
+          "message": "Alguien agregó un deseo: \"Nintendo Switch OLED 🎮\" para \"Mafe\". ✨",
+          "userId": "",
+          "id": "notif-1786013169083-n30o",
+          "timestamp": "2026-08-06T10:46:09.083Z",
+          "readBy": [],
+          "type": "wish"
+        },
+        {
+          "timestamp": "2026-08-06T10:46:09.067Z",
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "id": "notif-1786013169067-rbry",
+          "userId": "",
+          "title": "Nuevo antojo/deseo",
+          "readBy": [],
+          "type": "wish"
+        },
+        {
+          "id": "notif-1786013169037-rg99",
+          "type": "wish",
+          "userId": "",
+          "timestamp": "2026-08-06T10:46:09.037Z",
+          "readBy": [],
+          "title": "Nuevo antojo/deseo",
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨"
+        },
+        {
+          "title": "Nuevo antojo/deseo",
+          "readBy": [],
+          "id": "notif-1786013169021-pqav",
+          "userId": "",
+          "type": "wish",
+          "timestamp": "2026-08-06T10:46:09.021Z",
+          "message": "Alguien agregó un deseo: \"Nintendo Switch OLED 🎮\" para \"Mafe\". ✨"
+        },
+        {
+          "readBy": [],
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "title": "Nuevo antojo/deseo",
+          "type": "wish",
+          "timestamp": "2026-08-06T10:46:09.004Z",
+          "id": "notif-1786013169004-m3w6",
+          "userId": ""
+        },
+        {
+          "title": "Nuevo antojo/deseo",
+          "userId": "",
+          "timestamp": "2026-08-06T10:46:08.989Z",
+          "readBy": [],
+          "type": "wish",
+          "id": "notif-1786013168989-j4nr",
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨"
+        },
+        {
+          "timestamp": "2026-08-06T10:46:08.963Z",
+          "readBy": [],
+          "title": "Nueva planta agregada",
+          "type": "plant",
+          "userId": "",
+          "id": "notif-1786013168963-koql",
+          "message": "Alguien agregó la planta \"Monstera del Nido 🪴\" al nido. 🌿"
+        },
+        {
+          "message": "Alguien agregó un deseo: \"Nintendo Switch OLED 🎮\" para \"Mafe\". ✨",
+          "readBy": [],
+          "id": "notif-1786013168942-eh6b",
+          "type": "wish",
+          "title": "Nuevo antojo/deseo",
+          "timestamp": "2026-08-06T10:46:08.942Z",
+          "userId": ""
+        },
+        {
+          "userId": "",
+          "type": "plant",
+          "message": "Alguien agregó la planta \"Monstera del Nido 🪴\" al nido. 🌿",
+          "timestamp": "2026-08-06T10:46:08.922Z",
+          "id": "notif-1786013168922-yhm5",
+          "title": "Nueva planta agregada",
+          "readBy": []
+        },
+        {
+          "title": "Nueva planta agregada",
+          "userId": "",
+          "message": "Alguien agregó la planta \"Monstera del Nido 🪴\" al nido. 🌿",
+          "timestamp": "2026-08-06T10:46:08.890Z",
+          "readBy": [],
+          "type": "plant",
+          "id": "notif-1786013168890-k6x4"
+        },
+        {
+          "type": "wish",
+          "readBy": [],
+          "title": "Nuevo antojo/deseo",
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "id": "notif-1786013168873-9g27",
+          "userId": "",
+          "timestamp": "2026-08-06T10:46:08.873Z"
+        },
+        {
+          "readBy": [],
+          "id": "notif-1786013168846-i28m",
+          "title": "Nuevo antojo/deseo",
+          "type": "wish",
+          "userId": "",
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "timestamp": "2026-08-06T10:46:08.846Z"
+        },
+        {
+          "readBy": [],
+          "type": "wish",
+          "timestamp": "2026-08-06T10:46:08.825Z",
+          "title": "Nuevo antojo/deseo",
+          "userId": "",
+          "id": "notif-1786013168825-qbod",
+          "message": "Alguien agregó un deseo: \"Nintendo Switch OLED 🎮\" para \"Mafe\". ✨"
+        },
+        {
+          "type": "plant",
+          "id": "notif-1786013168794-teig",
+          "readBy": [],
+          "userId": "",
+          "message": "Alguien agregó la planta \"Monstera del Nido 🪴\" al nido. 🌿",
+          "timestamp": "2026-08-06T10:46:08.794Z",
+          "title": "Nueva planta agregada"
+        },
+        {
+          "message": "Alguien agregó un deseo: \"Nintendo Switch OLED 🎮\" para \"Mafe\". ✨",
+          "timestamp": "2026-08-06T10:46:08.770Z",
+          "userId": "",
+          "title": "Nuevo antojo/deseo",
+          "readBy": [],
+          "type": "wish",
+          "id": "notif-1786013168770-ztne"
+        },
+        {
+          "readBy": [],
+          "id": "notif-1786013168754-j0u9",
+          "title": "Nuevo antojo/deseo",
+          "type": "wish",
+          "userId": "",
+          "timestamp": "2026-08-06T10:46:08.754Z",
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨"
+        },
+        {
+          "type": "wish",
+          "message": "Alguien agregó un deseo: \"Nintendo Switch OLED 🎮\" para \"Mafe\". ✨",
+          "readBy": [],
+          "userId": "",
+          "timestamp": "2026-08-06T10:46:08.736Z",
+          "id": "notif-1786013168736-e4jm",
+          "title": "Nuevo antojo/deseo"
+        },
+        {
+          "userId": "",
+          "id": "notif-1786013168707-uc92",
+          "title": "Nueva planta agregada",
+          "timestamp": "2026-08-06T10:46:08.707Z",
+          "type": "plant",
+          "readBy": [],
+          "message": "Alguien agregó la planta \"Monstera del Nido 🪴\" al nido. 🌿"
+        },
+        {
+          "type": "plant",
+          "userId": "",
+          "title": "Nueva planta agregada",
+          "readBy": [],
+          "id": "notif-1786013168680-bfu1",
+          "message": "Alguien agregó la planta \"Monstera del Nido 🪴\" al nido. 🌿",
+          "timestamp": "2026-08-06T10:46:08.680Z"
+        },
+        {
+          "type": "wish",
+          "userId": "",
+          "id": "notif-1786013168656-6fe0",
+          "message": "Alguien agregó un deseo: \"Nintendo Switch OLED 🎮\" para \"Mafe\". ✨",
+          "timestamp": "2026-08-06T10:46:08.656Z",
+          "readBy": [],
+          "title": "Nuevo antojo/deseo"
+        },
+        {
+          "type": "wish",
+          "readBy": [],
+          "title": "Nuevo antojo/deseo",
+          "userId": "",
+          "id": "notif-1786013168634-tfgn",
+          "message": "Alguien agregó un deseo: \"Nintendo Switch OLED 🎮\" para \"Mafe\". ✨",
+          "timestamp": "2026-08-06T10:46:08.634Z"
+        }
+      ],
+      "pets": [],
+      "frascoMessages": [],
+      "workoutLogs": [],
+      "workoutDetailedLogs": [],
+      "customExercises": [],
+      "workoutRoutines": [
+        {
+          "patterns": [
+            {
+              "movementPatternId": "empuje_horizontal",
+              "targetRepsRange": "6-8",
+              "targetSets": 3,
+              "preferredExerciseId": "press_pecho_maquina_hammer"
+            },
+            {
+              "preferredExerciseId": "press_inclinado_mancuernas",
+              "targetRepsRange": "6-8",
+              "movementPatternId": "empuje_inclinado",
+              "targetSets": 3
+            },
+            {
+              "movementPatternId": "empuje_vertical",
+              "targetRepsRange": "6-8",
+              "preferredExerciseId": "press_militar_mancuernas",
+              "targetSets": 3
+            },
+            {
+              "targetSets": 3,
+              "movementPatternId": "deltoides_lateral",
+              "targetRepsRange": "8-10",
+              "preferredExerciseId": "elevaciones_laterales_polea"
+            },
+            {
+              "targetRepsRange": "8-10",
+              "targetSets": 3,
+              "movementPatternId": "aislamiento_triceps",
+              "preferredExerciseId": "extension_triceps_polea_cuerda"
+            }
+          ],
+          "color": "#10B981",
+          "id": "rutina_push_empuje",
+          "createdAt": "2026-08-05T10:51:19.830Z",
+          "updatedAt": "2026-08-05T11:33:46.493Z",
+          "name": "Día 1: Empuje (Pecho, Hombro, Tríceps)",
+          "description": "Enfoque hipertrofia de empujes. Pectoral, deltoides anterior/lateral y tríceps."
+        },
+        {
+          "description": "Amplitud y densidad de espalda con bíceps y deltoides posterior.",
+          "createdAt": "2026-08-05T10:51:19.830Z",
+          "updatedAt": "2026-08-05T11:33:46.528Z",
+          "id": "rutina_pull_traccion",
+          "name": "Día 2: Tracción (Espalda & Bíceps)",
+          "patterns": [
+            {
+              "movementPatternId": "traccion_vertical",
+              "targetRepsRange": "6-8",
+              "preferredExerciseId": "jalon_polea_agarre_neutro",
+              "targetSets": 3
+            },
+            {
+              "movementPatternId": "traccion_horizontal",
+              "targetSets": 3,
+              "preferredExerciseId": "remo_maquina_hammer",
+              "targetRepsRange": "6-8"
+            },
+            {
+              "targetRepsRange": "8-10",
+              "preferredExerciseId": "face_pulls_polea",
+              "movementPatternId": "deltoides_posterior",
+              "targetSets": 3
+            },
+            {
+              "targetRepsRange": "8-10",
+              "movementPatternId": "aislamiento_biceps",
+              "targetSets": 3,
+              "preferredExerciseId": "curl_biceps_polea_baja"
+            }
+          ],
+          "color": "#06B6D4"
+        },
+        {
+          "patterns": [
+            {
+              "targetSets": 3,
+              "targetRepsRange": "6-8",
+              "preferredExerciseId": "prensa_piernas_45",
+              "movementPatternId": "dominante_rodilla"
+            },
+            {
+              "movementPatternId": "aislamiento_cuadriceps",
+              "preferredExerciseId": "extension_piernas_maquina",
+              "targetSets": 3,
+              "targetRepsRange": "8-10"
+            },
+            {
+              "movementPatternId": "pantorrilla",
+              "preferredExerciseId": "elevacion_gemelos_de_pie",
+              "targetSets": 3,
+              "targetRepsRange": "10-12"
+            },
+            {
+              "targetRepsRange": "10-12",
+              "preferredExerciseId": "crunch_polea_alta",
+              "targetSets": 3,
+              "movementPatternId": "core_abs"
+            }
+          ],
+          "description": "Dominantes de rodilla, extensiones de cuádriceps y abdomen.",
+          "updatedAt": "2026-08-05T11:33:46.539Z",
+          "id": "rutina_legs_cuadriceps",
+          "name": "Día 3: Pierna Foco Cuádriceps & Core",
+          "createdAt": "2026-08-05T10:51:19.830Z",
+          "color": "#8B5CF6"
+        },
+        {
+          "createdAt": "2026-08-05T10:51:19.830Z",
+          "updatedAt": "2026-08-05T11:33:46.554Z",
+          "description": "Trabajo complementario de hombros, pecho, espalda y super-series de brazos.",
+          "patterns": [
+            {
+              "preferredExerciseId": "press_inclinado_mancuernas",
+              "targetRepsRange": "6-8",
+              "movementPatternId": "empuje_inclinado",
+              "targetSets": 3
+            },
+            {
+              "targetSets": 3,
+              "movementPatternId": "traccion_horizontal",
+              "targetRepsRange": "6-8",
+              "preferredExerciseId": "remo_maquina_hammer"
+            },
+            {
+              "targetRepsRange": "8-10",
+              "preferredExerciseId": "elevaciones_laterales_mancuernas",
+              "movementPatternId": "deltoides_lateral",
+              "targetSets": 3
+            },
+            {
+              "preferredExerciseId": "curl_biceps_mancuernas_inclinado",
+              "targetRepsRange": "8-10",
+              "targetSets": 3,
+              "movementPatternId": "aislamiento_biceps"
+            },
+            {
+              "targetSets": 3,
+              "preferredExerciseId": "extension_katana_polea",
+              "movementPatternId": "aislamiento_triceps",
+              "targetRepsRange": "8-10"
+            }
+          ],
+          "id": "rutina_torso_brazos",
+          "name": "Día 4: Torso Completo & Brazos",
+          "color": "#F59E0B"
+        },
+        {
+          "patterns": [
+            {
+              "preferredExerciseId": "peso_muerto_rumano_mancuernas",
+              "movementPatternId": "dominante_cadera",
+              "targetSets": 3,
+              "targetRepsRange": "6-8"
+            },
+            {
+              "targetRepsRange": "6-8",
+              "targetSets": 3,
+              "movementPatternId": "dominante_cadera",
+              "preferredExerciseId": "hip_thrust_barra_maquina"
+            },
+            {
+              "movementPatternId": "dominante_cadera",
+              "preferredExerciseId": "curl_isquiotibiales_sentado",
+              "targetSets": 3,
+              "targetRepsRange": "8-10"
+            },
+            {
+              "preferredExerciseId": "elevacion_gemelos_de_pie",
+              "targetRepsRange": "10-12",
+              "targetSets": 3,
+              "movementPatternId": "pantorrilla"
+            }
+          ],
+          "color": "#EC4899",
+          "description": "Bisagra de cadera, Hip Thrust y curls analíticos de isquiotibiales.",
+          "name": "Día 5: Pierna Foco Isquios & Glúteo",
+          "createdAt": "2026-08-05T10:51:19.830Z",
+          "updatedAt": "2026-08-05T11:33:46.567Z",
+          "id": "rutina_legs_isquios_gluteo"
+        },
+        {
+          "id": "rutina_descanso_ciclismo",
+          "color": "#10B981",
+          "name": "Día 6 / Descanso Activo: Ciclismo & Movilidad 🚴‍♂️",
+          "createdAt": "2026-08-05T10:51:19.830Z",
+          "patterns": [
+            {
+              "movementPatternId": "cardio_ciclismo",
+              "targetRepsRange": "30-45 min",
+              "preferredExerciseId": "ciclismo_bici_ruta_estatica",
+              "targetSets": 1
+            }
+          ],
+          "updatedAt": "2026-08-05T11:33:46.576Z",
+          "description": "Rodada en bici de ruta o estática. Selecciona el tiempo en minutos."
+        }
+      ],
+      "bodyMetrics": [],
+      "personalRecords": []
+    },
+    "HOGARPELUDO": {
+      "closetCategories": [
+        {
+          "id": "cat-camisetas",
+          "isCustom": false,
+          "icon": "Shirt",
+          "name": "Camisetas",
+          "color": "#FFECEC"
+        },
+        {
+          "icon": "Shirt",
+          "color": "#EBF3FF",
+          "name": "Camisas",
+          "id": "cat-camisas",
+          "isCustom": false
+        },
+        {
+          "name": "Tops",
+          "isCustom": false,
+          "id": "cat-tops",
+          "color": "#FDF2F8",
+          "icon": "Sparkles"
+        },
+        {
+          "icon": "Layers",
+          "id": "cat-buzos",
+          "isCustom": false,
+          "color": "#F3E8FF",
+          "name": "Buzos y sacos"
+        },
+        {
+          "color": "#FEF3C7",
+          "isCustom": false,
+          "name": "Chaquetas",
+          "id": "cat-chaquetas",
+          "icon": "Folder"
+        },
+        {
+          "id": "cat-vestidos",
+          "icon": "Sparkles",
+          "isCustom": false,
+          "color": "#FCE7F3",
+          "name": "Vestidos"
+        },
+        {
+          "isCustom": false,
+          "icon": "Layers",
+          "color": "#F1F5F9",
+          "name": "Faldas",
+          "id": "cat-faldas"
+        },
+        {
+          "color": "#E0F2FE",
+          "isCustom": false,
+          "name": "Pantalones",
+          "id": "cat-pantalones",
+          "icon": "ShoppingBag"
+        },
+        {
+          "name": "Jeans",
+          "id": "cat-jeans",
+          "color": "#DBEAFE",
+          "isCustom": false,
+          "icon": "ShoppingBag"
+        },
+        {
+          "name": "Shorts",
+          "id": "cat-shorts",
+          "isCustom": false,
+          "color": "#E0E7FF",
+          "icon": "Sun"
+        },
+        {
+          "isCustom": false,
+          "name": "Sudaderas",
+          "color": "#ECFDF5",
+          "icon": "Dumbbell",
+          "id": "cat-sudaderas"
+        },
+        {
+          "icon": "Footprints",
+          "color": "#FEF3C7",
+          "isCustom": false,
+          "id": "cat-zapatos",
+          "name": "Zapatos"
+        },
+        {
+          "icon": "Glasses",
+          "isCustom": false,
+          "name": "Accesorios",
+          "id": "cat-accesorios",
+          "color": "#FAF5FF"
+        }
+      ],
+      "dailyPools": [
+        {
+          "date": "2026-08-05",
+          "questions": [
+            {
+              "category": "conexion",
+              "id": "q-con-2026-08-05",
+              "text": "¿Sientes gratitud por tener a tu compañero(a) a tu lado hoy? ✨"
+            },
+            {
+              "id": "q-arm-2026-08-05",
+              "category": "armonia",
+              "text": "¿Las tareas o quehaceres estuvieron equilibrados hoy? 🧹"
+            },
+            {
+              "id": "q-bie-2026-08-05",
+              "category": "bienestar",
+              "text": "¿Disfrutaste un momento de desconexión o autocuidado hoy? 🛀"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-06",
+          "questions": [
+            {
+              "text": "¿Te sentiste querido(a) hoy en el nido? ❤️",
+              "category": "conexion",
+              "id": "q-con-2026-08-06"
+            },
+            {
+              "text": "¿Te sentiste cómodo(a) y en paz física en casa? 🛋️",
+              "category": "armonia",
+              "id": "q-arm-2026-08-06"
+            },
+            {
+              "text": "¿Te alimentaste bien y tomaste suficiente agua hoy? 💧",
+              "category": "bienestar",
+              "id": "q-bie-2026-08-06"
+            }
+          ]
+        }
+      ],
+      "users": [
+        {
+          "venusSign": "Sagitario ♐",
+          "birthTime": "08:30",
+          "pushToken": "fcm_token_hogar_T8GZD7TKKH",
+          "marsSign": "Sagitario ♐",
+          "ascendantSign": "Sagitario ♐",
+          "mercurySign": "Libra ♎",
+          "horoscopeToday": "¡Un día fantástico bajo el influjo de Escorpio ♏! Sientes el suave abrazo de las estrellas.",
+          "lunarSign": "Leo ♌",
+          "zodiacSign": "Escorpio ♏",
+          "birthPlace": "Bogotá",
+          "birthDate": "1997-10-24",
+          "emoji": "cat_cosmic",
+          "horoscopeConsejo": "Estira tus patitas, regálate un respiro y haz que tu nido de amor brille miau.",
+          "photoUrl": "https://api.dicebear.com/7.x/adventurer/svg?seed=Mafe&backgroundColor=ffd5dc",
+          "name": "Mafe",
+          "alertPreferences": {
+            "calendarEvents": true,
+            "menstrualCycle": true,
+            "budgetAlerts": true,
+            "plantCare": true,
+            "sintoniaReminders": true,
+            "completedGoals": true,
+            "petVaccines": true,
+            "systemAlerts": true
+          },
+          "id": "mafe"
+        },
+        {
+          "birthTime": "14:15",
+          "venusSign": "Tauro ♉",
+          "id": "benja",
+          "ascendantSign": "Leo ♌",
+          "zodiacSign": "Aries ♈",
+          "birthPlace": "Bogotá",
+          "mercurySign": "Aries ♈",
+          "marsSign": "Géminis ♊",
+          "birthDate": "1997-03-24",
+          "lunarSign": "Libra ♎",
+          "photoUrl": "https://api.dicebear.com/7.x/adventurer/svg?seed=Benja&backgroundColor=d1e4ff",
+          "emoji": "cat_ginger",
+          "horoscopeConsejo": "Estira las patitas y regala una caricia terna a Mafe.",
+          "name": "Benja",
+          "horoscopeToday": "¡La energía cósmica de Aries te llena de motivación hoy para lograr tus metas!"
+        }
+      ],
+      "hasSeededAccounts": true,
+      "customEmotions": [],
+      "customExercises": [],
+      "budgetItems": [
+        {
+          "description": "Mafe",
+          "fortnightId": "2026-07-Q1",
+          "id": "item-1783035222540-305",
+          "date": "2026-07-01",
+          "account": "Davivienda Mafe",
+          "amount": 1900000,
+          "category": "Salario",
+          "type": "income"
+        },
+        {
+          "description": "Viaje finca",
+          "account": "Davivienda Mafe",
+          "date": "2026-07-01",
+          "fortnightId": "2026-07-Q1",
+          "id": "item-1783035252877-628",
+          "category": "Otros",
+          "amount": 700000,
+          "type": "expense"
+        },
+        {
+          "description": "Comida amiguita sopas",
+          "id": "item-1783035277102-192",
+          "fortnightId": "2026-07-Q1",
+          "date": "2026-07-02",
+          "amount": 50000,
+          "account": "Davivienda Mafe",
+          "category": "Otros",
+          "type": "expense"
+        },
+        {
+          "id": "item-1783035300644-845",
+          "fortnightId": "2026-07-Q1",
+          "category": "Mascotas",
+          "date": "2026-07-02",
+          "account": "Davivienda Mafe",
+          "description": "Arena",
+          "type": "expense",
+          "amount": 80000
+        },
+        {
+          "description": "Comida perro",
+          "amount": 250000,
+          "fortnightId": "2026-07-Q1",
+          "date": "2026-07-02",
+          "account": "Davivienda Mafe",
+          "category": "Mascotas",
+          "type": "expense",
+          "id": "item-1783035322894-391"
+        },
+        {
+          "date": "2026-07-03",
+          "amount": 100000,
+          "type": "expense",
+          "id": "item-1783035345678-100",
+          "fortnightId": "2026-07-Q1",
+          "account": "Davivienda Mafe",
+          "category": "Creditos",
+          "description": "Credito 4210"
+        },
+        {
+          "account": "Davivienda Benjamin",
+          "category": "Salario",
+          "type": "income",
+          "description": "Benja",
+          "date": "2026-07-01",
+          "amount": 2400000,
+          "fortnightId": "2026-07-Q1",
+          "id": "item-1783035388801-442"
+        },
+        {
+          "description": "Almuerzo Benja",
+          "account": "Davivienda Benjamin",
+          "date": "2026-07-01",
+          "fortnightId": "2026-07-Q1",
+          "id": "item-1783035411200-501",
+          "category": "Otros",
+          "type": "expense",
+          "amount": 10000
+        },
+        {
+          "fortnightId": "2026-07-Q1",
+          "account": "Davivienda Benjamin",
+          "amount": 30000,
+          "description": "Transferencia",
+          "type": "expense",
+          "id": "item-1783035433311-622",
+          "category": "Transferencia",
+          "date": "2026-07-01",
+          "destinationAccount": "Davivienda Mafe"
+        },
+        {
+          "account": "Davivienda Benjamin",
+          "date": "2026-07-01",
+          "description": "Pasajes",
+          "fortnightId": "2026-07-Q1",
+          "category": "Transporte",
+          "type": "expense",
+          "id": "item-1783035455522-733",
+          "amount": 50300
+        },
+        {
+          "description": "Cigarrillos",
+          "date": "2026-07-02",
+          "fortnightId": "2026-07-Q1",
+          "category": "Otros",
+          "id": "item-1783035477733-844",
+          "amount": 50100,
+          "account": "Davivienda Benjamin",
+          "type": "expense"
+        },
+        {
+          "type": "expense",
+          "account": "Davivienda Benjamin",
+          "amount": 100000,
+          "id": "item-1783035500044-955",
+          "fortnightId": "2026-07-Q1",
+          "category": "Mascotas",
+          "date": "2026-07-02",
+          "description": "Barf"
+        },
+        {
+          "account": "Davivienda Benjamin",
+          "date": "2026-07-02",
+          "id": "item-1783035522255-066",
+          "fortnightId": "2026-07-Q1",
+          "category": "Comida por fuera",
+          "amount": 43000,
+          "description": "Comida por fuera",
+          "type": "expense"
+        },
+        {
+          "account": "Davivienda Benjamin",
+          "category": "Servicios",
+          "amount": 34000,
+          "type": "expense",
+          "fortnightId": "2026-07-Q1",
+          "id": "item-1783035544466-177",
+          "description": "Gas",
+          "date": "2026-07-02"
+        },
+        {
+          "type": "expense",
+          "amount": 50300,
+          "date": "2026-07-02",
+          "id": "item-1783035566677-288",
+          "fortnightId": "2026-07-Q1",
+          "account": "Davivienda Benjamin",
+          "category": "Transporte",
+          "description": "Pasajes"
+        },
+        {
+          "date": "2026-07-03",
+          "amount": 50000,
+          "destinationAccount": "Davivienda Mafe",
+          "type": "expense",
+          "id": "item-1783168853112-401",
+          "account": "Davivienda Benjamin",
+          "category": "Transferencia",
+          "description": "Transferencia",
+          "fortnightId": "2026-07-Q1"
+        },
+        {
+          "account": "Davivienda Benjamin",
+          "id": "item-1783168875501-120",
+          "type": "expense",
+          "description": "Quates",
+          "category": "Otros",
+          "amount": 28500,
+          "date": "2026-07-03",
+          "fortnightId": "2026-07-Q1"
+        },
+        {
+          "id": "item-1783168912300-302",
+          "description": "Tigo",
+          "fortnightId": "2026-07-Q1",
+          "type": "expense",
+          "account": "Davivienda Benjamin",
+          "amount": 35000,
+          "date": "2026-07-03",
+          "category": "Servicios"
+        },
+        {
+          "description": "Cris Finca (300 total)",
+          "date": "2026-07-03",
+          "id": "item-1783168893608-569",
+          "amount": 165000,
+          "fortnightId": "2026-07-Q1",
+          "category": "Otros",
+          "type": "income",
+          "account": "Davivienda Benjamin"
+        },
+        {
+          "type": "expense",
+          "amount": 26000,
+          "description": "Regalos Benja",
+          "account": "Davivienda Benjamin",
+          "fortnightId": "2026-07-Q1",
+          "date": "2026-07-03",
+          "id": "item-1783168938645-723",
+          "category": "Otros"
+        },
+        {
+          "id": "item-1783168966355-50",
+          "category": "Otros",
+          "fortnightId": "2026-07-Q1",
+          "account": "Davivienda Mafe",
+          "description": "Paula finca",
+          "type": "income",
+          "amount": 200000,
+          "date": "2026-07-03"
+        },
+        {
+          "description": "Alitas",
+          "id": "item-1783168991261-867",
+          "category": "Comida por fuera",
+          "fortnightId": "2026-07-Q1",
+          "account": "Davivienda Benjamin",
+          "type": "expense",
+          "amount": 50000,
+          "date": "2026-07-03"
+        },
+        {
+          "account": "Davivienda Benjamin",
+          "category": "Servicios",
+          "date": "2026-07-03",
+          "id": "item-1783170424157-623",
+          "type": "expense",
+          "description": "Wom",
+          "fortnightId": "2026-07-Q1",
+          "amount": 41000
+        },
+        {
+          "type": "expense",
+          "category": "Arriendo",
+          "date": "2026-07-05",
+          "account": "Davivienda Mafe",
+          "fortnightId": "2026-07-Q1",
+          "id": "item-1783257146670-398",
+          "amount": 1570000,
+          "description": "Pago del arriendo quincenal"
+        },
+        {
+          "date": "2026-07-05",
+          "type": "income",
+          "account": "Davivienda Benjamin",
+          "fortnightId": "2026-07-Q1",
+          "description": "U Benja",
+          "id": "item-1783257551662-117",
+          "amount": 140000,
+          "category": "Otros"
+        },
+        {
+          "category": "Comida por fuera",
+          "id": "item-1783257590077-416",
+          "type": "expense",
+          "amount": 100000,
+          "account": "Davivienda Benjamin",
+          "fortnightId": "2026-07-Q1",
+          "date": "2026-07-05",
+          "description": "Pizza y desayuno"
+        },
+        {
+          "date": "2026-07-05",
+          "fortnightId": "2026-07-Q1",
+          "description": "U Benja",
+          "type": "expense",
+          "account": "Davivienda Benjamin",
+          "id": "item-1783257608645-687",
+          "amount": 252000,
+          "category": "Universidad"
+        },
+        {
+          "fortnightId": "2026-07-Q1",
+          "description": "Transferencia",
+          "amount": 480000,
+          "destinationAccount": "Davivienda Mafe",
+          "id": "item-1783258423352-96",
+          "account": "Davivienda Benjamin",
+          "type": "expense",
+          "category": "Transferencia",
+          "date": "2026-07-05"
+        },
+        {
+          "fortnightId": "2026-07-Q1",
+          "amount": 200000,
+          "id": "item-1783258446655-483",
+          "type": "expense",
+          "description": "Viaje",
+          "account": "Davivienda Benjamin",
+          "category": "Otros",
+          "date": "2026-07-05"
+        },
+        {
+          "type": "expense",
+          "category": "Servicios",
+          "account": "Davivienda Benjamin",
+          "fortnightId": "2026-07-Q1",
+          "amount": 118000,
+          "id": "item-1783283883859-184",
+          "date": "2026-07-05",
+          "description": "Luz"
+        },
+        {
+          "category": "Servicios",
+          "date": "2026-07-05",
+          "amount": 233000,
+          "id": "item-1783283920843-88",
+          "fortnightId": "2026-07-Q1",
+          "type": "expense",
+          "description": "Agua",
+          "account": "Davivienda Benjamin"
+        },
+        {
+          "account": "Davivienda Benjamin",
+          "description": "Almuerzo Benja",
+          "category": "Otros",
+          "date": "2026-07-07",
+          "fortnightId": "2026-07-Q1",
+          "id": "item-1783382824508-810",
+          "type": "expense",
+          "amount": 15500
+        },
+        {
+          "account": "Davivienda Benjamin",
+          "type": "expense",
+          "fortnightId": "2026-07-Q1",
+          "id": "item-1783802708213-519",
+          "category": "Otros",
+          "description": "Casa (tintes, puerta, filtro, etc)",
+          "amount": 121000,
+          "date": "2026-07-11"
+        },
+        {
+          "account": "Davivienda Benjamin",
+          "category": "Transferencia",
+          "id": "item-1783814179632-975",
+          "type": "expense",
+          "description": "Transferencia",
+          "amount": 100000,
+          "date": "2026-07-11",
+          "fortnightId": "2026-07-Q1",
+          "destinationAccount": "Davivienda Mafe"
+        },
+        {
+          "date": "2026-07-13",
+          "category": "Mercado",
+          "amount": 315000,
+          "account": "Davivienda Mafe",
+          "fortnightId": "2026-07-Q1",
+          "type": "expense",
+          "id": "item-1784140671533-233",
+          "description": "Mercado"
+        },
+        {
+          "fortnightId": "2026-07-Q1",
+          "date": "2026-07-13",
+          "category": "Comida por fuera",
+          "description": "Comida por fuera",
+          "id": "item-1784140705637-179",
+          "account": "Davivienda Mafe",
+          "type": "expense",
+          "amount": 165000
+        },
+        {
+          "description": "Regalo Benja",
+          "amount": 512000,
+          "type": "expense",
+          "fortnightId": "2026-07-Q1",
+          "category": "Otros",
+          "date": "2026-07-13",
+          "id": "item-1784140781909-784",
+          "account": "Davivienda Mafe"
+        },
+        {
+          "description": "Benja",
+          "category": "Salario",
+          "date": "2026-07-15",
+          "account": "Davivienda Benjamin",
+          "fortnightId": "2026-07-Q2",
+          "amount": 1600000,
+          "id": "item-1784140916252-226",
+          "type": "income"
+        },
+        {
+          "amount": 1200000,
+          "fortnightId": "2026-07-Q2",
+          "account": "Davivienda Mafe",
+          "description": "Mafe",
+          "id": "item-1784140955704-720",
+          "type": "income",
+          "category": "Salario",
+          "date": "2026-07-15"
+        },
+        {
+          "type": "expense",
+          "account": "Davivienda Benjamin",
+          "category": "Otros",
+          "amount": 66000,
+          "id": "item-1784170472615-672",
+          "description": "Parlante",
+          "date": "2026-07-16",
+          "fortnightId": "2026-07-Q2"
+        },
+        {
+          "id": "item-1784580645607-179",
+          "account": "Davivienda Benjamin",
+          "date": "2026-07-20",
+          "amount": 24000,
+          "category": "Otros",
+          "description": "Almuerzo Benjamin",
+          "type": "expense",
+          "fortnightId": "2026-07-Q2"
+        },
+        {
+          "category": "Otros",
+          "id": "item-1784580679047-207",
+          "date": "2026-07-20",
+          "account": "Davivienda Benjamin",
+          "amount": 100000,
+          "description": "Regalo trabajo Benjamin",
+          "type": "expense",
+          "fortnightId": "2026-07-Q2"
+        },
+        {
+          "fortnightId": "2026-07-Q2",
+          "date": "2026-07-20",
+          "id": "item-1784580727279-901",
+          "description": "Transporte Benjamin",
+          "category": "Transporte",
+          "account": "Davivienda Benjamin",
+          "type": "expense",
+          "amount": 20000
+        },
+        {
+          "category": "Otros",
+          "date": "2026-07-20",
+          "account": "Davivienda Benjamin",
+          "fortnightId": "2026-07-Q2",
+          "amount": 30600,
+          "type": "expense",
+          "description": "Quates y energizantes",
+          "id": "item-1784580804521-516"
+        },
+        {
+          "type": "expense",
+          "description": "Medicamentos",
+          "account": "Davivienda Benjamin",
+          "fortnightId": "2026-07-Q2",
+          "amount": 18600,
+          "date": "2026-07-20",
+          "id": "item-1784580832793-490",
+          "category": "Otros"
+        },
+        {
+          "category": "Otros",
+          "date": "2026-07-20",
+          "amount": 25500,
+          "account": "Davivienda Benjamin",
+          "id": "item-1784580857496-749",
+          "description": "Ara otros",
+          "type": "expense",
+          "fortnightId": "2026-07-Q2"
+        },
+        {
+          "destinationAccount": "Davivienda Mafe",
+          "description": "Trasnferencia",
+          "fortnightId": "2026-07-Q2",
+          "category": "Transferencia",
+          "id": "item-1784580891805-841",
+          "amount": 30000,
+          "date": "2026-07-20",
+          "type": "expense",
+          "account": "Davivienda Benjamin"
+        },
+        {
+          "fortnightId": "2026-07-Q2",
+          "amount": 176000,
+          "id": "item-1784581207229-748",
+          "description": "Viaje",
+          "date": "2026-07-20",
+          "category": "Otros",
+          "account": "Davivienda Benjamin",
+          "type": "expense"
+        },
+        {
+          "fortnightId": "2026-07-Q2",
+          "account": "Davivienda Benjamin",
+          "id": "item-1784581230251-618",
+          "type": "expense",
+          "description": "Quates y energizantes",
+          "amount": 26000,
+          "category": "Otros",
+          "date": "2026-07-20"
+        },
+        {
+          "account": "Davivienda Benjamin",
+          "category": "Hogar",
+          "date": "2026-07-20",
+          "description": "Cosas para nosotros",
+          "id": "item-1784581262811-721",
+          "type": "expense",
+          "fortnightId": "2026-07-Q2",
+          "amount": 46000
+        },
+        {
+          "fortnightId": "2026-07-Q2",
+          "description": "Quates y energizantes",
+          "date": "2026-07-20",
+          "account": "Davivienda Benjamin",
+          "amount": 53000,
+          "id": "item-1784581316175-797",
+          "category": "Otros",
+          "type": "expense"
+        },
+        {
+          "date": "2026-07-20",
+          "amount": 29000,
+          "description": "Otros",
+          "category": "Comida por fuera",
+          "fortnightId": "2026-07-Q2",
+          "type": "expense",
+          "id": "item-1784581431578-530",
+          "account": "Davivienda Benjamin"
+        },
+        {
+          "type": "expense",
+          "date": "2026-07-20",
+          "account": "Davivienda Benjamin",
+          "destinationAccount": "Nu",
+          "description": "Paso de dinero y suma con Nu",
+          "amount": 1022000,
+          "fortnightId": "2026-07-Q2",
+          "category": "Transferencia",
+          "id": "item-1784581483773-734"
+        },
+        {
+          "date": "2026-07-20",
+          "fortnightId": "2026-07-Q2",
+          "amount": 230000,
+          "category": "Mascotas",
+          "description": "Comida gatos",
+          "type": "expense",
+          "account": "Davivienda Mafe",
+          "id": "item-1784581568741-864"
+        },
+        {
+          "date": "2026-07-20",
+          "category": "Mascotas",
+          "amount": 80000,
+          "account": "Davivienda Mafe",
+          "type": "expense",
+          "description": "Arena",
+          "id": "item-1784581607452-943",
+          "fortnightId": "2026-07-Q2"
+        },
+        {
+          "description": "Total + viaje",
+          "account": "Davivienda Mafe",
+          "id": "item-1784581830977-278",
+          "fortnightId": "2026-07-Q2",
+          "date": "2026-07-20",
+          "destinationAccount": "Nu",
+          "amount": 800000,
+          "type": "expense",
+          "category": "Transferencia"
+        },
+        {
+          "type": "expense",
+          "description": "Pago del arriendo quincenal",
+          "account": "Nu",
+          "id": "item-1784582396612-41",
+          "category": "Arriendo",
+          "fortnightId": "2026-07-Q2",
+          "amount": 750000,
+          "date": "2026-07-20"
+        },
+        {
+          "account": "Nu",
+          "id": "item-1784582631354-521",
+          "type": "expense",
+          "amount": 106000,
+          "description": "Claro",
+          "category": "Servicios",
+          "date": "2026-07-20",
+          "fortnightId": "2026-07-Q2"
+        },
+        {
+          "description": "Icetex",
+          "date": "2026-07-20",
+          "fortnightId": "2026-07-Q2",
+          "type": "expense",
+          "amount": 333000,
+          "account": "Nu",
+          "id": "item-1784582848242-131",
+          "category": "Creditos"
+        },
+        {
+          "type": "expense",
+          "account": "Nu",
+          "amount": 50400,
+          "category": "Transporte",
+          "date": "2026-07-21",
+          "description": "Pasajes Benjamin",
+          "id": "item-1784663966047-797",
+          "fortnightId": "2026-07-Q2"
+        },
+        {
+          "date": "2026-07-21",
+          "account": "Nu",
+          "id": "item-1784664077176-199",
+          "category": "Otros",
+          "amount": 20100,
+          "fortnightId": "2026-07-Q2",
+          "type": "expense",
+          "description": "Cita médica."
+        },
+        {
+          "date": "2026-07-21",
+          "amount": 73000,
+          "category": "Comida por fuera",
+          "type": "expense",
+          "fortnightId": "2026-07-Q2",
+          "account": "Nu",
+          "description": "Otros",
+          "id": "item-1784666147952-374"
+        },
+        {
+          "id": "item-1784666191122-499",
+          "amount": 16000,
+          "type": "expense",
+          "fortnightId": "2026-07-Q2",
+          "account": "Nu",
+          "description": "Otros",
+          "category": "Comida por fuera",
+          "date": "2026-07-21"
+        },
+        {
+          "type": "expense",
+          "amount": 26000,
+          "account": "Nu",
+          "category": "Otros",
+          "date": "2026-07-21",
+          "description": "Tintura",
+          "id": "item-1784666251969-197",
+          "fortnightId": "2026-07-Q2"
+        },
+        {
+          "id": "item-1785707117322-417",
+          "date": "2026-08-02",
+          "category": "Hogar",
+          "account": "Nu",
+          "fortnightId": "2026-07-Q2",
+          "amount": 22200,
+          "type": "expense",
+          "description": "Cosas para el hogar"
+        },
+        {
+          "category": "Otros",
+          "date": "2026-08-02",
+          "fortnightId": "2026-07-Q2",
+          "amount": 10900,
+          "description": "Oxxo",
+          "id": "item-1785707149666-797",
+          "type": "expense",
+          "account": "Nu"
+        },
+        {
+          "type": "expense",
+          "category": "Mercado",
+          "amount": 260000,
+          "date": "2026-08-02",
+          "description": "Mercado",
+          "account": "Nu",
+          "id": "item-1785707166193-927",
+          "fortnightId": "2026-07-Q2"
+        },
+        {
+          "date": "2026-08-02",
+          "account": "Nu",
+          "amount": 15400,
+          "category": "Otros",
+          "type": "expense",
+          "description": "Quates y energizantes",
+          "id": "item-1785707186963-886",
+          "fortnightId": "2026-07-Q2"
+        },
+        {
+          "type": "expense",
+          "account": "Nu",
+          "category": "Transporte",
+          "description": "Pasajes",
+          "date": "2026-08-02",
+          "id": "item-1785707213337-575",
+          "amount": 30400,
+          "fortnightId": "2026-07-Q2"
+        },
+        {
+          "amount": 84100,
+          "account": "Nu",
+          "type": "expense",
+          "id": "item-1785707340011-273",
+          "category": "Otros",
+          "fortnightId": "2026-07-Q2",
+          "date": "2026-08-02",
+          "description": "Cumple Mafe"
+        },
+        {
+          "fortnightId": "2026-07-Q2",
+          "date": "2026-08-02",
+          "account": "Nu",
+          "description": "Corte de cabello",
+          "type": "expense",
+          "amount": 24500,
+          "category": "Otros",
+          "id": "item-1785707374429-487"
+        },
+        {
+          "account": "Daviplata",
+          "date": "2026-08-02",
+          "amount": 30500,
+          "category": "Mercado",
+          "fortnightId": "2026-07-Q2",
+          "id": "item-1785707440405-968",
+          "type": "expense",
+          "description": "Mercado"
+        },
+        {
+          "date": "2026-08-02",
+          "description": "Benja",
+          "amount": 2000000,
+          "account": "Davivienda Benjamin",
+          "fortnightId": "2026-08-Q1",
+          "type": "income",
+          "id": "item-1785707577480-388",
+          "category": "Salario"
+        },
+        {
+          "account": "Davivienda Mafe",
+          "id": "item-1785707593508-237",
+          "type": "income",
+          "fortnightId": "2026-08-Q1",
+          "amount": 2000000,
+          "category": "Salario",
+          "description": "Mafe",
+          "date": "2026-08-02"
+        },
+        {
+          "date": "2026-08-02",
+          "account": "Davivienda Benjamin",
+          "amount": 90000,
+          "fortnightId": "2026-08-Q1",
+          "category": "Mascotas",
+          "description": "Barf",
+          "id": "item-1785707617238-633",
+          "type": "expense"
+        },
+        {
+          "date": "2026-08-02",
+          "id": "item-1785707641512-584",
+          "category": "Otros",
+          "description": "Cigarrillos",
+          "type": "expense",
+          "amount": 11400,
+          "account": "Davivienda Benjamin",
+          "fortnightId": "2026-08-Q1"
+        },
+        {
+          "account": "Davivienda Benjamin",
+          "type": "expense",
+          "id": "item-1785707660914-950",
+          "date": "2026-08-02",
+          "fortnightId": "2026-08-Q1",
+          "category": "Mascotas",
+          "amount": 150000,
+          "description": "Medicamentos"
+        },
+        {
+          "category": "Comida por fuera",
+          "id": "item-1785707735176-424",
+          "amount": 57400,
+          "date": "2026-08-02",
+          "account": "Davivienda Benjamin",
+          "description": "Comida por fuera",
+          "fortnightId": "2026-08-Q1",
+          "type": "expense"
+        },
+        {
+          "type": "expense",
+          "fortnightId": "2026-08-Q1",
+          "amount": 13300,
+          "account": "Davivienda Benjamin",
+          "category": "Otros",
+          "date": "2026-08-02",
+          "description": "Oxxo",
+          "id": "item-1785707753175-870"
+        },
+        {
+          "category": "Mascotas",
+          "amount": 80000,
+          "date": "2026-08-02",
+          "id": "item-1785707850614-410",
+          "type": "expense",
+          "description": "Arena",
+          "fortnightId": "2026-08-Q1",
+          "account": "Davivienda Mafe"
+        },
+        {
+          "category": "Mascotas",
+          "type": "expense",
+          "account": "Davivienda Mafe",
+          "amount": 230000,
+          "fortnightId": "2026-08-Q1",
+          "id": "item-1785806118299-341",
+          "date": "2026-08-04",
+          "description": "Comida perro"
+        }
+      ],
+      "pets": [],
+      "workoutRoutines": [
+        {
+          "patterns": [
+            {
+              "targetSets": 3,
+              "targetRepsRange": "6-8",
+              "preferredExerciseId": "press_pecho_maquina_hammer",
+              "movementPatternId": "empuje_horizontal"
+            },
+            {
+              "targetRepsRange": "6-8",
+              "targetSets": 3,
+              "preferredExerciseId": "press_inclinado_mancuernas",
+              "movementPatternId": "empuje_inclinado"
+            },
+            {
+              "targetRepsRange": "6-8",
+              "movementPatternId": "empuje_vertical",
+              "targetSets": 3,
+              "preferredExerciseId": "press_militar_mancuernas"
+            },
+            {
+              "preferredExerciseId": "elevaciones_laterales_polea",
+              "targetSets": 3,
+              "movementPatternId": "deltoides_lateral",
+              "targetRepsRange": "8-10"
+            },
+            {
+              "targetSets": 3,
+              "targetRepsRange": "8-10",
+              "preferredExerciseId": "extension_triceps_polea_cuerda",
+              "movementPatternId": "aislamiento_triceps"
+            }
+          ],
+          "color": "#10B981",
+          "id": "rutina_push_empuje",
+          "name": "Día 1: Empuje (Pecho, Hombro, Tríceps)",
+          "description": "Enfoque hipertrofia de empujes. Pectoral, deltoides anterior/lateral y tríceps.",
+          "createdAt": "2026-08-05T10:51:19.830Z",
+          "updatedAt": "2026-08-05T11:33:46.493Z"
+        },
+        {
+          "patterns": [
+            {
+              "targetSets": 3,
+              "targetRepsRange": "6-8",
+              "preferredExerciseId": "jalon_polea_agarre_neutro",
+              "movementPatternId": "traccion_vertical"
+            },
+            {
+              "preferredExerciseId": "remo_maquina_hammer",
+              "movementPatternId": "traccion_horizontal",
+              "targetSets": 3,
+              "targetRepsRange": "6-8"
+            },
+            {
+              "movementPatternId": "deltoides_posterior",
+              "preferredExerciseId": "face_pulls_polea",
+              "targetRepsRange": "8-10",
+              "targetSets": 3
+            },
+            {
+              "preferredExerciseId": "curl_biceps_polea_baja",
+              "targetSets": 3,
+              "targetRepsRange": "8-10",
+              "movementPatternId": "aislamiento_biceps"
+            }
+          ],
+          "description": "Amplitud y densidad de espalda con bíceps y deltoides posterior.",
+          "color": "#06B6D4",
+          "updatedAt": "2026-08-05T11:33:46.528Z",
+          "createdAt": "2026-08-05T10:51:19.830Z",
+          "name": "Día 2: Tracción (Espalda & Bíceps)",
+          "id": "rutina_pull_traccion"
+        },
+        {
+          "updatedAt": "2026-08-05T11:33:46.539Z",
+          "createdAt": "2026-08-05T10:51:19.830Z",
+          "description": "Dominantes de rodilla, extensiones de cuádriceps y abdomen.",
+          "id": "rutina_legs_cuadriceps",
+          "patterns": [
+            {
+              "preferredExerciseId": "prensa_piernas_45",
+              "targetRepsRange": "6-8",
+              "targetSets": 3,
+              "movementPatternId": "dominante_rodilla"
+            },
+            {
+              "movementPatternId": "aislamiento_cuadriceps",
+              "targetSets": 3,
+              "preferredExerciseId": "extension_piernas_maquina",
+              "targetRepsRange": "8-10"
+            },
+            {
+              "preferredExerciseId": "elevacion_gemelos_de_pie",
+              "targetSets": 3,
+              "movementPatternId": "pantorrilla",
+              "targetRepsRange": "10-12"
+            },
+            {
+              "movementPatternId": "core_abs",
+              "preferredExerciseId": "crunch_polea_alta",
+              "targetRepsRange": "10-12",
+              "targetSets": 3
+            }
+          ],
+          "name": "Día 3: Pierna Foco Cuádriceps & Core",
+          "color": "#8B5CF6"
+        },
+        {
+          "patterns": [
+            {
+              "preferredExerciseId": "press_inclinado_mancuernas",
+              "targetSets": 3,
+              "targetRepsRange": "6-8",
+              "movementPatternId": "empuje_inclinado"
+            },
+            {
+              "targetSets": 3,
+              "movementPatternId": "traccion_horizontal",
+              "preferredExerciseId": "remo_maquina_hammer",
+              "targetRepsRange": "6-8"
+            },
+            {
+              "targetRepsRange": "8-10",
+              "preferredExerciseId": "elevaciones_laterales_mancuernas",
+              "targetSets": 3,
+              "movementPatternId": "deltoides_lateral"
+            },
+            {
+              "targetSets": 3,
+              "targetRepsRange": "8-10",
+              "preferredExerciseId": "curl_biceps_mancuernas_inclinado",
+              "movementPatternId": "aislamiento_biceps"
+            },
+            {
+              "movementPatternId": "aislamiento_triceps",
+              "targetSets": 3,
+              "preferredExerciseId": "extension_katana_polea",
+              "targetRepsRange": "8-10"
+            }
+          ],
+          "id": "rutina_torso_brazos",
+          "description": "Trabajo complementario de hombros, pecho, espalda y super-series de brazos.",
+          "color": "#F59E0B",
+          "name": "Día 4: Torso Completo & Brazos",
+          "updatedAt": "2026-08-05T11:33:46.554Z",
+          "createdAt": "2026-08-05T10:51:19.830Z"
+        },
+        {
+          "description": "Bisagra de cadera, Hip Thrust y curls analíticos de isquiotibiales.",
+          "color": "#EC4899",
+          "patterns": [
+            {
+              "movementPatternId": "dominante_cadera",
+              "targetSets": 3,
+              "targetRepsRange": "6-8",
+              "preferredExerciseId": "peso_muerto_rumano_mancuernas"
+            },
+            {
+              "targetRepsRange": "6-8",
+              "preferredExerciseId": "hip_thrust_barra_maquina",
+              "targetSets": 3,
+              "movementPatternId": "dominante_cadera"
+            },
+            {
+              "targetRepsRange": "8-10",
+              "targetSets": 3,
+              "preferredExerciseId": "curl_isquiotibiales_sentado",
+              "movementPatternId": "dominante_cadera"
+            },
+            {
+              "movementPatternId": "pantorrilla",
+              "targetRepsRange": "10-12",
+              "targetSets": 3,
+              "preferredExerciseId": "elevacion_gemelos_de_pie"
+            }
+          ],
+          "name": "Día 5: Pierna Foco Isquios & Glúteo",
+          "id": "rutina_legs_isquios_gluteo",
+          "createdAt": "2026-08-05T10:51:19.830Z",
+          "updatedAt": "2026-08-05T11:33:46.567Z"
+        },
+        {
+          "name": "Día 6 / Descanso Activo: Ciclismo & Movilidad 🚴‍♂️",
+          "patterns": [
+            {
+              "targetRepsRange": "30-45 min",
+              "movementPatternId": "cardio_ciclismo",
+              "targetSets": 1,
+              "preferredExerciseId": "ciclismo_bici_ruta_estatica"
+            }
+          ],
+          "id": "rutina_descanso_ciclismo",
+          "color": "#10B981",
+          "createdAt": "2026-08-05T10:51:19.830Z",
+          "updatedAt": "2026-08-05T11:33:46.576Z",
+          "description": "Rodada en bici de ruta o estática. Selecciona el tiempo en minutos."
+        }
+      ],
+      "emotionCheckins": [],
+      "workoutDetailedLogs": [],
+      "cierresMensuales": [],
+      "documents": [],
+      "personalRecords": [],
+      "dailyAnswers": [],
+      "budgetAccounts": [
+        {
+          "name": "Davivienda Mafe",
+          "createdAt": "2026-07-02T23:14:06.432Z",
+          "id": "acc-1783034046432-663",
+          "balance": 1698000
+        },
+        {
+          "name": "Davivienda Benjamin",
+          "createdAt": "2026-07-02T23:14:14.502Z",
+          "id": "acc-1783034054502-123",
+          "balance": 1678000
+        },
+        {
+          "balance": 0,
+          "name": "Nequi",
+          "id": "acc-1783034068064-164",
+          "createdAt": "2026-07-02T23:14:28.064Z"
+        },
+        {
+          "createdAt": "2026-07-02T23:14:33.097Z",
+          "balance": 0,
+          "id": "acc-1783034073097-484",
+          "name": "Daviplata"
+        },
+        {
+          "id": "acc-1783034078471-836",
+          "name": "Uala",
+          "createdAt": "2026-07-02T23:14:38.470Z",
+          "balance": 0
+        },
+        {
+          "name": "Dolares",
+          "id": "acc-1783034085661-151",
+          "balance": 0,
+          "createdAt": "2026-07-02T23:14:45.661Z"
+        },
+        {
+          "id": "acc-1783169234938-264",
+          "name": "Nu",
+          "createdAt": "2026-07-04T12:47:14.938Z",
+          "balance": 0
+        }
+      ],
+      "closetGarments": [],
+      "home": {
+        "name": "Nido de Mafe & Benja (NIDO-YCV5W)",
+        "code": "NIDO-YCV5W",
+        "members": [
+          "mafe",
+          "benja"
+        ],
+        "settings": {
+          "notificationsEnabled": true,
+          "aiCatMoodLevel": "normal"
+        },
+        "id": "home-NIDO-YCV5W"
+      },
+      "frascoMessages": [],
+      "plants": [],
+      "budgetTemplates": [],
+      "notifications": [
+        {
+          "id": "notif-1786013066052-39gm",
+          "message": "Alguien agregó la planta \"Monstera del Nido 🪴\" al nido. 🌿",
+          "type": "plant",
+          "readBy": [],
+          "timestamp": "2026-08-06T10:44:26.052Z",
+          "userId": "",
+          "title": "Nueva planta agregada"
+        },
+        {
+          "type": "plant",
+          "userId": "",
+          "message": "Alguien agregó la planta \"Monstera del Nido 🪴\" al nido. 🌿",
+          "title": "Nueva planta agregada",
+          "timestamp": "2026-08-06T10:44:24.845Z",
+          "readBy": [],
+          "id": "notif-1786013064845-9dqj"
+        },
+        {
+          "type": "plant",
+          "message": "Alguien agregó la planta \"Monstera del Nido 🪴\" al nido. 🌿",
+          "userId": "",
+          "id": "notif-1786013063809-itzw",
+          "readBy": [],
+          "title": "Nueva planta agregada",
+          "timestamp": "2026-08-06T10:44:23.809Z"
+        },
+        {
+          "timestamp": "2026-08-06T10:44:22.087Z",
+          "message": "Alguien agregó la planta \"Monstera del Nido 🪴\" al nido. 🌿",
+          "type": "plant",
+          "id": "notif-1786013062087-jgp8",
+          "readBy": [],
+          "userId": "",
+          "title": "Nueva planta agregada"
+        },
+        {
+          "timestamp": "2026-08-06T10:44:21.768Z",
+          "readBy": [],
+          "type": "plant",
+          "title": "Nueva planta agregada",
+          "message": "Alguien agregó la planta \"Monstera del Nido 🪴\" al nido. 🌿",
+          "userId": "",
+          "id": "notif-1786013061768-zzgv"
+        },
+        {
+          "readBy": [],
+          "title": "Nueva planta agregada",
+          "id": "notif-1786013061741-q2jy",
+          "timestamp": "2026-08-06T10:44:21.741Z",
+          "type": "plant",
+          "message": "Alguien agregó la planta \"Monstera del Nido 🪴\" al nido. 🌿",
+          "userId": ""
+        },
+        {
+          "readBy": [],
+          "id": "notif-1786013054127-s0vp",
+          "title": "Nuevo antojo/deseo",
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "timestamp": "2026-08-06T10:44:14.127Z",
+          "userId": "",
+          "type": "wish"
+        },
+        {
+          "message": "Alguien agregó un deseo: \"Nintendo Switch OLED 🎮\" para \"Mafe\". ✨",
+          "type": "wish",
+          "id": "notif-1786013054108-hvqh",
+          "userId": "",
+          "readBy": [],
+          "timestamp": "2026-08-06T10:44:14.108Z",
+          "title": "Nuevo antojo/deseo"
+        },
+        {
+          "timestamp": "2026-08-06T10:44:14.091Z",
+          "readBy": [],
+          "title": "Nuevo antojo/deseo",
+          "type": "wish",
+          "message": "Alguien agregó un deseo: \"Nintendo Switch OLED 🎮\" para \"Mafe\". ✨",
+          "userId": "",
+          "id": "notif-1786013054091-qji5"
+        },
+        {
+          "timestamp": "2026-08-06T10:44:14.070Z",
+          "readBy": [],
+          "title": "Nuevo antojo/deseo",
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "id": "notif-1786013054070-k982",
+          "userId": "",
+          "type": "wish"
+        },
+        {
+          "timestamp": "2026-08-06T10:44:14.048Z",
+          "userId": "",
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "title": "Nuevo antojo/deseo",
+          "id": "notif-1786013054048-ssbd",
+          "readBy": [],
+          "type": "wish"
+        },
+        {
+          "type": "wish",
+          "message": "Alguien agregó un deseo: \"Nintendo Switch OLED 🎮\" para \"Mafe\". ✨",
+          "readBy": [],
+          "timestamp": "2026-08-06T10:44:14.025Z",
+          "userId": "",
+          "title": "Nuevo antojo/deseo",
+          "id": "notif-1786013054025-trqt"
+        },
+        {
+          "userId": "",
+          "id": "notif-1786013053990-lxy3",
+          "message": "Alguien agregó un deseo: \"Nintendo Switch OLED 🎮\" para \"Mafe\". ✨",
+          "timestamp": "2026-08-06T10:44:13.990Z",
+          "title": "Nuevo antojo/deseo",
+          "type": "wish",
+          "readBy": []
+        },
+        {
+          "type": "wish",
+          "message": "Alguien agregó un deseo: \"Nintendo Switch OLED 🎮\" para \"Mafe\". ✨",
+          "readBy": [],
+          "timestamp": "2026-08-06T10:44:13.975Z",
+          "userId": "",
+          "title": "Nuevo antojo/deseo",
+          "id": "notif-1786013053975-df14"
+        },
+        {
+          "timestamp": "2026-08-06T10:44:13.953Z",
+          "title": "Nuevo antojo/deseo",
+          "userId": "",
+          "id": "notif-1786013053953-bjod",
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "readBy": [],
+          "type": "wish"
+        },
+        {
+          "type": "wish",
+          "timestamp": "2026-08-06T10:44:13.942Z",
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "readBy": [],
+          "id": "notif-1786013053942-srds",
+          "userId": "",
+          "title": "Nuevo antojo/deseo"
+        },
+        {
+          "userId": "",
+          "id": "notif-1786013053914-kled",
+          "type": "wish",
+          "message": "Alguien agregó un deseo: \"Nintendo Switch OLED 🎮\" para \"Mafe\". ✨",
+          "title": "Nuevo antojo/deseo",
+          "timestamp": "2026-08-06T10:44:13.914Z",
+          "readBy": []
+        },
+        {
+          "timestamp": "2026-08-06T10:44:13.904Z",
+          "id": "notif-1786013053904-624g",
+          "type": "wish",
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "readBy": [],
+          "userId": "",
+          "title": "Nuevo antojo/deseo"
+        },
+        {
+          "timestamp": "2026-08-06T10:44:13.884Z",
+          "userId": "",
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "title": "Nuevo antojo/deseo",
+          "readBy": [],
+          "type": "wish",
+          "id": "notif-1786013053884-8hy2"
+        },
+        {
+          "type": "wish",
+          "id": "notif-1786013053854-qd2b",
+          "timestamp": "2026-08-06T10:44:13.854Z",
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "readBy": [],
+          "userId": "",
+          "title": "Nuevo antojo/deseo"
+        },
+        {
+          "type": "wish",
+          "userId": "",
+          "timestamp": "2026-08-06T10:44:13.830Z",
+          "message": "Alguien agregó un deseo: \"Nintendo Switch OLED 🎮\" para \"Mafe\". ✨",
+          "id": "notif-1786013053830-agdu",
+          "title": "Nuevo antojo/deseo",
+          "readBy": []
+        },
+        {
+          "userId": "",
+          "type": "wish",
+          "message": "Alguien agregó un deseo: \"Nintendo Switch OLED 🎮\" para \"Mafe\". ✨",
+          "title": "Nuevo antojo/deseo",
+          "timestamp": "2026-08-06T10:44:13.819Z",
+          "readBy": [],
+          "id": "notif-1786013053819-t6ix"
+        },
+        {
+          "timestamp": "2026-08-06T10:44:13.807Z",
+          "readBy": [],
+          "id": "notif-1786013053807-5adf",
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "title": "Nuevo antojo/deseo",
+          "type": "wish",
+          "userId": ""
+        },
+        {
+          "type": "wish",
+          "readBy": [],
+          "timestamp": "2026-08-06T10:44:13.791Z",
+          "userId": "",
+          "title": "Nuevo antojo/deseo",
+          "message": "Alguien agregó un deseo: \"Nintendo Switch OLED 🎮\" para \"Mafe\". ✨",
+          "id": "notif-1786013053791-syns"
+        },
+        {
+          "title": "Nuevo antojo/deseo",
+          "userId": "",
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "readBy": [],
+          "timestamp": "2026-08-06T10:44:13.772Z",
+          "type": "wish",
+          "id": "notif-1786013053772-gkvt"
+        },
+        {
+          "timestamp": "2026-08-06T10:44:13.745Z",
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "userId": "",
+          "type": "wish",
+          "title": "Nuevo antojo/deseo",
+          "readBy": [],
+          "id": "notif-1786013053745-pnot"
+        },
+        {
+          "type": "wish",
+          "timestamp": "2026-08-06T10:44:13.679Z",
+          "id": "notif-1786013053679-5jqp",
+          "readBy": [],
+          "userId": "",
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "title": "Nuevo antojo/deseo"
+        },
+        {
+          "message": "Alguien agregó un deseo: \"Nintendo Switch OLED 🎮\" para \"Mafe\". ✨",
+          "userId": "",
+          "type": "wish",
+          "title": "Nuevo antojo/deseo",
+          "timestamp": "2026-08-06T10:44:13.642Z",
+          "readBy": [],
+          "id": "notif-1786013053642-68cr"
+        },
+        {
+          "timestamp": "2026-08-06T10:44:13.601Z",
+          "readBy": [],
+          "title": "Nuevo antojo/deseo",
+          "message": "Alguien agregó un deseo: \"Nintendo Switch OLED 🎮\" para \"Mafe\". ✨",
+          "id": "notif-1786013053601-83yg",
+          "userId": "",
+          "type": "wish"
+        },
+        {
+          "title": "Nuevo antojo/deseo",
+          "userId": "",
+          "id": "notif-1786013053577-ocys",
+          "readBy": [],
+          "message": "Alguien agregó un deseo: \"Nintendo Switch OLED 🎮\" para \"Mafe\". ✨",
+          "type": "wish",
+          "timestamp": "2026-08-06T10:44:13.577Z"
+        },
+        {
+          "id": "notif-1786013053546-og36",
+          "timestamp": "2026-08-06T10:44:13.546Z",
+          "readBy": [],
+          "type": "wish",
+          "title": "Nuevo antojo/deseo",
+          "message": "Alguien agregó un deseo: \"Nintendo Switch OLED 🎮\" para \"Mafe\". ✨",
+          "userId": ""
+        },
+        {
+          "userId": "",
+          "message": "Alguien agregó un deseo: \"Nintendo Switch OLED 🎮\" para \"Mafe\". ✨",
+          "id": "notif-1786013053517-55em",
+          "title": "Nuevo antojo/deseo",
+          "timestamp": "2026-08-06T10:44:13.517Z",
+          "readBy": [],
+          "type": "wish"
+        },
+        {
+          "type": "wish",
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "readBy": [],
+          "timestamp": "2026-08-06T10:44:13.503Z",
+          "id": "notif-1786013053503-17fq",
+          "userId": "",
+          "title": "Nuevo antojo/deseo"
+        },
+        {
+          "message": "Alguien agregó un deseo: \"Nintendo Switch OLED 🎮\" para \"Mafe\". ✨",
+          "userId": "",
+          "id": "notif-1786013053483-0w8p",
+          "type": "wish",
+          "timestamp": "2026-08-06T10:44:13.483Z",
+          "title": "Nuevo antojo/deseo",
+          "readBy": []
+        },
+        {
+          "type": "wish",
+          "userId": "",
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "title": "Nuevo antojo/deseo",
+          "id": "notif-1786013053472-lk7w",
+          "readBy": [],
+          "timestamp": "2026-08-06T10:44:13.472Z"
+        },
+        {
+          "title": "Nuevo antojo/deseo",
+          "timestamp": "2026-08-06T10:44:13.444Z",
+          "userId": "",
+          "readBy": [],
+          "id": "notif-1786013053444-4p4g",
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "type": "wish"
+        },
+        {
+          "timestamp": "2026-08-06T10:44:13.434Z",
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "id": "notif-1786013053434-cqsc",
+          "readBy": [],
+          "title": "Nuevo antojo/deseo",
+          "userId": "",
+          "type": "wish"
+        },
+        {
+          "readBy": [],
+          "timestamp": "2026-08-06T10:44:13.418Z",
+          "title": "Nuevo antojo/deseo",
+          "type": "wish",
+          "userId": "",
+          "message": "Alguien agregó un deseo: \"Nintendo Switch OLED 🎮\" para \"Mafe\". ✨",
+          "id": "notif-1786013053418-0qxk"
+        },
+        {
+          "type": "wish",
+          "readBy": [],
+          "timestamp": "2026-08-06T10:44:13.396Z",
+          "title": "Nuevo antojo/deseo",
+          "userId": "",
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "id": "notif-1786013053396-iudk"
+        },
+        {
+          "userId": "",
+          "type": "wish",
+          "message": "Alguien agregó un deseo: \"Nintendo Switch OLED 🎮\" para \"Mafe\". ✨",
+          "title": "Nuevo antojo/deseo",
+          "id": "notif-1786013053334-ks7h",
+          "timestamp": "2026-08-06T10:44:13.334Z",
+          "readBy": []
+        },
+        {
+          "type": "wish",
+          "id": "notif-1786013053285-zf7c",
+          "timestamp": "2026-08-06T10:44:13.285Z",
+          "message": "Alguien agregó un deseo: \"Nintendo Switch OLED 🎮\" para \"Mafe\". ✨",
+          "readBy": [],
+          "userId": "",
+          "title": "Nuevo antojo/deseo"
+        },
+        {
+          "readBy": [],
+          "type": "wish",
+          "title": "Nuevo antojo/deseo",
+          "userId": "",
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "timestamp": "2026-08-06T10:44:13.261Z",
+          "id": "notif-1786013053261-bdg7"
+        },
+        {
+          "userId": "",
+          "id": "notif-1785926996056-gfnn",
+          "type": "budget",
+          "timestamp": "2026-08-05T10:49:56.056Z",
+          "title": "Transacción de presupuesto",
+          "readBy": [],
+          "message": "Alguien registró un gasto 💸 de $15000 en \"Prueba\"."
+        },
+        {
+          "userId": "",
+          "title": "Nueva planta agregada",
+          "type": "plant",
+          "timestamp": "2026-08-05T13:16:43.239Z",
+          "id": "notif-1785935803239-zrlk",
+          "readBy": [
+            "mafe"
+          ],
+          "message": "Alguien agregó la planta \"Monstera del Nido 🪴\" al nido. 🌿"
+        },
+        {
+          "timestamp": "2026-08-05T13:16:39.057Z",
+          "id": "notif-1785935799057-e4og",
+          "userId": "",
+          "message": "Alguien agregó la planta \"Monstera del Nido 🪴\" al nido. 🌿",
+          "title": "Nueva planta agregada",
+          "readBy": [
+            "mafe"
+          ],
+          "type": "plant"
+        },
+        {
+          "readBy": [
+            "mafe"
+          ],
+          "timestamp": "2026-08-05T13:16:30.759Z",
+          "title": "Nuevo antojo/deseo",
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "id": "notif-1785935790759-p1xa",
+          "userId": "",
+          "type": "wish"
+        },
+        {
+          "timestamp": "2026-08-05T13:16:30.725Z",
+          "readBy": [
+            "mafe"
+          ],
+          "id": "notif-1785935790725-cnaw",
+          "title": "Nuevo antojo/deseo",
+          "type": "wish",
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "userId": ""
+        },
+        {
+          "timestamp": "2026-08-05T13:16:30.667Z",
+          "userId": "",
+          "id": "notif-1785935790667-sgjs",
+          "message": "Alguien agregó un deseo: \"Cafetera de espresso moderna ☕\" para \"Hogar\". ✨",
+          "title": "Nuevo antojo/deseo",
+          "type": "wish",
+          "readBy": [
+            "mafe"
+          ]
+        },
+        {
+          "readBy": [
+            "mafe"
+          ],
+          "title": "Nuevo antojo/deseo",
+          "timestamp": "2026-08-05T13:16:30.638Z",
+          "message": "Alguien agregó un deseo: \"Nintendo Switch OLED 🎮\" para \"Mafe\". ✨",
+          "type": "wish",
+          "id": "notif-1785935790638-kkfw",
+          "userId": ""
+        },
+        {
+          "readBy": [
+            "mafe"
+          ],
+          "id": "notif-1785935790559-zyax",
+          "title": "Nuevo antojo/deseo",
+          "type": "wish",
+          "message": "Alguien agregó un deseo: \"Nintendo Switch OLED 🎮\" para \"Mafe\". ✨",
+          "userId": "",
+          "timestamp": "2026-08-05T13:16:30.559Z"
+        }
+      ],
+      "wishes": [],
+      "memories": [],
+      "saludChallenges": [
+        {
+          "id": "ch-2026-08-03-conex",
+          "completed": false,
+          "category": "conexion",
+          "title": "Cocinen juntos un plato totalmente nuevo usando ingredientes sorpresa 🍲"
+        },
+        {
+          "category": "armonia",
+          "title": "Reorganicen o redecoren juntos una zona o esquina para darle luz o plantas 🪴",
+          "completed": false,
+          "id": "ch-2026-08-03-armon"
+        },
+        {
+          "category": "bienestar",
+          "title": "Tomen un baño tibio o dense un tiempo largo de meditación o té relajante 💤",
+          "completed": false,
+          "id": "ch-2026-08-03-biene"
+        }
+      ],
+      "checkins": [],
+      "workoutLogs": [],
+      "budgetEstimates": [],
+      "closedFortnights": [
+        "2026-07-Q1",
+        "2026-07-Q2"
+      ],
+      "calendarItems": [],
+      "bodyMetrics": [],
+      "wornOutfitLogs": [],
+      "savedOutfits": []
+    },
+    "NIDO-7ZEZR": {
+      "workoutDetailedLogs": [],
+      "frascoMessages": [],
+      "users": [
+        {
+          "emoji": "cat_cosmic",
+          "photoUrl": "https://api.dicebear.com/7.x/adventurer/svg?seed=Mafe&backgroundColor=ffd5dc",
+          "id": "mafe",
+          "venusSign": "Sagitario ♐",
+          "birthTime": "08:30",
+          "mercurySign": "Libra ♎",
+          "ascendantSign": "Sagitario ♐",
+          "name": "Mafe",
+          "horoscopeConsejo": "Dale un ronroneo cariñoso a Benja hoy.",
+          "marsSign": "Acuario ♒",
+          "zodiacSign": "Escorpio ♏",
+          "birthPlace": "Bogotá",
+          "horoscopeToday": "¡Un día fantástico miau! Sientes la energía del amor puro rodeando el nido.",
+          "lunarSign": "Cáncer ♋",
+          "birthDate": "1997-10-24"
+        },
+        {
+          "marsSign": "Géminis ♊",
+          "zodiacSign": "Aries ♈",
+          "birthPlace": "Bogotá",
+          "birthDate": "1997-03-24",
+          "lunarSign": "Libra ♎",
+          "horoscopeConsejo": "Estira las patitas y regala una caricia terna a Mafe.",
+          "horoscopeToday": "¡La energía cósmica de Aries te llena de motivación hoy para lograr tus metas!",
+          "emoji": "cat_ginger",
+          "ascendantSign": "Leo ♌",
+          "id": "benja",
+          "venusSign": "Tauro ♉",
+          "mercurySign": "Aries ♈",
+          "birthTime": "14:15",
+          "photoUrl": "https://api.dicebear.com/7.x/adventurer/svg?seed=Benja&backgroundColor=d1e4ff",
+          "name": "Benja"
+        }
+      ],
+      "hasSeededAccounts": true,
+      "memories": [],
+      "checkins": [],
+      "dailyAnswers": [],
+      "documents": [],
+      "personalRecords": [],
+      "bodyMetrics": [],
+      "workoutLogs": [],
+      "customExercises": [],
+      "closedFortnights": [
+        "2026-07-Q1",
+        "2026-07-Q2"
+      ],
+      "emotionCheckins": [],
+      "workoutRoutines": [],
+      "pets": [],
+      "budgetTemplates": [],
+      "calendarItems": [],
+      "plants": [],
+      "home": {
+        "name": "Nido de Mafe & Benja (NIDO-7ZEZR)",
+        "members": [
+          "mafe",
+          "benja"
+        ],
+        "settings": {
+          "notificationsEnabled": true,
+          "aiCatMoodLevel": "normal"
+        },
+        "code": "NIDO-7ZEZR",
+        "id": "home-NIDO-7ZEZR"
+      },
+      "dailyPools": [
+        {
+          "date": "2026-07-04",
+          "questions": [
+            {
+              "category": "reflexion",
+              "text": "¿Hay algún sueño o proyecto doméstico que te entusiasme iniciar pronto juntos? 🚀",
+              "id": "q-ref-2026-07-04"
+            },
+            {
+              "id": "q-arm-2026-07-04",
+              "category": "armonia",
+              "text": "¿Sentiste que el día fluyó sin presiones en lo doméstico? 🌊"
+            },
+            {
+              "id": "q-bie-2026-07-04",
+              "text": "¿Tuviste suficiente tiempo para descansar y respirar? 😴",
+              "category": "bienestar"
+            }
+          ]
+        }
+      ],
+      "wishes": [],
+      "customEmotions": [],
+      "budgetAccounts": [
+        {
+          "id": "acc-1783034046432-663",
+          "createdAt": "2026-07-02T23:14:06.432Z",
+          "name": "Davivienda Mafe",
+          "balance": 1698000
+        },
+        {
+          "balance": 1678000,
+          "id": "acc-1783034054502-123",
+          "createdAt": "2026-07-02T23:14:14.502Z",
+          "name": "Davivienda Benjamin"
+        },
+        {
+          "name": "Nequi",
+          "id": "acc-1783034068064-164",
+          "createdAt": "2026-07-02T23:14:28.064Z",
+          "balance": 0
+        },
+        {
+          "name": "Daviplata",
+          "createdAt": "2026-07-02T23:14:33.097Z",
+          "balance": 0,
+          "id": "acc-1783034073097-484"
+        },
+        {
+          "createdAt": "2026-07-02T23:14:38.470Z",
+          "name": "Uala",
+          "balance": 0,
+          "id": "acc-1783034078471-836"
+        },
+        {
+          "createdAt": "2026-07-02T23:14:45.661Z",
+          "balance": 0,
+          "name": "Dolares",
+          "id": "acc-1783034085661-151"
+        },
+        {
+          "id": "acc-1783169234938-264",
+          "name": "Nu",
+          "createdAt": "2026-07-04T12:47:14.938Z",
+          "balance": 0
+        },
+        {
+          "name": "Cuenta Principal",
+          "balance": 500000,
+          "id": "acc-principal",
+          "createdAt": "2026-07-04T02:54:49.596Z"
+        },
+        {
+          "name": "Ahorros Nido",
+          "id": "acc-ahorros",
+          "createdAt": "2026-07-04T02:54:49.596Z",
+          "balance": 150000
+        }
+      ],
+      "saludChallenges": [
+        {
+          "title": "Planeen y agenden una actividad o salida romántica especial para el fin de semana 🗺️",
+          "id": "ch-2026-06-29-conex",
+          "category": "conexion",
+          "completed": false
+        },
+        {
+          "completed": false,
+          "title": "Dediquen 10 minutos express juntos al final del día para dejar la sala impecable ✨",
+          "id": "ch-2026-06-29-armon",
+          "category": "armonia"
+        },
+        {
+          "category": "bienestar",
+          "id": "ch-2026-06-29-biene",
+          "title": "Noche cero pantallas/redes sociales desde las 9:00 PM hasta el desayuno 🌙",
+          "completed": false
+        }
+      ],
+      "notifications": [],
+      "budgetItems": [
+        {
+          "account": "Davivienda Mafe",
+          "date": "2026-07-01",
+          "category": "Salario",
+          "description": "Mafe",
+          "amount": 1900000,
+          "type": "income",
+          "id": "item-1783035222540-305",
+          "fortnightId": "2026-07-Q1"
+        },
+        {
+          "id": "item-1783035252877-628",
+          "type": "expense",
+          "description": "Viaje finca",
+          "amount": 700000,
+          "account": "Davivienda Mafe",
+          "fortnightId": "2026-07-Q1",
+          "date": "2026-07-01",
+          "category": "Otros"
+        },
+        {
+          "amount": 50000,
+          "type": "expense",
+          "date": "2026-07-02",
+          "description": "Comida amiguita sopas",
+          "category": "Otros",
+          "account": "Davivienda Mafe",
+          "fortnightId": "2026-07-Q1",
+          "id": "item-1783035277102-192"
+        },
+        {
+          "id": "item-1783035300644-845",
+          "date": "2026-07-02",
+          "account": "Davivienda Mafe",
+          "description": "Arena",
+          "fortnightId": "2026-07-Q1",
+          "amount": 80000,
+          "type": "expense",
+          "category": "Mascotas"
+        },
+        {
+          "id": "item-1783035322894-391",
+          "category": "Mascotas",
+          "type": "expense",
+          "amount": 250000,
+          "fortnightId": "2026-07-Q1",
+          "description": "Comida perro",
+          "date": "2026-07-02",
+          "account": "Davivienda Mafe"
+        },
+        {
+          "date": "2026-07-03",
+          "description": "Credito 4210",
+          "fortnightId": "2026-07-Q1",
+          "type": "expense",
+          "category": "Creditos",
+          "id": "item-1783035345678-100",
+          "account": "Davivienda Mafe",
+          "amount": 100000
+        },
+        {
+          "account": "Davivienda Benjamin",
+          "type": "income",
+          "id": "item-1783035388801-442",
+          "description": "Benja",
+          "amount": 2400000,
+          "date": "2026-07-01",
+          "category": "Salario",
+          "fortnightId": "2026-07-Q1"
+        },
+        {
+          "date": "2026-07-01",
+          "account": "Davivienda Benjamin",
+          "amount": 10000,
+          "type": "expense",
+          "category": "Otros",
+          "fortnightId": "2026-07-Q1",
+          "id": "item-1783035411200-501",
+          "description": "Almuerzo Benja"
+        },
+        {
+          "account": "Davivienda Benjamin",
+          "amount": 30000,
+          "destinationAccount": "Davivienda Mafe",
+          "id": "item-1783035433311-622",
+          "description": "Transferencia",
+          "date": "2026-07-01",
+          "fortnightId": "2026-07-Q1",
+          "category": "Transferencia",
+          "type": "expense"
+        },
+        {
+          "fortnightId": "2026-07-Q1",
+          "type": "expense",
+          "amount": 50300,
+          "description": "Pasajes",
+          "date": "2026-07-01",
+          "id": "item-1783035455522-733",
+          "account": "Davivienda Benjamin",
+          "category": "Transporte"
+        },
+        {
+          "amount": 50100,
+          "category": "Otros",
+          "date": "2026-07-02",
+          "description": "Cigarrillos",
+          "fortnightId": "2026-07-Q1",
+          "account": "Davivienda Benjamin",
+          "type": "expense",
+          "id": "item-1783035477733-844"
+        },
+        {
+          "type": "expense",
+          "account": "Davivienda Benjamin",
+          "amount": 100000,
+          "category": "Mascotas",
+          "date": "2026-07-02",
+          "id": "item-1783035500044-955",
+          "fortnightId": "2026-07-Q1",
+          "description": "Barf"
+        },
+        {
+          "category": "Comida por fuera",
+          "amount": 43000,
+          "type": "expense",
+          "account": "Davivienda Benjamin",
+          "fortnightId": "2026-07-Q1",
+          "id": "item-1783035522255-066",
+          "date": "2026-07-02",
+          "description": "Comida por fuera"
+        },
+        {
+          "date": "2026-07-02",
+          "category": "Servicios",
+          "account": "Davivienda Benjamin",
+          "type": "expense",
+          "id": "item-1783035544466-177",
+          "description": "Gas",
+          "amount": 34000,
+          "fortnightId": "2026-07-Q1"
+        },
+        {
+          "date": "2026-07-02",
+          "account": "Davivienda Benjamin",
+          "category": "Transporte",
+          "type": "expense",
+          "description": "Pasajes",
+          "fortnightId": "2026-07-Q1",
+          "id": "item-1783035566677-288",
+          "amount": 50300
+        },
+        {
+          "account": "Davivienda Benjamin",
+          "amount": 50000,
+          "category": "Transferencia",
+          "description": "Transferencia",
+          "type": "expense",
+          "id": "item-1783168853112-401",
+          "fortnightId": "2026-07-Q1",
+          "date": "2026-07-03",
+          "destinationAccount": "Davivienda Mafe"
+        },
+        {
+          "amount": 28500,
+          "id": "item-1783168875501-120",
+          "category": "Otros",
+          "type": "expense",
+          "description": "Quates",
+          "fortnightId": "2026-07-Q1",
+          "account": "Davivienda Benjamin",
+          "date": "2026-07-03"
+        },
+        {
+          "id": "item-1783168912300-302",
+          "date": "2026-07-03",
+          "category": "Servicios",
+          "fortnightId": "2026-07-Q1",
+          "account": "Davivienda Benjamin",
+          "description": "Tigo",
+          "type": "expense",
+          "amount": 35000
+        },
+        {
+          "account": "Davivienda Benjamin",
+          "date": "2026-07-03",
+          "amount": 165000,
+          "category": "Otros",
+          "description": "Cris Finca (300 total)",
+          "type": "income",
+          "id": "item-1783168893608-569",
+          "fortnightId": "2026-07-Q1"
+        },
+        {
+          "fortnightId": "2026-07-Q1",
+          "category": "Otros",
+          "date": "2026-07-03",
+          "description": "Regalos Benja",
+          "account": "Davivienda Benjamin",
+          "amount": 26000,
+          "type": "expense",
+          "id": "item-1783168938645-723"
+        },
+        {
+          "type": "income",
+          "description": "Paula finca",
+          "account": "Davivienda Mafe",
+          "fortnightId": "2026-07-Q1",
+          "amount": 200000,
+          "date": "2026-07-03",
+          "category": "Otros",
+          "id": "item-1783168966355-50"
+        },
+        {
+          "date": "2026-07-03",
+          "description": "Alitas",
+          "account": "Davivienda Benjamin",
+          "amount": 50000,
+          "type": "expense",
+          "id": "item-1783168991261-867",
+          "category": "Comida por fuera",
+          "fortnightId": "2026-07-Q1"
+        },
+        {
+          "id": "item-1783170424157-623",
+          "category": "Servicios",
+          "date": "2026-07-03",
+          "amount": 41000,
+          "fortnightId": "2026-07-Q1",
+          "account": "Davivienda Benjamin",
+          "description": "Wom",
+          "type": "expense"
+        },
+        {
+          "id": "item-1783257146670-398",
+          "description": "Pago del arriendo quincenal",
+          "amount": 1570000,
+          "fortnightId": "2026-07-Q1",
+          "category": "Arriendo",
+          "type": "expense",
+          "account": "Davivienda Mafe",
+          "date": "2026-07-05"
+        },
+        {
+          "description": "U Benja",
+          "date": "2026-07-05",
+          "fortnightId": "2026-07-Q1",
+          "category": "Otros",
+          "id": "item-1783257551662-117",
+          "type": "income",
+          "account": "Davivienda Benjamin",
+          "amount": 140000
+        },
+        {
+          "amount": 100000,
+          "type": "expense",
+          "category": "Comida por fuera",
+          "date": "2026-07-05",
+          "description": "Pizza y desayuno",
+          "id": "item-1783257590077-416",
+          "fortnightId": "2026-07-Q1",
+          "account": "Davivienda Benjamin"
+        },
+        {
+          "date": "2026-07-05",
+          "id": "item-1783257608645-687",
+          "category": "Universidad",
+          "fortnightId": "2026-07-Q1",
+          "account": "Davivienda Benjamin",
+          "amount": 252000,
+          "description": "U Benja",
+          "type": "expense"
+        },
+        {
+          "type": "expense",
+          "category": "Transferencia",
+          "fortnightId": "2026-07-Q1",
+          "date": "2026-07-05",
+          "description": "Transferencia",
+          "account": "Davivienda Benjamin",
+          "id": "item-1783258423352-96",
+          "amount": 480000,
+          "destinationAccount": "Davivienda Mafe"
+        },
+        {
+          "category": "Otros",
+          "type": "expense",
+          "id": "item-1783258446655-483",
+          "amount": 200000,
+          "description": "Viaje",
+          "account": "Davivienda Benjamin",
+          "fortnightId": "2026-07-Q1",
+          "date": "2026-07-05"
+        },
+        {
+          "amount": 118000,
+          "id": "item-1783283883859-184",
+          "date": "2026-07-05",
+          "fortnightId": "2026-07-Q1",
+          "description": "Luz",
+          "category": "Servicios",
+          "type": "expense",
+          "account": "Davivienda Benjamin"
+        },
+        {
+          "account": "Davivienda Benjamin",
+          "fortnightId": "2026-07-Q1",
+          "amount": 233000,
+          "id": "item-1783283920843-88",
+          "description": "Agua",
+          "type": "expense",
+          "category": "Servicios",
+          "date": "2026-07-05"
+        },
+        {
+          "account": "Davivienda Benjamin",
+          "id": "item-1783382824508-810",
+          "type": "expense",
+          "amount": 15500,
+          "fortnightId": "2026-07-Q1",
+          "category": "Otros",
+          "description": "Almuerzo Benja",
+          "date": "2026-07-07"
+        },
+        {
+          "fortnightId": "2026-07-Q1",
+          "type": "expense",
+          "description": "Casa (tintes, puerta, filtro, etc)",
+          "account": "Davivienda Benjamin",
+          "date": "2026-07-11",
+          "id": "item-1783802708213-519",
+          "amount": 121000,
+          "category": "Otros"
+        },
+        {
+          "date": "2026-07-11",
+          "type": "expense",
+          "destinationAccount": "Davivienda Mafe",
+          "fortnightId": "2026-07-Q1",
+          "category": "Transferencia",
+          "description": "Transferencia",
+          "account": "Davivienda Benjamin",
+          "id": "item-1783814179632-975",
+          "amount": 100000
+        },
+        {
+          "date": "2026-07-13",
+          "account": "Davivienda Mafe",
+          "amount": 315000,
+          "description": "Mercado",
+          "category": "Mercado",
+          "type": "expense",
+          "fortnightId": "2026-07-Q1",
+          "id": "item-1784140671533-233"
+        },
+        {
+          "type": "expense",
+          "fortnightId": "2026-07-Q1",
+          "amount": 165000,
+          "id": "item-1784140705637-179",
+          "category": "Comida por fuera",
+          "description": "Comida por fuera",
+          "date": "2026-07-13",
+          "account": "Davivienda Mafe"
+        },
+        {
+          "id": "item-1784140781909-784",
+          "type": "expense",
+          "amount": 512000,
+          "description": "Regalo Benja",
+          "date": "2026-07-13",
+          "fortnightId": "2026-07-Q1",
+          "category": "Otros",
+          "account": "Davivienda Mafe"
+        },
+        {
+          "date": "2026-07-15",
+          "type": "income",
+          "account": "Davivienda Benjamin",
+          "fortnightId": "2026-07-Q2",
+          "description": "Benja",
+          "id": "item-1784140916252-226",
+          "amount": 1600000,
+          "category": "Salario"
+        },
+        {
+          "account": "Davivienda Mafe",
+          "date": "2026-07-15",
+          "amount": 1200000,
+          "category": "Salario",
+          "description": "Mafe",
+          "id": "item-1784140955704-720",
+          "type": "income",
+          "fortnightId": "2026-07-Q2"
+        },
+        {
+          "fortnightId": "2026-07-Q2",
+          "type": "expense",
+          "description": "Parlante",
+          "amount": 66000,
+          "category": "Otros",
+          "date": "2026-07-16",
+          "id": "item-1784170472615-672",
+          "account": "Davivienda Benjamin"
+        },
+        {
+          "amount": 24000,
+          "fortnightId": "2026-07-Q2",
+          "category": "Otros",
+          "date": "2026-07-20",
+          "description": "Almuerzo Benjamin",
+          "id": "item-1784580645607-179",
+          "type": "expense",
+          "account": "Davivienda Benjamin"
+        },
+        {
+          "description": "Regalo trabajo Benjamin",
+          "category": "Otros",
+          "date": "2026-07-20",
+          "fortnightId": "2026-07-Q2",
+          "account": "Davivienda Benjamin",
+          "id": "item-1784580679047-207",
+          "amount": 100000,
+          "type": "expense"
+        },
+        {
+          "account": "Davivienda Benjamin",
+          "type": "expense",
+          "category": "Transporte",
+          "date": "2026-07-20",
+          "description": "Transporte Benjamin",
+          "amount": 20000,
+          "fortnightId": "2026-07-Q2",
+          "id": "item-1784580727279-901"
+        },
+        {
+          "date": "2026-07-20",
+          "description": "Quates y energizantes",
+          "account": "Davivienda Benjamin",
+          "category": "Otros",
+          "fortnightId": "2026-07-Q2",
+          "type": "expense",
+          "amount": 30600,
+          "id": "item-1784580804521-516"
+        },
+        {
+          "amount": 18600,
+          "id": "item-1784580832793-490",
+          "fortnightId": "2026-07-Q2",
+          "type": "expense",
+          "description": "Medicamentos",
+          "account": "Davivienda Benjamin",
+          "category": "Otros",
+          "date": "2026-07-20"
+        },
+        {
+          "amount": 25500,
+          "type": "expense",
+          "fortnightId": "2026-07-Q2",
+          "date": "2026-07-20",
+          "category": "Otros",
+          "account": "Davivienda Benjamin",
+          "id": "item-1784580857496-749",
+          "description": "Ara otros"
+        },
+        {
+          "account": "Davivienda Benjamin",
+          "date": "2026-07-20",
+          "amount": 30000,
+          "destinationAccount": "Davivienda Mafe",
+          "type": "expense",
+          "category": "Transferencia",
+          "id": "item-1784580891805-841",
+          "fortnightId": "2026-07-Q2",
+          "description": "Trasnferencia"
+        },
+        {
+          "type": "expense",
+          "category": "Otros",
+          "date": "2026-07-20",
+          "fortnightId": "2026-07-Q2",
+          "amount": 176000,
+          "account": "Davivienda Benjamin",
+          "id": "item-1784581207229-748",
+          "description": "Viaje"
+        },
+        {
+          "category": "Otros",
+          "date": "2026-07-20",
+          "account": "Davivienda Benjamin",
+          "amount": 26000,
+          "description": "Quates y energizantes",
+          "id": "item-1784581230251-618",
+          "type": "expense",
+          "fortnightId": "2026-07-Q2"
+        },
+        {
+          "fortnightId": "2026-07-Q2",
+          "id": "item-1784581262811-721",
+          "description": "Cosas para nosotros",
+          "amount": 46000,
+          "date": "2026-07-20",
+          "category": "Hogar",
+          "account": "Davivienda Benjamin",
+          "type": "expense"
+        },
+        {
+          "description": "Quates y energizantes",
+          "type": "expense",
+          "fortnightId": "2026-07-Q2",
+          "amount": 53000,
+          "category": "Otros",
+          "id": "item-1784581316175-797",
+          "date": "2026-07-20",
+          "account": "Davivienda Benjamin"
+        },
+        {
+          "category": "Comida por fuera",
+          "type": "expense",
+          "amount": 29000,
+          "account": "Davivienda Benjamin",
+          "date": "2026-07-20",
+          "description": "Otros",
+          "fortnightId": "2026-07-Q2",
+          "id": "item-1784581431578-530"
+        },
+        {
+          "fortnightId": "2026-07-Q2",
+          "date": "2026-07-20",
+          "description": "Paso de dinero y suma con Nu",
+          "category": "Transferencia",
+          "destinationAccount": "Nu",
+          "type": "expense",
+          "id": "item-1784581483773-734",
+          "account": "Davivienda Benjamin",
+          "amount": 1022000
+        },
+        {
+          "description": "Comida gatos",
+          "fortnightId": "2026-07-Q2",
+          "category": "Mascotas",
+          "id": "item-1784581568741-864",
+          "amount": 230000,
+          "date": "2026-07-20",
+          "type": "expense",
+          "account": "Davivienda Mafe"
+        },
+        {
+          "fortnightId": "2026-07-Q2",
+          "category": "Mascotas",
+          "date": "2026-07-20",
+          "amount": 80000,
+          "description": "Arena",
+          "account": "Davivienda Mafe",
+          "type": "expense",
+          "id": "item-1784581607452-943"
+        },
+        {
+          "id": "item-1784581830977-278",
+          "fortnightId": "2026-07-Q2",
+          "description": "Total + viaje",
+          "amount": 800000,
+          "date": "2026-07-20",
+          "type": "expense",
+          "category": "Transferencia",
+          "account": "Davivienda Mafe",
+          "destinationAccount": "Nu"
+        },
+        {
+          "category": "Arriendo",
+          "date": "2026-07-20",
+          "id": "item-1784582396612-41",
+          "account": "Nu",
+          "amount": 750000,
+          "description": "Pago del arriendo quincenal",
+          "type": "expense",
+          "fortnightId": "2026-07-Q2"
+        },
+        {
+          "account": "Nu",
+          "category": "Servicios",
+          "fortnightId": "2026-07-Q2",
+          "id": "item-1784582631354-521",
+          "date": "2026-07-20",
+          "description": "Claro",
+          "amount": 106000,
+          "type": "expense"
+        },
+        {
+          "category": "Creditos",
+          "description": "Icetex",
+          "fortnightId": "2026-07-Q2",
+          "id": "item-1784582848242-131",
+          "account": "Nu",
+          "amount": 333000,
+          "type": "expense",
+          "date": "2026-07-20"
+        },
+        {
+          "type": "expense",
+          "account": "Nu",
+          "amount": 50400,
+          "date": "2026-07-21",
+          "description": "Pasajes Benjamin",
+          "id": "item-1784663966047-797",
+          "category": "Transporte",
+          "fortnightId": "2026-07-Q2"
+        },
+        {
+          "amount": 20100,
+          "type": "expense",
+          "fortnightId": "2026-07-Q2",
+          "date": "2026-07-21",
+          "category": "Otros",
+          "description": "Cita médica.",
+          "account": "Nu",
+          "id": "item-1784664077176-199"
+        },
+        {
+          "description": "Otros",
+          "date": "2026-07-21",
+          "fortnightId": "2026-07-Q2",
+          "type": "expense",
+          "account": "Nu",
+          "amount": 73000,
+          "category": "Comida por fuera",
+          "id": "item-1784666147952-374"
+        },
+        {
+          "id": "item-1784666191122-499",
+          "account": "Nu",
+          "description": "Otros",
+          "type": "expense",
+          "fortnightId": "2026-07-Q2",
+          "amount": 16000,
+          "category": "Comida por fuera",
+          "date": "2026-07-21"
+        },
+        {
+          "id": "item-1784666251969-197",
+          "account": "Nu",
+          "description": "Tintura",
+          "category": "Otros",
+          "fortnightId": "2026-07-Q2",
+          "date": "2026-07-21",
+          "type": "expense",
+          "amount": 26000
+        },
+        {
+          "fortnightId": "2026-07-Q2",
+          "type": "expense",
+          "description": "Cosas para el hogar",
+          "category": "Hogar",
+          "id": "item-1785707117322-417",
+          "amount": 22200,
+          "account": "Nu",
+          "date": "2026-08-02"
+        },
+        {
+          "id": "item-1785707149666-797",
+          "type": "expense",
+          "amount": 10900,
+          "fortnightId": "2026-07-Q2",
+          "account": "Nu",
+          "date": "2026-08-02",
+          "category": "Otros",
+          "description": "Oxxo"
+        },
+        {
+          "category": "Mercado",
+          "fortnightId": "2026-07-Q2",
+          "date": "2026-08-02",
+          "description": "Mercado",
+          "id": "item-1785707166193-927",
+          "account": "Nu",
+          "type": "expense",
+          "amount": 260000
+        },
+        {
+          "date": "2026-08-02",
+          "id": "item-1785707186963-886",
+          "account": "Nu",
+          "description": "Quates y energizantes",
+          "type": "expense",
+          "fortnightId": "2026-07-Q2",
+          "category": "Otros",
+          "amount": 15400
+        },
+        {
+          "fortnightId": "2026-07-Q2",
+          "date": "2026-08-02",
+          "id": "item-1785707213337-575",
+          "description": "Pasajes",
+          "amount": 30400,
+          "account": "Nu",
+          "category": "Transporte",
+          "type": "expense"
+        },
+        {
+          "date": "2026-08-02",
+          "description": "Cumple Mafe",
+          "amount": 84100,
+          "id": "item-1785707340011-273",
+          "category": "Otros",
+          "fortnightId": "2026-07-Q2",
+          "type": "expense",
+          "account": "Nu"
+        },
+        {
+          "id": "item-1785707374429-487",
+          "category": "Otros",
+          "description": "Corte de cabello",
+          "date": "2026-08-02",
+          "account": "Nu",
+          "fortnightId": "2026-07-Q2",
+          "amount": 24500,
+          "type": "expense"
+        },
+        {
+          "description": "Mercado",
+          "fortnightId": "2026-07-Q2",
+          "amount": 30500,
+          "type": "expense",
+          "account": "Daviplata",
+          "id": "item-1785707440405-968",
+          "category": "Mercado",
+          "date": "2026-08-02"
+        },
+        {
+          "account": "Davivienda Benjamin",
+          "amount": 2000000,
+          "category": "Salario",
+          "id": "item-1785707577480-388",
+          "date": "2026-08-02",
+          "fortnightId": "2026-08-Q1",
+          "description": "Benja",
+          "type": "income"
+        },
+        {
+          "amount": 2000000,
+          "type": "income",
+          "id": "item-1785707593508-237",
+          "date": "2026-08-02",
+          "fortnightId": "2026-08-Q1",
+          "category": "Salario",
+          "account": "Davivienda Mafe",
+          "description": "Mafe"
+        },
+        {
+          "category": "Mascotas",
+          "account": "Davivienda Benjamin",
+          "date": "2026-08-02",
+          "id": "item-1785707617238-633",
+          "type": "expense",
+          "fortnightId": "2026-08-Q1",
+          "amount": 90000,
+          "description": "Barf"
+        },
+        {
+          "type": "expense",
+          "amount": 11400,
+          "category": "Otros",
+          "date": "2026-08-02",
+          "fortnightId": "2026-08-Q1",
+          "account": "Davivienda Benjamin",
+          "description": "Cigarrillos",
+          "id": "item-1785707641512-584"
+        },
+        {
+          "amount": 150000,
+          "category": "Mascotas",
+          "account": "Davivienda Benjamin",
+          "id": "item-1785707660914-950",
+          "type": "expense",
+          "fortnightId": "2026-08-Q1",
+          "date": "2026-08-02",
+          "description": "Medicamentos"
+        },
+        {
+          "id": "item-1785707735176-424",
+          "category": "Comida por fuera",
+          "fortnightId": "2026-08-Q1",
+          "account": "Davivienda Benjamin",
+          "description": "Comida por fuera",
+          "type": "expense",
+          "amount": 57400,
+          "date": "2026-08-02"
+        },
+        {
+          "id": "item-1785707753175-870",
+          "type": "expense",
+          "account": "Davivienda Benjamin",
+          "amount": 13300,
+          "category": "Otros",
+          "date": "2026-08-02",
+          "fortnightId": "2026-08-Q1",
+          "description": "Oxxo"
+        },
+        {
+          "description": "Arena",
+          "id": "item-1785707850614-410",
+          "amount": 80000,
+          "account": "Davivienda Mafe",
+          "fortnightId": "2026-08-Q1",
+          "type": "expense",
+          "category": "Mascotas",
+          "date": "2026-08-02"
+        },
+        {
+          "type": "expense",
+          "id": "item-1785806118299-341",
+          "amount": 230000,
+          "account": "Davivienda Mafe",
+          "fortnightId": "2026-08-Q1",
+          "category": "Mascotas",
+          "date": "2026-08-04",
+          "description": "Comida perro"
+        }
+      ],
+      "budgetEstimates": [],
+      "cierresMensuales": []
+    },
+    "NIDO-F3DB8": {
+      "documents": [],
+      "personalRecords": [],
+      "calendarItems": [],
+      "customExercises": [],
+      "workoutRoutines": [],
+      "emotionCheckins": [],
+      "home": {
+        "code": "NIDO-F3DB8",
+        "name": "asdsad",
+        "settings": {
+          "notificationsEnabled": true,
+          "aiCatMoodLevel": "normal"
+        },
+        "members": [
+          "asdsa"
+        ],
+        "id": "home-1783031573253"
+      },
+      "dailyAnswers": [],
+      "hasSeededAccounts": true,
+      "dailyPools": [],
+      "users": [
+        {
+          "ascendantSign": "Piscis ♓",
+          "name": "asdsa",
+          "horoscopeConsejo": "Estira las patitas y respira hondo. Es momento de comenzar a soñar con el nido.",
+          "marsSign": "Virgo ♍",
+          "birthTime": "12:00",
+          "venusSign": "Sagitario ♐",
+          "mercurySign": "Capricornio ♑",
+          "zodiacSign": "Sagitario ♐",
+          "birthPlace": "Bogotá",
+          "email": "asdasd",
+          "id": "asdsa",
+          "horoscopeToday": "¡Un día fantástico bajo el signo de Sagitario ♐! Sientes el suave influjo de las estrellas miau.",
+          "birthDate": "1996-12-05",
+          "lunarSign": "Libra ♎",
+          "emoji": "cat_cosmic",
+          "photoUrl": "https://api.dicebear.com/7.x/adventurer/svg?seed=asdsa&backgroundColor=e1ccff"
+        }
+      ],
+      "notifications": [],
+      "customEmotions": [],
+      "cierresMensuales": [],
+      "budgetAccounts": [
+        {
+          "id": "acc-1783034046432-663",
+          "createdAt": "2026-07-02T23:14:06.432Z",
+          "name": "Davivienda Mafe",
+          "balance": 1698000
+        },
+        {
+          "name": "Davivienda Benjamin",
+          "balance": 1678000,
+          "id": "acc-1783034054502-123",
+          "createdAt": "2026-07-02T23:14:14.502Z"
+        },
+        {
+          "name": "Nequi",
+          "createdAt": "2026-07-02T23:14:28.064Z",
+          "balance": 0,
+          "id": "acc-1783034068064-164"
+        },
+        {
+          "createdAt": "2026-07-02T23:14:33.097Z",
+          "name": "Daviplata",
+          "balance": 0,
+          "id": "acc-1783034073097-484"
+        },
+        {
+          "name": "Uala",
+          "createdAt": "2026-07-02T23:14:38.470Z",
+          "balance": 0,
+          "id": "acc-1783034078471-836"
+        },
+        {
+          "balance": 0,
+          "name": "Dolares",
+          "id": "acc-1783034085661-151",
+          "createdAt": "2026-07-02T23:14:45.661Z"
+        },
+        {
+          "name": "Nu",
+          "id": "acc-1783169234938-264",
+          "createdAt": "2026-07-04T12:47:14.938Z",
+          "balance": 0
+        }
+      ],
+      "workoutDetailedLogs": [],
+      "budgetItems": [
+        {
+          "category": "Salario",
+          "amount": 1900000,
+          "date": "2026-07-01",
+          "description": "Mafe",
+          "id": "item-1783035222540-305",
+          "account": "Davivienda Mafe",
+          "type": "income",
+          "fortnightId": "2026-07-Q1"
+        },
+        {
+          "date": "2026-07-01",
+          "id": "item-1783035252877-628",
+          "amount": 700000,
+          "fortnightId": "2026-07-Q1",
+          "type": "expense",
+          "category": "Otros",
+          "account": "Davivienda Mafe",
+          "description": "Viaje finca"
+        },
+        {
+          "type": "expense",
+          "category": "Otros",
+          "account": "Davivienda Mafe",
+          "id": "item-1783035277102-192",
+          "description": "Comida amiguita sopas",
+          "date": "2026-07-02",
+          "amount": 50000,
+          "fortnightId": "2026-07-Q1"
+        },
+        {
+          "type": "expense",
+          "description": "Arena",
+          "amount": 80000,
+          "id": "item-1783035300644-845",
+          "fortnightId": "2026-07-Q1",
+          "account": "Davivienda Mafe",
+          "category": "Mascotas",
+          "date": "2026-07-02"
+        },
+        {
+          "amount": 250000,
+          "id": "item-1783035322894-391",
+          "fortnightId": "2026-07-Q1",
+          "description": "Comida perro",
+          "type": "expense",
+          "category": "Mascotas",
+          "date": "2026-07-02",
+          "account": "Davivienda Mafe"
+        },
+        {
+          "account": "Davivienda Mafe",
+          "category": "Creditos",
+          "id": "item-1783035345678-100",
+          "type": "expense",
+          "fortnightId": "2026-07-Q1",
+          "amount": 100000,
+          "description": "Credito 4210",
+          "date": "2026-07-03"
+        },
+        {
+          "date": "2026-07-01",
+          "description": "Benja",
+          "category": "Salario",
+          "fortnightId": "2026-07-Q1",
+          "amount": 2400000,
+          "type": "income",
+          "account": "Davivienda Benjamin",
+          "id": "item-1783035388801-442"
+        },
+        {
+          "type": "expense",
+          "id": "item-1783035411200-501",
+          "fortnightId": "2026-07-Q1",
+          "date": "2026-07-01",
+          "amount": 10000,
+          "category": "Otros",
+          "description": "Almuerzo Benja",
+          "account": "Davivienda Benjamin"
+        },
+        {
+          "account": "Davivienda Benjamin",
+          "destinationAccount": "Davivienda Mafe",
+          "amount": 30000,
+          "id": "item-1783035433311-622",
+          "type": "expense",
+          "category": "Transferencia",
+          "description": "Transferencia",
+          "date": "2026-07-01",
+          "fortnightId": "2026-07-Q1"
+        },
+        {
+          "account": "Davivienda Benjamin",
+          "fortnightId": "2026-07-Q1",
+          "id": "item-1783035455522-733",
+          "description": "Pasajes",
+          "date": "2026-07-01",
+          "category": "Transporte",
+          "type": "expense",
+          "amount": 50300
+        },
+        {
+          "type": "expense",
+          "id": "item-1783035477733-844",
+          "fortnightId": "2026-07-Q1",
+          "date": "2026-07-02",
+          "description": "Cigarrillos",
+          "amount": 50100,
+          "category": "Otros",
+          "account": "Davivienda Benjamin"
+        },
+        {
+          "category": "Mascotas",
+          "date": "2026-07-02",
+          "account": "Davivienda Benjamin",
+          "amount": 100000,
+          "description": "Barf",
+          "fortnightId": "2026-07-Q1",
+          "type": "expense",
+          "id": "item-1783035500044-955"
+        },
+        {
+          "amount": 43000,
+          "category": "Comida por fuera",
+          "description": "Comida por fuera",
+          "type": "expense",
+          "fortnightId": "2026-07-Q1",
+          "id": "item-1783035522255-066",
+          "account": "Davivienda Benjamin",
+          "date": "2026-07-02"
+        },
+        {
+          "fortnightId": "2026-07-Q1",
+          "account": "Davivienda Benjamin",
+          "category": "Servicios",
+          "date": "2026-07-02",
+          "description": "Gas",
+          "id": "item-1783035544466-177",
+          "type": "expense",
+          "amount": 34000
+        },
+        {
+          "category": "Transporte",
+          "amount": 50300,
+          "id": "item-1783035566677-288",
+          "type": "expense",
+          "account": "Davivienda Benjamin",
+          "date": "2026-07-02",
+          "fortnightId": "2026-07-Q1",
+          "description": "Pasajes"
+        },
+        {
+          "category": "Transferencia",
+          "destinationAccount": "Davivienda Mafe",
+          "type": "expense",
+          "date": "2026-07-03",
+          "amount": 50000,
+          "id": "item-1783168853112-401",
+          "fortnightId": "2026-07-Q1",
+          "account": "Davivienda Benjamin",
+          "description": "Transferencia"
+        },
+        {
+          "id": "item-1783168875501-120",
+          "date": "2026-07-03",
+          "category": "Otros",
+          "amount": 28500,
+          "fortnightId": "2026-07-Q1",
+          "type": "expense",
+          "account": "Davivienda Benjamin",
+          "description": "Quates"
+        },
+        {
+          "fortnightId": "2026-07-Q1",
+          "type": "expense",
+          "account": "Davivienda Benjamin",
+          "amount": 35000,
+          "description": "Tigo",
+          "date": "2026-07-03",
+          "category": "Servicios",
+          "id": "item-1783168912300-302"
+        },
+        {
+          "date": "2026-07-03",
+          "account": "Davivienda Benjamin",
+          "fortnightId": "2026-07-Q1",
+          "type": "income",
+          "category": "Otros",
+          "id": "item-1783168893608-569",
+          "description": "Cris Finca (300 total)",
+          "amount": 165000
+        },
+        {
+          "amount": 26000,
+          "fortnightId": "2026-07-Q1",
+          "account": "Davivienda Benjamin",
+          "date": "2026-07-03",
+          "description": "Regalos Benja",
+          "id": "item-1783168938645-723",
+          "type": "expense",
+          "category": "Otros"
+        },
+        {
+          "amount": 200000,
+          "id": "item-1783168966355-50",
+          "category": "Otros",
+          "type": "income",
+          "description": "Paula finca",
+          "account": "Davivienda Mafe",
+          "fortnightId": "2026-07-Q1",
+          "date": "2026-07-03"
+        },
+        {
+          "amount": 50000,
+          "date": "2026-07-03",
+          "id": "item-1783168991261-867",
+          "account": "Davivienda Benjamin",
+          "category": "Comida por fuera",
+          "description": "Alitas",
+          "type": "expense",
+          "fortnightId": "2026-07-Q1"
+        },
+        {
+          "description": "Wom",
+          "account": "Davivienda Benjamin",
+          "fortnightId": "2026-07-Q1",
+          "id": "item-1783170424157-623",
+          "type": "expense",
+          "category": "Servicios",
+          "amount": 41000,
+          "date": "2026-07-03"
+        },
+        {
+          "date": "2026-07-05",
+          "id": "item-1783257146670-398",
+          "category": "Arriendo",
+          "account": "Davivienda Mafe",
+          "description": "Pago del arriendo quincenal",
+          "type": "expense",
+          "fortnightId": "2026-07-Q1",
+          "amount": 1570000
+        },
+        {
+          "type": "income",
+          "id": "item-1783257551662-117",
+          "account": "Davivienda Benjamin",
+          "date": "2026-07-05",
+          "fortnightId": "2026-07-Q1",
+          "amount": 140000,
+          "description": "U Benja",
+          "category": "Otros"
+        },
+        {
+          "type": "expense",
+          "amount": 100000,
+          "fortnightId": "2026-07-Q1",
+          "description": "Pizza y desayuno",
+          "account": "Davivienda Benjamin",
+          "category": "Comida por fuera",
+          "date": "2026-07-05",
+          "id": "item-1783257590077-416"
+        },
+        {
+          "category": "Universidad",
+          "type": "expense",
+          "amount": 252000,
+          "account": "Davivienda Benjamin",
+          "description": "U Benja",
+          "date": "2026-07-05",
+          "fortnightId": "2026-07-Q1",
+          "id": "item-1783257608645-687"
+        },
+        {
+          "account": "Davivienda Benjamin",
+          "category": "Transferencia",
+          "destinationAccount": "Davivienda Mafe",
+          "amount": 480000,
+          "type": "expense",
+          "id": "item-1783258423352-96",
+          "fortnightId": "2026-07-Q1",
+          "date": "2026-07-05",
+          "description": "Transferencia"
+        },
+        {
+          "description": "Viaje",
+          "date": "2026-07-05",
+          "fortnightId": "2026-07-Q1",
+          "account": "Davivienda Benjamin",
+          "id": "item-1783258446655-483",
+          "type": "expense",
+          "category": "Otros",
+          "amount": 200000
+        },
+        {
+          "account": "Davivienda Benjamin",
+          "date": "2026-07-05",
+          "category": "Servicios",
+          "id": "item-1783283883859-184",
+          "type": "expense",
+          "amount": 118000,
+          "description": "Luz",
+          "fortnightId": "2026-07-Q1"
+        },
+        {
+          "category": "Servicios",
+          "description": "Agua",
+          "type": "expense",
+          "account": "Davivienda Benjamin",
+          "amount": 233000,
+          "fortnightId": "2026-07-Q1",
+          "id": "item-1783283920843-88",
+          "date": "2026-07-05"
+        },
+        {
+          "amount": 15500,
+          "category": "Otros",
+          "fortnightId": "2026-07-Q1",
+          "id": "item-1783382824508-810",
+          "type": "expense",
+          "description": "Almuerzo Benja",
+          "account": "Davivienda Benjamin",
+          "date": "2026-07-07"
+        },
+        {
+          "id": "item-1783802708213-519",
+          "category": "Otros",
+          "date": "2026-07-11",
+          "amount": 121000,
+          "account": "Davivienda Benjamin",
+          "fortnightId": "2026-07-Q1",
+          "description": "Casa (tintes, puerta, filtro, etc)",
+          "type": "expense"
+        },
+        {
+          "id": "item-1783814179632-975",
+          "category": "Transferencia",
+          "type": "expense",
+          "account": "Davivienda Benjamin",
+          "date": "2026-07-11",
+          "fortnightId": "2026-07-Q1",
+          "destinationAccount": "Davivienda Mafe",
+          "description": "Transferencia",
+          "amount": 100000
+        },
+        {
+          "account": "Davivienda Mafe",
+          "fortnightId": "2026-07-Q1",
+          "type": "expense",
+          "description": "Mercado",
+          "amount": 315000,
+          "category": "Mercado",
+          "id": "item-1784140671533-233",
+          "date": "2026-07-13"
+        },
+        {
+          "amount": 165000,
+          "type": "expense",
+          "category": "Comida por fuera",
+          "fortnightId": "2026-07-Q1",
+          "description": "Comida por fuera",
+          "account": "Davivienda Mafe",
+          "date": "2026-07-13",
+          "id": "item-1784140705637-179"
+        },
+        {
+          "date": "2026-07-13",
+          "account": "Davivienda Mafe",
+          "description": "Regalo Benja",
+          "id": "item-1784140781909-784",
+          "fortnightId": "2026-07-Q1",
+          "type": "expense",
+          "category": "Otros",
+          "amount": 512000
+        },
+        {
+          "description": "Benja",
+          "amount": 1600000,
+          "fortnightId": "2026-07-Q2",
+          "id": "item-1784140916252-226",
+          "date": "2026-07-15",
+          "category": "Salario",
+          "account": "Davivienda Benjamin",
+          "type": "income"
+        },
+        {
+          "amount": 1200000,
+          "type": "income",
+          "category": "Salario",
+          "id": "item-1784140955704-720",
+          "description": "Mafe",
+          "date": "2026-07-15",
+          "account": "Davivienda Mafe",
+          "fortnightId": "2026-07-Q2"
+        },
+        {
+          "id": "item-1784170472615-672",
+          "category": "Otros",
+          "account": "Davivienda Benjamin",
+          "date": "2026-07-16",
+          "fortnightId": "2026-07-Q2",
+          "amount": 66000,
+          "type": "expense",
+          "description": "Parlante"
+        },
+        {
+          "category": "Otros",
+          "id": "item-1784580645607-179",
+          "amount": 24000,
+          "description": "Almuerzo Benjamin",
+          "account": "Davivienda Benjamin",
+          "date": "2026-07-20",
+          "fortnightId": "2026-07-Q2",
+          "type": "expense"
+        },
+        {
+          "account": "Davivienda Benjamin",
+          "date": "2026-07-20",
+          "id": "item-1784580679047-207",
+          "category": "Otros",
+          "description": "Regalo trabajo Benjamin",
+          "type": "expense",
+          "fortnightId": "2026-07-Q2",
+          "amount": 100000
+        },
+        {
+          "description": "Transporte Benjamin",
+          "category": "Transporte",
+          "fortnightId": "2026-07-Q2",
+          "id": "item-1784580727279-901",
+          "date": "2026-07-20",
+          "amount": 20000,
+          "account": "Davivienda Benjamin",
+          "type": "expense"
+        },
+        {
+          "category": "Otros",
+          "amount": 30600,
+          "id": "item-1784580804521-516",
+          "date": "2026-07-20",
+          "fortnightId": "2026-07-Q2",
+          "account": "Davivienda Benjamin",
+          "description": "Quates y energizantes",
+          "type": "expense"
+        },
+        {
+          "description": "Medicamentos",
+          "id": "item-1784580832793-490",
+          "date": "2026-07-20",
+          "category": "Otros",
+          "account": "Davivienda Benjamin",
+          "fortnightId": "2026-07-Q2",
+          "type": "expense",
+          "amount": 18600
+        },
+        {
+          "description": "Ara otros",
+          "account": "Davivienda Benjamin",
+          "type": "expense",
+          "fortnightId": "2026-07-Q2",
+          "id": "item-1784580857496-749",
+          "category": "Otros",
+          "date": "2026-07-20",
+          "amount": 25500
+        },
+        {
+          "category": "Transferencia",
+          "id": "item-1784580891805-841",
+          "date": "2026-07-20",
+          "amount": 30000,
+          "destinationAccount": "Davivienda Mafe",
+          "type": "expense",
+          "fortnightId": "2026-07-Q2",
+          "account": "Davivienda Benjamin",
+          "description": "Trasnferencia"
+        },
+        {
+          "fortnightId": "2026-07-Q2",
+          "description": "Viaje",
+          "amount": 176000,
+          "category": "Otros",
+          "date": "2026-07-20",
+          "id": "item-1784581207229-748",
+          "account": "Davivienda Benjamin",
+          "type": "expense"
+        },
+        {
+          "account": "Davivienda Benjamin",
+          "category": "Otros",
+          "type": "expense",
+          "fortnightId": "2026-07-Q2",
+          "description": "Quates y energizantes",
+          "id": "item-1784581230251-618",
+          "date": "2026-07-20",
+          "amount": 26000
+        },
+        {
+          "date": "2026-07-20",
+          "description": "Cosas para nosotros",
+          "account": "Davivienda Benjamin",
+          "fortnightId": "2026-07-Q2",
+          "type": "expense",
+          "id": "item-1784581262811-721",
+          "category": "Hogar",
+          "amount": 46000
+        },
+        {
+          "category": "Otros",
+          "date": "2026-07-20",
+          "account": "Davivienda Benjamin",
+          "id": "item-1784581316175-797",
+          "amount": 53000,
+          "fortnightId": "2026-07-Q2",
+          "type": "expense",
+          "description": "Quates y energizantes"
+        },
+        {
+          "date": "2026-07-20",
+          "account": "Davivienda Benjamin",
+          "type": "expense",
+          "id": "item-1784581431578-530",
+          "category": "Comida por fuera",
+          "amount": 29000,
+          "fortnightId": "2026-07-Q2",
+          "description": "Otros"
+        },
+        {
+          "destinationAccount": "Nu",
+          "date": "2026-07-20",
+          "type": "expense",
+          "category": "Transferencia",
+          "amount": 1022000,
+          "account": "Davivienda Benjamin",
+          "id": "item-1784581483773-734",
+          "description": "Paso de dinero y suma con Nu",
+          "fortnightId": "2026-07-Q2"
+        },
+        {
+          "category": "Mascotas",
+          "description": "Comida gatos",
+          "type": "expense",
+          "fortnightId": "2026-07-Q2",
+          "account": "Davivienda Mafe",
+          "id": "item-1784581568741-864",
+          "amount": 230000,
+          "date": "2026-07-20"
+        },
+        {
+          "amount": 80000,
+          "type": "expense",
+          "date": "2026-07-20",
+          "fortnightId": "2026-07-Q2",
+          "id": "item-1784581607452-943",
+          "category": "Mascotas",
+          "account": "Davivienda Mafe",
+          "description": "Arena"
+        },
+        {
+          "category": "Transferencia",
+          "type": "expense",
+          "date": "2026-07-20",
+          "account": "Davivienda Mafe",
+          "amount": 800000,
+          "id": "item-1784581830977-278",
+          "fortnightId": "2026-07-Q2",
+          "destinationAccount": "Nu",
+          "description": "Total + viaje"
+        },
+        {
+          "category": "Arriendo",
+          "date": "2026-07-20",
+          "account": "Nu",
+          "amount": 750000,
+          "fortnightId": "2026-07-Q2",
+          "id": "item-1784582396612-41",
+          "type": "expense",
+          "description": "Pago del arriendo quincenal"
+        },
+        {
+          "fortnightId": "2026-07-Q2",
+          "date": "2026-07-20",
+          "category": "Servicios",
+          "description": "Claro",
+          "amount": 106000,
+          "account": "Nu",
+          "type": "expense",
+          "id": "item-1784582631354-521"
+        },
+        {
+          "fortnightId": "2026-07-Q2",
+          "id": "item-1784582848242-131",
+          "type": "expense",
+          "description": "Icetex",
+          "amount": 333000,
+          "date": "2026-07-20",
+          "category": "Creditos",
+          "account": "Nu"
+        },
+        {
+          "date": "2026-07-21",
+          "account": "Nu",
+          "category": "Transporte",
+          "id": "item-1784663966047-797",
+          "type": "expense",
+          "fortnightId": "2026-07-Q2",
+          "description": "Pasajes Benjamin",
+          "amount": 50400
+        },
+        {
+          "category": "Otros",
+          "description": "Cita médica.",
+          "account": "Nu",
+          "type": "expense",
+          "fortnightId": "2026-07-Q2",
+          "id": "item-1784664077176-199",
+          "date": "2026-07-21",
+          "amount": 20100
+        },
+        {
+          "account": "Nu",
+          "date": "2026-07-21",
+          "amount": 73000,
+          "id": "item-1784666147952-374",
+          "fortnightId": "2026-07-Q2",
+          "type": "expense",
+          "category": "Comida por fuera",
+          "description": "Otros"
+        },
+        {
+          "account": "Nu",
+          "id": "item-1784666191122-499",
+          "date": "2026-07-21",
+          "fortnightId": "2026-07-Q2",
+          "category": "Comida por fuera",
+          "amount": 16000,
+          "description": "Otros",
+          "type": "expense"
+        },
+        {
+          "date": "2026-07-21",
+          "description": "Tintura",
+          "category": "Otros",
+          "id": "item-1784666251969-197",
+          "fortnightId": "2026-07-Q2",
+          "account": "Nu",
+          "type": "expense",
+          "amount": 26000
+        },
+        {
+          "account": "Nu",
+          "type": "expense",
+          "amount": 22200,
+          "category": "Hogar",
+          "description": "Cosas para el hogar",
+          "date": "2026-08-02",
+          "id": "item-1785707117322-417",
+          "fortnightId": "2026-07-Q2"
+        },
+        {
+          "account": "Nu",
+          "date": "2026-08-02",
+          "amount": 10900,
+          "id": "item-1785707149666-797",
+          "category": "Otros",
+          "description": "Oxxo",
+          "type": "expense",
+          "fortnightId": "2026-07-Q2"
+        },
+        {
+          "id": "item-1785707166193-927",
+          "description": "Mercado",
+          "type": "expense",
+          "fortnightId": "2026-07-Q2",
+          "amount": 260000,
+          "account": "Nu",
+          "date": "2026-08-02",
+          "category": "Mercado"
+        },
+        {
+          "category": "Otros",
+          "type": "expense",
+          "id": "item-1785707186963-886",
+          "account": "Nu",
+          "amount": 15400,
+          "fortnightId": "2026-07-Q2",
+          "date": "2026-08-02",
+          "description": "Quates y energizantes"
+        },
+        {
+          "account": "Nu",
+          "category": "Transporte",
+          "id": "item-1785707213337-575",
+          "type": "expense",
+          "fortnightId": "2026-07-Q2",
+          "description": "Pasajes",
+          "amount": 30400,
+          "date": "2026-08-02"
+        },
+        {
+          "amount": 84100,
+          "fortnightId": "2026-07-Q2",
+          "category": "Otros",
+          "type": "expense",
+          "account": "Nu",
+          "description": "Cumple Mafe",
+          "date": "2026-08-02",
+          "id": "item-1785707340011-273"
+        },
+        {
+          "description": "Corte de cabello",
+          "id": "item-1785707374429-487",
+          "amount": 24500,
+          "fortnightId": "2026-07-Q2",
+          "date": "2026-08-02",
+          "account": "Nu",
+          "category": "Otros",
+          "type": "expense"
+        },
+        {
+          "type": "expense",
+          "category": "Mercado",
+          "description": "Mercado",
+          "id": "item-1785707440405-968",
+          "account": "Daviplata",
+          "date": "2026-08-02",
+          "fortnightId": "2026-07-Q2",
+          "amount": 30500
+        },
+        {
+          "description": "Benja",
+          "date": "2026-08-02",
+          "amount": 2000000,
+          "fortnightId": "2026-08-Q1",
+          "account": "Davivienda Benjamin",
+          "category": "Salario",
+          "type": "income",
+          "id": "item-1785707577480-388"
+        },
+        {
+          "id": "item-1785707593508-237",
+          "amount": 2000000,
+          "type": "income",
+          "fortnightId": "2026-08-Q1",
+          "category": "Salario",
+          "description": "Mafe",
+          "account": "Davivienda Mafe",
+          "date": "2026-08-02"
+        },
+        {
+          "fortnightId": "2026-08-Q1",
+          "date": "2026-08-02",
+          "description": "Barf",
+          "account": "Davivienda Benjamin",
+          "type": "expense",
+          "id": "item-1785707617238-633",
+          "category": "Mascotas",
+          "amount": 90000
+        },
+        {
+          "category": "Otros",
+          "date": "2026-08-02",
+          "amount": 11400,
+          "id": "item-1785707641512-584",
+          "fortnightId": "2026-08-Q1",
+          "account": "Davivienda Benjamin",
+          "type": "expense",
+          "description": "Cigarrillos"
+        },
+        {
+          "type": "expense",
+          "amount": 150000,
+          "date": "2026-08-02",
+          "description": "Medicamentos",
+          "fortnightId": "2026-08-Q1",
+          "account": "Davivienda Benjamin",
+          "category": "Mascotas",
+          "id": "item-1785707660914-950"
+        },
+        {
+          "id": "item-1785707735176-424",
+          "amount": 57400,
+          "date": "2026-08-02",
+          "category": "Comida por fuera",
+          "type": "expense",
+          "fortnightId": "2026-08-Q1",
+          "account": "Davivienda Benjamin",
+          "description": "Comida por fuera"
+        },
+        {
+          "fortnightId": "2026-08-Q1",
+          "category": "Otros",
+          "id": "item-1785707753175-870",
+          "description": "Oxxo",
+          "date": "2026-08-02",
+          "amount": 13300,
+          "account": "Davivienda Benjamin",
+          "type": "expense"
+        },
+        {
+          "category": "Mascotas",
+          "fortnightId": "2026-08-Q1",
+          "type": "expense",
+          "description": "Arena",
+          "date": "2026-08-02",
+          "account": "Davivienda Mafe",
+          "amount": 80000,
+          "id": "item-1785707850614-410"
+        },
+        {
+          "type": "expense",
+          "id": "item-1785806118299-341",
+          "amount": 230000,
+          "fortnightId": "2026-08-Q1",
+          "date": "2026-08-04",
+          "description": "Comida perro",
+          "category": "Mascotas",
+          "account": "Davivienda Mafe"
+        }
+      ],
+      "memories": [],
+      "checkins": [],
+      "frascoMessages": [],
+      "saludChallenges": [],
+      "budgetEstimates": [],
+      "bodyMetrics": [],
+      "closedFortnights": [
+        "2026-07-Q1",
+        "2026-07-Q2"
+      ],
+      "budgetTemplates": [],
+      "plants": [],
+      "pets": [],
+      "wishes": [],
+      "workoutLogs": []
+    }
+  }
+}

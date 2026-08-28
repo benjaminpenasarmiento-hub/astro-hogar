@@ -1,0 +1,128 @@
+{
+  "entities": {
+    "nests": {
+      "fields": {
+        "homeCode": {
+          "type": "string",
+          "constraints": {
+            "required": true
+          }
+        },
+        "data": {
+          "type": "map",
+          "constraints": {
+            "required": true
+          }
+        },
+        "updatedAt": {
+          "type": "string",
+          "constraints": {
+            "required": true
+          }
+        }
+      }
+    },
+    "error_logs": {
+      "fields": {
+        "homeCode": {
+          "type": "string"
+        },
+        "userAgent": {
+          "type": "string"
+        },
+        "errorMessage": {
+          "type": "string",
+          "constraints": {
+            "required": true
+          }
+        },
+        "errorStack": {
+          "type": "string"
+        },
+        "context": {
+          "type": "map"
+        },
+        "timestamp": {
+          "type": "string",
+          "constraints": {
+            "required": true
+          }
+        }
+      }
+    },
+    "notifications": {
+      "fields": {
+        "id": {
+          "type": "string",
+          "constraints": {
+            "required": true
+          }
+        },
+        "homeCode": {
+          "type": "string",
+          "constraints": {
+            "required": true
+          }
+        },
+        "userId": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string",
+          "constraints": {
+            "required": true
+          }
+        },
+        "message": {
+          "type": "string",
+          "constraints": {
+            "required": true
+          }
+        },
+        "timestamp": {
+          "type": "string",
+          "constraints": {
+            "required": true
+          }
+        },
+        "type": {
+          "type": "string"
+        },
+        "readBy": {
+          "type": "array"
+        }
+      }
+    },
+    "milo_daily_updates": {
+      "fields": {
+        "date": {
+          "type": "string"
+        },
+        "dailyGreeting": {
+          "type": "string"
+        },
+        "weather": {
+          "type": "map"
+        },
+        "moon": {
+          "type": "map"
+        },
+        "briefing": {
+          "type": "map"
+        },
+        "harmonyScore": {
+          "type": "number"
+        },
+        "lastUpdated": {
+          "type": "string"
+        },
+        "updatedBy": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "firestore": {
+    "rules": "rules_version = '2';\nservice cloud.firestore {\n  match /databases/{database}/documents {\n    match /nests/{homeCode} {\n      allow read, write: if true;\n    }\n    match /milo_daily_updates/{updateId} {\n      allow read, write: if true;\n    }\n    match /error_logs/{logId} {\n      allow read, write: if true;\n    }\n    match /notifications/{notificationId} {\n      allow read, write: if true;\n    }\n    match /audit_logs/{logId} {\n      allow read, write: if true;\n    }\n  }\n}"
+  }
+}

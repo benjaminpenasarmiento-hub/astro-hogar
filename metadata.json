@@ -1,0 +1,6 @@
+{
+  "name": "Hogar de Mafe & Benja",
+  "description": "Aplicación inteligente y cálida para la gestión compartida del hogar de Mafe & Benja con el sabio asistente gatito Milo y calendario centralizado.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
