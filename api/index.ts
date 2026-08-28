@@ -1,6 +1,6 @@
 import { createRequire } from "node:module";
-import { requireFirebaseAuth } from "../serverAuthMiddleware";
-import { runWithFirestoreAuthToken } from "../serverFirestoreRest";
+import { requireFirebaseAuth } from "../serverAuthMiddleware.js";
+import { runWithFirestoreAuthToken } from "../serverFirestoreRest.js";
 
 const require = createRequire(import.meta.url);
 const { app } = require("../dist/server.cjs");
