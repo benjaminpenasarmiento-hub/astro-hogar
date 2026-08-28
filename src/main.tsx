@@ -22,9 +22,7 @@ function saveHomeSnapshot(response: Response) {
         data,
       }));
       window.dispatchEvent(new CustomEvent("astrohogar:home-snapshot-updated"));
-    } catch {
-      // Ignore storage quota/serialization failures; Firestore remains authoritative.
-    }
+    } catch {}
   }).catch(() => {});
 }
 
@@ -73,20 +71,13 @@ function AuthGate() {
       <div className="fixed right-4 top-4 z-[100] flex items-center gap-2 rounded-full border border-white/20 bg-white/90 px-2 py-1.5 shadow-sm backdrop-blur-md">
         {user.photoURL && <img src={user.photoURL} alt="" className="h-7 w-7 rounded-full" />}
         <span className="hidden max-w-[180px] truncate text-[11px] font-bold text-slate-700 sm:block">{user.email}</span>
-        <button
-          type="button"
-          onClick={() => logout().catch(() => {})}
-          className="rounded-full px-2 py-1 text-[10px] font-black text-slate-500 hover:bg-slate-100 hover:text-slate-900"
-        >
-          Salir
-        </button>
+        <button type="button" onClick={() => logout().catch(() => {})} className="rounded-full px-2 py-1 text-[10px] font-black text-slate-500 hover:bg-slate-100 hover:text-slate-900">Salir</button>
       </div>
       <App />
     </div>
   );
 }
 
-// Install a resilient fetch layer before the application starts issuing API calls.
 if (typeof window !== "undefined") {
   const originalFetch = window.fetch.bind(window);
   (window as any).__astroOriginalFetch = originalFetch;
@@ -96,7 +87,7 @@ if (typeof window !== "undefined") {
     const url = request ? request.url : String(input);
     const method = (init?.method || request?.method || "GET").toUpperCase();
     const isApiMutation = url.includes("/api/") && !["GET", "HEAD", "OPTIONS"].includes(method);
-    const isHomeDataRead = url.includes("/api/home-data") && method === "GET';
+    const isHomeDataRead = url.includes("/api/home-data") && method === "GET";
 
     if (!isApiMutation) {
       try {
@@ -106,10 +97,7 @@ if (typeof window !== "undefined") {
       } catch (error) {
         if (isHomeDataRead) {
           const cached = getCachedHomeSnapshot();
-          if (cached) {
-            console.warn("[AstroHogar] Mostrando la última copia confirmada mientras se recupera la conexión.");
-            return cached;
-          }
+          if (cached) return cached;
         }
         throw error;
       }
@@ -136,14 +124,8 @@ if (typeof window !== "undefined") {
     try {
       if (!navigator.onLine && canQueue) {
         const queued = typeof body === "string" || body === undefined
-          ? enqueueMutation({
-              url,
-              method,
-              headers: Object.fromEntries(headers.entries()),
-              body: typeof body === "string" ? body : undefined
-            })
+          ? enqueueMutation({ url, method, headers: Object.fromEntries(headers.entries()), body: typeof body === "string" ? body : undefined })
           : false;
-
         if (queued) {
           queuedOffline = true;
           window.dispatchEvent(new CustomEvent("astrohogar:mutation-queued"));
@@ -151,28 +133,16 @@ if (typeof window !== "undefined") {
         }
       }
 
-      return await originalFetch(input, {
-        ...(init || {}),
-        method,
-        headers,
-        body,
-      });
+      return await originalFetch(input, { ...(init || {}), method, headers, body });
     } catch (error: any) {
       const message = String(error?.message || "");
       const networkFailure = error instanceof TypeError && !message.includes("OFFLINE_MUTATION_QUEUED");
 
       if (networkFailure && canQueue) {
         const queued = typeof body === "string" || body === undefined
-          ? enqueueMutation({
-              url,
-              method,
-              headers: Object.fromEntries(headers.entries()),
-              body: typeof body === "string" ? body : undefined
-            })
+          ? enqueueMutation({ url, method, headers: Object.fromEntries(headers.entries()), body: typeof body === "string" ? body : undefined })
           : false;
-        if (queued) {
-          window.dispatchEvent(new CustomEvent("astrohogar:mutation-queued"));
-        }
+        if (queued) window.dispatchEvent(new CustomEvent("astrohogar:mutation-queued"));
       }
 
       if (queuedOffline) throw new TypeError("OFFLINE_MUTATION_QUEUED");
@@ -182,35 +152,23 @@ if (typeof window !== "undefined") {
 
   window.addEventListener("unhandledrejection", (event) => {
     const reason = event.reason ? String(event.reason) : "";
-    if (reason.includes("WebSocket") || reason.includes("vite")) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
+    if (reason.includes("WebSocket") || reason.includes("vite")) { event.preventDefault(); event.stopPropagation(); }
   });
 
   window.addEventListener("error", (event) => {
     const message = event.message ? String(event.message) : "";
-    if (message.includes("WebSocket") || message.includes("vite")) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
+    if (message.includes("WebSocket") || message.includes("vite")) { event.preventDefault(); event.stopPropagation(); }
   });
 
   startOfflineSync();
-  window.addEventListener("online", () => {
-    flushOfflineQueue().catch(() => {});
-  });
+  window.addEventListener("online", () => { flushOfflineQueue().catch(() => {}); });
 }
 
 if (typeof window !== "undefined" && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js').then(
-      (reg) => {
-        console.log('[Service Worker] Registration successful with scope: ', reg.scope);
-      },
-      (err) => {
-        console.warn('[Service Worker] Registration failed: ', err);
-      }
+      (reg) => console.log('[Service Worker] Registration successful with scope: ', reg.scope),
+      (err) => console.warn('[Service Worker] Registration failed: ', err),
     );
   });
 }
