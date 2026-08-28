@@ -27,6 +27,12 @@ function writeQueue(queue: QueuedMutation[]) {
   localStorage.setItem(QUEUE_KEY, JSON.stringify(queue));
 }
 
+function getTransportFetch(): typeof window.fetch | null {
+  if (typeof window === "undefined") return null;
+  const original = (window as any).__astroOriginalFetch;
+  return typeof original === "function" ? original : window.fetch.bind(window);
+}
+
 export function getOfflineQueueCount(): number {
   if (typeof window === "undefined") return 0;
   return readQueue().length;
@@ -53,20 +59,25 @@ export async function flushOfflineQueue(): Promise<{ flushed: number; remaining:
     return { flushed: 0, remaining: getOfflineQueueCount() };
   }
 
+  const transportFetch = getTransportFetch();
+  if (!transportFetch) return { flushed: 0, remaining: getOfflineQueueCount() };
+
   let queue = readQueue();
   let flushed = 0;
 
-  for (const item of queue) {
+  for (const item of [...queue]) {
     try {
-      const response = await fetch(item.url, {
+      const response = await transportFetch(item.url, {
         method: item.method,
         headers: item.headers,
         body: item.body,
       });
 
+      // Never discard a queued mutation on a server error. It is retained for a later retry.
       if (!response.ok) {
         item.attempts += 1;
         item.lastError = `HTTP ${response.status}`;
+        writeQueue(queue);
         continue;
       }
 
