@@ -12,20 +12,28 @@ export function SyncStatusIndicator({
   showLabel = false,
   className = ""
 }: SyncStatusIndicatorProps) {
-  const { status, lastSyncTime, lastError, triggerSyncCheck } = useSyncStatus();
+  const { status, lastSyncTime, lastError, pendingWrites, triggerSyncCheck } = useSyncStatus();
 
   let dotColor = "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]";
   let labelText = "Sincronizado";
   let tooltipText = "Firestore: Sincronización exitosa con la nube";
 
-  if (status === "quota_exceeded") {
+  if (status === "offline") {
+    dotColor = "bg-slate-400 shadow-[0_0_8px_rgba(100,116,139,0.6)] animate-pulse";
+    labelText = pendingWrites > 0 ? `Offline · ${pendingWrites}` : "Sin conexión";
+    tooltipText = pendingWrites > 0
+      ? `${pendingWrites} cambio(s) están guardados localmente y se enviarán al recuperar internet.`
+      : "Sin conexión a internet. No se perderán cambios nuevos que puedan ponerse en cola.";
+  } else if (status === "quota_exceeded") {
     dotColor = "bg-sky-500 shadow-[0_0_8px_rgba(14,165,233,0.8)]";
-    labelText = "Local Seguro";
-    tooltipText = "Resguardo Local Activo: Cuota diaria de Firestore alcanzada. Tus datos están 100% seguros y guardados en almacenamiento local.";
+    labelText = "Cuota";
+    tooltipText = "La cuota de Firestore está temporalmente limitada. Revisa la sincronización antes de continuar con cambios importantes.";
   } else if (status === "syncing") {
     dotColor = "bg-amber-400 shadow-[0_0_8px_rgba(250,204,21,0.9)] animate-pulse";
-    labelText = "Guardando...";
-    tooltipText = "Firestore: Escritura pendiente en la base de datos...";
+    labelText = pendingWrites > 0 ? `Guardando · ${pendingWrites}` : "Guardando...";
+    tooltipText = pendingWrites > 0
+      ? `${pendingWrites} cambio(s) están pendientes de confirmación en Firestore.`
+      : "Firestore: Escritura pendiente en la base de datos...";
   } else if (status === "error") {
     dotColor = "bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.8)] animate-pulse";
     labelText = "Error de sync";
@@ -42,9 +50,7 @@ export function SyncStatusIndicator({
 
   const handleClick = () => {
     triggerSyncCheck();
-    if (onForceRefresh) {
-      onForceRefresh();
-    }
+    onForceRefresh?.();
   };
 
   return (
