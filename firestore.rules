@@ -1,57 +1,64 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Isolated Nest documents and app collections
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function hasHomeAccess(data) {
+      return signedIn() && (
+        (data.authorizedUids is list && request.auth.uid in data.authorizedUids) ||
+        (data.authorizedEmails is list && request.auth.token.email != null && request.auth.token.email in data.authorizedEmails)
+      );
+    }
+
     match /nests/{homeCode} {
-      allow read, write: if true;
+      // Exact document reads are authenticated. This is required so a signed-in
+      // user can validate an invite code before joining a home.
+      allow get: if signedIn();
+      allow list: if false;
+
+      // A newly created home must explicitly authorize the creator.
+      allow create: if signedIn() && hasHomeAccess(request.resource.data);
+
+      // Existing members can update/delete. A new authenticated UID/email may
+      // be added when joining with a valid home code; existing authorizations
+      // cannot be removed by that join operation.
+      allow update: if signedIn() && (
+        hasHomeAccess(resource.data) ||
+        (
+          hasHomeAccess(request.resource.data) &&
+          request.resource.data.authorizedUids.hasAll(resource.data.authorizedUids) &&
+          request.resource.data.authorizedEmails.hasAll(resource.data.authorizedEmails)
+        )
+      );
+      allow delete: if hasHomeAccess(resource.data);
     }
 
-    // Revision history created by the production consistency layer.
     match /nests/{homeCode}/history/{revision} {
-      allow read, write: if true;
+      allow read, write: if hasHomeAccess(
+        get(/databases/$(database)/documents/nests/$(homeCode)).data
+      );
     }
 
-    match /milo_daily_updates/{updateId} {
-      allow read, write: if true;
-    }
-    match /notifications/{notificationId} {
-      allow read, write: if true;
-    }
-    match /audit_logs/{logId} {
-      allow read, write: if true;
-    }
-    match /error_logs/{logId} {
-      allow read, write: if true;
-    }
-    match /plantas/{plantId} {
-      allow read, write: if true;
-    }
-    match /plants/{plantId} {
-      allow read, write: if true;
-    }
-    match /closet/{itemId} {
-      allow read, write: if true;
-    }
-    match /closetGarments/{itemId} {
-      allow read, write: if true;
-    }
-    match /closet_garments/{itemId} {
-      allow read, write: if true;
-    }
-    match /prendas/{itemId} {
-      allow read, write: if true;
-    }
-    match /metas/{wishId} {
-      allow read, write: if true;
-    }
-    match /wishes/{wishId} {
-      allow read, write: if true;
-    }
-    match /goals/{wishId} {
-      allow read, write: if true;
-    }
+    // Legacy/auxiliary collections are no longer public. They require a
+    // Firebase-authenticated session; household data itself remains centralized
+    // under nests/{homeCode}.
+    match /milo_daily_updates/{updateId} { allow read, write: if signedIn(); }
+    match /notifications/{notificationId} { allow read, write: if signedIn(); }
+    match /audit_logs/{logId} { allow read, write: if signedIn(); }
+    match /error_logs/{logId} { allow read, write: if signedIn(); }
+    match /plantas/{plantId} { allow read, write: if signedIn(); }
+    match /plants/{plantId} { allow read, write: if signedIn(); }
+    match /closet/{itemId} { allow read, write: if signedIn(); }
+    match /closetGarments/{itemId} { allow read, write: if signedIn(); }
+    match /closet_garments/{itemId} { allow read, write: if signedIn(); }
+    match /prendas/{itemId} { allow read, write: if signedIn(); }
+    match /metas/{wishId} { allow read, write: if signedIn(); }
+    match /wishes/{wishId} { allow read, write: if signedIn(); }
+    match /goals/{wishId} { allow read, write: if signedIn(); }
 
-    // Block all other collections
+    // Everything else is denied by default.
     match /{document=**} {
       allow read, write: if false;
     }
