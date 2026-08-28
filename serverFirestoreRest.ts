@@ -16,6 +16,27 @@ function getAuthToken(): string {
   return token;
 }
 
+function decodeJwtPayload(token: string): Record<string, any> {
+  try {
+    const parts = token.split(".");
+    if (parts.length !== 3) return {};
+    const normalized = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+    const padded = normalized + "=".repeat((4 - (normalized.length % 4)) % 4);
+    return JSON.parse(Buffer.from(padded, "base64").toString("utf8"));
+  } catch {
+    return {};
+  }
+}
+
+export function getAuthenticatedClaims(): { uid?: string; email?: string } {
+  const token = getAuthToken();
+  const payload = decodeJwtPayload(token);
+  return {
+    uid: typeof payload.user_id === "string" ? payload.user_id : (typeof payload.sub === "string" ? payload.sub : undefined),
+    email: typeof payload.email === "string" ? payload.email.trim().toLowerCase() : undefined,
+  };
+}
+
 function toFirestoreValue(value: any): any {
   if (value === null || value === undefined) return { nullValue: null };
   if (Array.isArray(value)) return { arrayValue: { values: value.map(toFirestoreValue) } };
@@ -70,12 +91,67 @@ async function firestoreFetch(path: string, init: RequestInit = {}) {
   return fetch(`${API_BASE}/${path}`, { ...init, headers });
 }
 
+function isRetryableStatus(status: number): boolean {
+  return status === 408 || status === 429 || status >= 500;
+}
+
+async function readResponseText(response: Response): Promise<string> {
+  try {
+    return await response.text();
+  } catch {
+    return "";
+  }
+}
+
+async function commitWithRetry(writes: any[], context: string, maxAttempts = 3): Promise<any> {
+  let lastError: Error | null = null;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      const response = await firestoreFetch("documents:commit", {
+        method: "POST",
+        body: JSON.stringify({ writes }),
+      });
+      if (response.ok) return response.json();
+
+      const message = await readResponseText(response);
+      lastError = new Error(`${context}_${response.status}:${message}`);
+      if (!isRetryableStatus(response.status) || attempt === maxAttempts) throw lastError;
+    } catch (error: any) {
+      lastError = error instanceof Error ? error : new Error(String(error));
+      const retryable = /_(408|429|5\d\d):/.test(lastError.message) || /fetch|network|ECONN|ETIMEDOUT/i.test(lastError.message);
+      if (!retryable || attempt === maxAttempts) throw lastError;
+    }
+
+    await new Promise(resolve => setTimeout(resolve, 250 * Math.pow(2, attempt - 1)));
+  }
+  throw lastError || new Error(`${context}_UNKNOWN`);
+}
+
 export async function readHomeDocument(homeCode: string): Promise<{ exists: boolean; data: any; updateTime?: string }> {
   const response = await firestoreFetch(documentPath("nests", homeCode), { method: "GET" });
   if (response.status === 404) return { exists: false, data: null };
-  if (!response.ok) throw new Error(`FIRESTORE_READ_${response.status}:${await response.text()}`);
+  if (!response.ok) throw new Error(`FIRESTORE_READ_${response.status}:${await readResponseText(response)}`);
   const payload = await response.json();
   return { exists: true, data: decodeFields(payload.fields), updateTime: payload.updateTime };
+}
+
+function buildAuthorizationMetadata(existing: any, candidateData: any): { authorizedUids: string[]; authorizedEmails: string[] } {
+  const currentClaims = getAuthenticatedClaims();
+  const uids = new Set<string>(Array.isArray(existing?.authorizedUids) ? existing.authorizedUids.map(String) : []);
+  const emails = new Set<string>(Array.isArray(existing?.authorizedEmails) ? existing.authorizedEmails.map((v: any) => String(v).trim().toLowerCase()) : []);
+
+  if (currentClaims.uid) uids.add(currentClaims.uid);
+  if (currentClaims.email) emails.add(currentClaims.email);
+
+  const users = candidateData?.data?.users;
+  if (Array.isArray(users)) {
+    for (const user of users) {
+      if (typeof user?.authUid === "string" && user.authUid.trim()) uids.add(user.authUid.trim());
+      if (typeof user?.email === "string" && user.email.trim()) emails.add(user.email.trim().toLowerCase());
+    }
+  }
+
+  return { authorizedUids: [...uids], authorizedEmails: [...emails] };
 }
 
 export async function writeHomeDocument(homeCode: string, data: any, expectedRevision?: number): Promise<number> {
@@ -87,16 +163,41 @@ export async function writeHomeDocument(homeCode: string, data: any, expectedRev
 
   const nextRevision = actualRevision + 1;
   const savedAt = new Date().toISOString();
-  const merged = { ...remote, homeCode, ...data, syncRevision: nextRevision, syncUpdatedAt: savedAt, updatedAt: savedAt };
+  const auth = buildAuthorizationMetadata(remote, data);
+  const merged = {
+    ...remote,
+    homeCode,
+    ...data,
+    authorizedUids: auth.authorizedUids,
+    authorizedEmails: auth.authorizedEmails,
+    syncRevision: nextRevision,
+    syncUpdatedAt: savedAt,
+    updatedAt: savedAt,
+  };
   const documentName = `${API_BASE}/${documentPath("nests", homeCode)}`;
   const historyName = `${documentName}/history/${nextRevision}`;
   const writes: any[] = [
-    { update: { name: documentName, fields: encodeFields(merged) }, ...(existing.updateTime ? { currentDocument: { updateTime: existing.updateTime } } : {}) },
-    { update: { name: historyName, fields: encodeFields({ homeCode, revision: nextRevision, savedAt, actorUserId: "autenticado", source: "astro-hogar", data }) } },
+    {
+      update: { name: documentName, fields: encodeFields(merged) },
+      ...(existing.updateTime ? { currentDocument: { updateTime: existing.updateTime } } : {}),
+    },
+    {
+      update: {
+        name: historyName,
+        fields: encodeFields({
+          homeCode,
+          revision: nextRevision,
+          savedAt,
+          actorUserId: auth.authorizedUids.includes(getAuthenticatedClaims().uid || "") ? (getAuthenticatedClaims().uid || "autenticado") : "autenticado",
+          source: "astro-hogar",
+          backupType: "full-home-snapshot",
+          data: merged.data,
+        }),
+      },
+    },
   ];
 
-  const response = await firestoreFetch("documents:commit", { method: "POST", body: JSON.stringify({ writes }) });
-  if (!response.ok) throw new Error(`FIRESTORE_COMMIT_${response.status}:${await response.text()}`);
+  await commitWithRetry(writes, "FIRESTORE_COMMIT");
   return nextRevision;
 }
 
@@ -104,9 +205,14 @@ export async function patchHomeMetadata(homeCode: string, metadata: Record<strin
   const existing = await readHomeDocument(homeCode);
   const current = existing.exists ? existing.data || {} : {};
   const documentName = `${API_BASE}/${documentPath("nests", homeCode)}`;
-  const response = await firestoreFetch("documents:commit", {
-    method: "POST",
-    body: JSON.stringify({ writes: [{ update: { name: documentName, fields: encodeFields({ ...current, ...metadata }) }, ...(existing.updateTime ? { currentDocument: { updateTime: existing.updateTime } } : {}) }] }),
-  });
-  if (!response.ok) throw new Error(`FIRESTORE_METADATA_${response.status}:${await response.text()}`);
+  const response = await commitWithRetry([
+    {
+      update: {
+        name: documentName,
+        fields: encodeFields({ ...current, ...metadata }),
+      },
+      ...(existing.updateTime ? { currentDocument: { updateTime: existing.updateTime } } : {}),
+    },
+  ], "FIRESTORE_METADATA");
+  return response;
 }
