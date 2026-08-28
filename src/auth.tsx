@@ -1,5 +1,11 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { GoogleAuthProvider, User, onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  User,
+  onAuthStateChanged,
+  signInWithCredential,
+  signOut,
+} from "firebase/auth";
 import { auth } from "./firebase";
 
 interface AuthContextValue {
@@ -9,7 +15,53 @@ interface AuthContextValue {
   logout: () => Promise<void>;
 }
 
+interface GoogleIdentityServices {
+  accounts: {
+    id: {
+      initialize: (config: {
+        client_id: string;
+        callback: (response: { credential: string }) => void;
+        auto_select?: boolean;
+        cancel_on_tap_outside?: boolean;
+      }) => void;
+      prompt: () => void;
+    };
+  };
+}
+
+declare global {
+  interface Window {
+    google?: GoogleIdentityServices;
+  }
+}
+
+const AUTH_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined;
+const GIS_SCRIPT_ID = "google-identity-services";
+
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+
+function loadGoogleIdentityServices(): Promise<void> {
+  if (typeof window === "undefined") return Promise.reject(new Error("Google Identity Services solo puede ejecutarse en el navegador."));
+  if (window.google?.accounts?.id) return Promise.resolve();
+
+  return new Promise((resolve, reject) => {
+    const existing = document.getElementById(GIS_SCRIPT_ID) as HTMLScriptElement | null;
+    if (existing) {
+      existing.addEventListener("load", () => resolve(), { once: true });
+      existing.addEventListener("error", () => reject(new Error("No se pudo cargar Google Identity Services.")), { once: true });
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.id = GIS_SCRIPT_ID;
+    script.src = "https://accounts.google.com/gsi/client";
+    script.async = true;
+    script.defer = true;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error("No se pudo cargar Google Identity Services."));
+    document.head.appendChild(script);
+  });
+}
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -84,10 +136,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     user,
     loading,
     signInWithGoogle: async () => {
-      const provider = new GoogleAuthProvider();
-      provider.setCustomParameters({ prompt: "select_account" });
-      const result = await signInWithPopup(auth, provider);
-      return result.user;
+      if (!AUTH_CLIENT_ID) {
+        throw new Error("Falta configurar VITE_GOOGLE_CLIENT_ID en el entorno de la aplicación.");
+      }
+
+      await loadGoogleIdentityServices();
+
+      return new Promise<User>((resolve, reject) => {
+        let settled = false;
+
+        const finish = (action: () => void) => {
+          if (settled) return;
+          settled = true;
+          action();
+        };
+
+        window.google!.accounts.id.initialize({
+          client_id: AUTH_CLIENT_ID,
+          callback: async ({ credential }) => {
+            try {
+              const firebaseCredential = GoogleAuthProvider.credential(credential);
+              const result = await signInWithCredential(auth, firebaseCredential);
+              finish(() => resolve(result.user));
+            } catch (error) {
+              finish(() => reject(error));
+            }
+          },
+          cancel_on_tap_outside: true,
+        });
+
+        window.google!.accounts.id.prompt();
+      });
     },
     logout: () => signOut(auth),
   }), [user, loading]);
