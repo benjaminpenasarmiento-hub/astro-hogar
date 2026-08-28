@@ -1,6 +1,6 @@
-import { extractBearerToken, verifyFirebaseIdToken } from "./serverAuth";
-import { readHomeDocument, patchHomeMetadata } from "./serverFirestoreRest";
-import { runWithFirestoreAuthToken } from "./serverFirestoreRest";
+import { extractBearerToken, verifyFirebaseIdToken } from "./serverAuth.js";
+import { readHomeDocument, patchHomeMetadata } from "./serverFirestoreRest.js";
+import { runWithFirestoreAuthToken } from "./serverFirestoreRest.js";
 
 function getHomeCode(req: any): string {
   return String(req.headers?.["x-home-code"] || "").trim().toUpperCase();
@@ -8,8 +8,7 @@ function getHomeCode(req: any): string {
 
 function isOnboardingPath(path: string): boolean {
   return path === "/api/health" || path === "/health" ||
-    path === "/api/onboarding/create-home" ||
-    path === "/api/onboarding/join-home";
+    path === "/api/onboarding/create-home" || path === "/api/onboarding/join-home";
 }
 
 async function userBelongsToHome(homeCode: string, uid?: string, email?: string): Promise<boolean> {
