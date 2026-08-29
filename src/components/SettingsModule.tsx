@@ -5,6 +5,7 @@ import { updateHomeSettings, resetDatabaseOnboarding, rescueHomeData, fetchAudit
 import { Avatar } from "./Avatar";
 import MobileWidgetsCenter from "./MobileWidgetsCenter";
 import { SyncStatusIndicator } from "./SyncStatusIndicator";
+import AccountDataControls from "./AccountDataControls";
 
 interface SettingsModuleProps {
   home: HomeType;
@@ -253,7 +254,10 @@ export default function SettingsModule({ home, users, onRefreshData, onOpenInsta
       </div>
 
       {activeSection === "general" ? (
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+        <div className="space-y-6">
+          {/* __ACCOUNT_DATA_CONTROLS_V1__ */}
+          <AccountDataControls homeCode={home?.code} onComplete={onRefreshData} />
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
         
         {/* Left main database settings form */}
         <div className="md:col-span-7 bg-white p-6 sm:p-8 rounded-3xl border-4 border-[#F3EFE6] shadow-sm space-y-6">
@@ -491,6 +495,7 @@ export default function SettingsModule({ home, users, onRefreshData, onOpenInsta
         </div>
 
       </div>
+        </div>
       ) : activeSection === "mobile" ? (
         <MobileWidgetsCenter 
           home={home} 
