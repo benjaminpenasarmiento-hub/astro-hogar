@@ -1,0 +1,43 @@
+name: Repair app source
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    if: startsWith(github.event.head_commit.message, 'repair: restore app source')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Restore complete App.tsx from known-good commit
+        run: |
+          git checkout d80abbbca5a5b84811e89f22556c84e8eea42095 -- src/App.tsx
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('src/App.tsx')
+          s = p.read_text(encoding='utf-8')
+          s = s.replace('import OnboardingWizard from "./components/OnboardingWizard";', 'import OnboardingWizard from "./components/OnboardingWizardV2";')
+          s = s.replace('home?.code || localStorage.getItem("astro_home_code") || "HOGARPELUDO"', 'home?.code || localStorage.getItem("astro_home_code") || ""')
+          p.write_text(s, encoding='utf-8')
+          PY
+
+      - name: Verify source
+        run: |
+          grep -q 'export default function App' src/App.tsx
+          ! grep -q 'HOGARPELUDO' src/App.tsx
+          grep -q 'OnboardingWizardV2' src/App.tsx
+
+      - name: Commit repaired source
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/App.tsx
+          git commit -m "chore(automation): restore complete app source"
+          git push
