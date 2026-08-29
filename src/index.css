@@ -1,16 +1,114 @@
 @import "tailwindcss";
 
-.markdown-body strong, .markdown-body b {
+:root {
+  color-scheme: light;
+  --astro-bg: #faf7f2;
+  --astro-card: #ffffff;
+  --astro-border: #e7e2d5;
+  --astro-text: #2c2723;
+  --astro-muted: #776e67;
+}
+
+html {
+  min-width: 320px;
+  background: var(--astro-bg);
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: var(--astro-bg);
+  color: var(--astro-text);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+input,
+textarea,
+select {
+  max-width: 100%;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.markdown-body strong,
+.markdown-body b {
   text-decoration: underline;
   text-underline-offset: 2px;
   font-weight: 700;
 }
 
-/* The authenticated Google account supplies the email; never ask for it again in onboarding. */
-label:has(+ input[type="email"]) {
-  display: none !important;
+/* Responsive interaction polish for phones and small tablets. */
+@media (max-width: 767px) {
+  body {
+    overflow-x: hidden;
+  }
+
+  button,
+  a,
+  [role="button"] {
+    touch-action: manipulation;
+  }
+
+  /* Keep full-screen dialogs usable above mobile browser chrome. */
+  .fixed.inset-0 {
+    padding-left: max(0.75rem, env(safe-area-inset-left));
+    padding-right: max(0.75rem, env(safe-area-inset-right));
+    padding-top: max(0.75rem, env(safe-area-inset-top));
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+  }
+
+  /* Avoid cards/forms becoming wider than the viewport because of borders/gaps. */
+  .rounded-3xl,
+  .rounded-[2rem],
+  .rounded-[2.7rem] {
+    max-width: 100%;
+  }
+
+  /* Improve keyboard usability on mobile. */
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
 }
-label:has(+ input[type="email"]) + input[type="email"] {
-  display: none !important;
+
+@media (max-width: 380px) {
+  .text-3xl {
+    font-size: 1.65rem;
+    line-height: 2rem;
+  }
 }
-label:has(+ input[type="email"]) { pointer-events: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
