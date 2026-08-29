@@ -135,6 +135,37 @@ export async function readHomeDocument(homeCode: string): Promise<{ exists: bool
   return { exists: true, data: decodeFields(payload.fields), updateTime: payload.updateTime };
 }
 
+export async function readAccountHomeIndex(uid: string): Promise<{ homeCode: string | null }> {
+  const cleanUid = String(uid || "").trim();
+  if (!cleanUid) return { homeCode: null };
+  const response = await firestoreFetch(documentPath("account_homes", cleanUid), { method: "GET" });
+  if (response.status === 404) return { homeCode: null };
+  if (!response.ok) throw new Error(`ACCOUNT_HOME_READ_${response.status}:${await readResponseText(response)}`);
+  const payload = await response.json();
+  const data = decodeFields(payload.fields);
+  return { homeCode: typeof data.homeCode === "string" ? data.homeCode : null };
+}
+
+export async function writeAccountHomeIndex(uid: string, homeCode: string): Promise<void> {
+  const cleanUid = String(uid || "").trim();
+  const cleanCode = String(homeCode || "").trim().toUpperCase();
+  if (!cleanUid || !cleanCode) throw new Error("ACCOUNT_HOME_INDEX_INVALID");
+
+  const documentName = `${API_BASE}/${documentPath("account_homes", cleanUid)}`;
+  await commitWithRetry([
+    {
+      update: {
+        name: documentName,
+        fields: encodeFields({
+          uid: cleanUid,
+          homeCode: cleanCode,
+          updatedAt: new Date().toISOString(),
+        }),
+      },
+    },
+  ], "ACCOUNT_HOME_WRITE");
+}
+
 function buildAuthorizationMetadata(existing: any, candidateData: any): { authorizedUids: string[]; authorizedEmails: string[] } {
   const currentClaims = getAuthenticatedClaims();
   const uids = new Set<string>(Array.isArray(existing?.authorizedUids) ? existing.authorizedUids.map(String) : []);
@@ -198,6 +229,16 @@ export async function writeHomeDocument(homeCode: string, data: any, expectedRev
   ];
 
   await commitWithRetry(writes, "FIRESTORE_COMMIT");
+
+  const currentUid = getAuthenticatedClaims().uid;
+  if (currentUid) {
+    try {
+      await writeAccountHomeIndex(currentUid, homeCode);
+    } catch (indexError) {
+      console.warn("[Account Home Index] No se pudo actualizar el índice de cuenta:", indexError);
+    }
+  }
+
   return nextRevision;
 }
 
