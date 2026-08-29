@@ -69,4 +69,36 @@ if (!source.includes("onboarding/detect-home")) {
 }
 
 fs.writeFileSync(buildPath, source, "utf8");
+
+// Inject account/data controls into the existing settings module at build time.
+// This keeps the large hand-tuned SettingsModule source intact in git while
+// making the feature part of the production bundle.
+const settingsPath = "src/components/SettingsModule.tsx";
+let settingsSource = fs.readFileSync(settingsPath, "utf8");
+const accountImport = 'import AccountDataControls from "./AccountDataControls";';
+const accountMarker = 'AccountDataControls homeCode={home?.code}';
+
+if (!settingsSource.includes(accountMarker)) {
+  const importAnchor = 'import { SyncStatusIndicator } from "./SyncStatusIndicator";';
+  if (!settingsSource.includes(accountImport)) {
+    if (!settingsSource.includes(importAnchor)) throw new Error("No se encontró el ancla de imports de SettingsModule");
+    settingsSource = settingsSource.replace(importAnchor, `${importAnchor}\n${accountImport}`, 1);
+  }
+
+  const generalAnchor = '{activeSection === "general" ? (\n        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">';
+  const generalReplacement = '{activeSection === "general" ? (\n        <div className="space-y-6">\n          {/* __ACCOUNT_DATA_CONTROLS_V1__ */}\n          <AccountDataControls homeCode={home?.code} onComplete={onRefreshData} />\n          <div className="grid grid-cols-1 md:grid-cols-12 gap-6">';
+  if (!settingsSource.includes(generalAnchor)) throw new Error("No se encontró el ancla de Ajustes Generales");
+  settingsSource = settingsSource.replace(generalAnchor, generalReplacement, 1);
+
+  const mobileBranch = '      ) : activeSection === "mobile" ? (';
+  const branchIndex = settingsSource.indexOf(mobileBranch);
+  if (branchIndex === -1) throw new Error("No se encontró la rama mobile de SettingsModule");
+  const beforeBranch = settingsSource.slice(0, branchIndex).replace(/\s+$/, "");
+  const afterBranch = settingsSource.slice(branchIndex);
+  settingsSource = `${beforeBranch}\n        </div>\n${afterBranch}`;
+
+  fs.writeFileSync(settingsPath, settingsSource, "utf8");
+  console.log("[AstroHogar] Account/data controls injected into SettingsModule.");
+}
+
 console.log("[AstroHogar] Onboarding production patch prepared.");
