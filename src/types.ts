@@ -45,6 +45,18 @@ export interface HomePersonalityState {
 export interface HomeSettings {
   notificationsEnabled: boolean;
   aiCatMoodLevel: "soft" | "normal" | "active";
+  miloLearningNotes?: string;
+}
+
+export interface UserEnvironment {
+  latitude: number;
+  longitude: number;
+  accuracy?: number | null;
+  timezone: string;
+  label?: string;
+  capturedAt: string;
+  notificationPermission?: string;
+  notificationsEnabled?: boolean;
 }
 
 export interface Home {
@@ -80,6 +92,7 @@ export interface UserProfile {
   horoscopeConsejo?: string;
   emoji?: string;
   pushToken?: string;
+  environment?: UserEnvironment;
   alertPreferences?: {
     sintoniaReminders?: boolean;
     petVaccines?: boolean;
