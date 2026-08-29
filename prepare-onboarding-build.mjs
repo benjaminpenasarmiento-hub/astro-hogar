@@ -68,11 +68,22 @@ if (!source.includes("onboarding/detect-home")) {
   source = source.replace(marker, statement + marker);
 }
 
+// Make Milo aware of the live household environment and the explicit things the household taught him.
+const miloSummaryAnchor = 'const store = getStore();\n  const todayStr = new Date().toISOString().split(\'T\')[0];';
+const miloSummaryReplacement = `const store = getStore();\n  const environmentUsers = (store.users || []).filter((u: any) => u?.environment?.latitude != null && u?.environment?.longitude != null);\n  const preferredEnvironment = environmentUsers[0]?.environment;\n  const liveLocation = preferredEnvironment\n    ? \`\${preferredEnvironment.label || "Ubicación actual"} (\${Number(preferredEnvironment.latitude).toFixed(4)}, \${Number(preferredEnvironment.longitude).toFixed(4)}, zona \${preferredEnvironment.timezone || "local"})\`\n    : (store.home?.address || "Ubicación del hogar aún no autorizada");\n  const miloLearningNotes = store.home?.settings?.miloLearningNotes || "Aún no hay instrucciones explícitas del hogar para Milo.";\n  const todayStr = new Date().toISOString().split('T')[0];`;
+source = source.replace(miloSummaryAnchor, miloSummaryReplacement);
+source = source.replace(
+  'location: "Bogotá, Sabana de Bogotá (2.640 msnm, clima templado/fresco)",',
+  'location: liveLocation,'
+);
+source = source.replace(
+  '    frasco: frascoSummary\n',
+  '    frasco: frascoSummary,\n    miloLearning: miloLearningNotes\n'
+);
+
 fs.writeFileSync(buildPath, source, "utf8");
 
 // Inject account/data controls into the existing settings module at build time.
-// This keeps the large hand-tuned SettingsModule source intact in git while
-// making the feature part of the production bundle.
 const settingsPath = "src/components/SettingsModule.tsx";
 let settingsSource = fs.readFileSync(settingsPath, "utf8");
 const accountImport = 'import AccountDataControls from "./AccountDataControls";';
@@ -100,5 +111,40 @@ if (!settingsSource.includes(accountMarker)) {
   fs.writeFileSync(settingsPath, settingsSource, "utf8");
   console.log("[AstroHogar] Account/data controls injected into SettingsModule.");
 }
+
+// Inject live environment, current day, Milo learning and daily energy color into production UI.
+const dashboardPath = "src/components/HomeDashboard.tsx";
+let dashboardSource = fs.readFileSync(dashboardPath, "utf8");
+if (!dashboardSource.includes('import HomeEnvironmentStrip from "./HomeEnvironmentStrip";')) {
+  dashboardSource = dashboardSource.replace(
+    'import { Avatar } from "./Avatar";',
+    'import { Avatar } from "./Avatar";\nimport HomeEnvironmentStrip from "./HomeEnvironmentStrip";\nimport MiloLearningCard from "./MiloLearningCard";',
+    1
+  );
+}
+if (!dashboardSource.includes('<HomeEnvironmentStrip home={home}')) {
+  dashboardSource = dashboardSource.replace(/return \(\n(\s*)<div([^>]*>)/, (match, indent, opening) => {
+    return `return (\n${indent}<${"HomeEnvironmentStrip"} home={home} users={users} activeUserId={activeUserId} onRefreshAll={onRefreshAll} />\n${indent}<MiloLearningCard home={home} onRefreshAll={onRefreshAll} />\n${indent}<div${opening}`;
+  }, 1);
+}
+fs.writeFileSync(dashboardPath, dashboardSource, "utf8");
+
+const cosmosPath = "src/components/CosmosModule.tsx";
+let cosmosSource = fs.readFileSync(cosmosPath, "utf8");
+if (!cosmosSource.includes('import DailyEnergyColor from "./DailyEnergyColor";')) {
+  cosmosSource = cosmosSource.replace(
+    'import { Avatar } from "./Avatar";',
+    'import { Avatar } from "./Avatar";\nimport DailyEnergyColor from "./DailyEnergyColor";',
+    1
+  );
+}
+if (!cosmosSource.includes('<DailyEnergyColor userId="hogar"')) {
+  cosmosSource = cosmosSource.replace(
+    '          {/* Horóscopos de los Inquilinos de la Casa */}',
+    '          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">\n            {users.map((u) => <DailyEnergyColor key={`daily-color-${u.id}`} userId={String(u.id)} />)}\n          </div>\n\n          {/* Horóscopos de los Inquilinos de la Casa */}',
+    1
+  );
+}
+fs.writeFileSync(cosmosPath, cosmosSource, "utf8");
 
 console.log("[AstroHogar] Onboarding production patch prepared.");
