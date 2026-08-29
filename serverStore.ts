@@ -1185,7 +1185,7 @@ export function getStoreByCode(code: string): DBStore {
     multiStore[cleanCode] = JSON.parse(JSON.stringify(INITIAL_DATA));
     multiStore[cleanCode].home.id = `home-${cleanCode}`;
     multiStore[cleanCode].home.code = cleanCode;
-    multiStore[cleanCode].home.name = `Hogar de Mafe y Benjamin`;
+    multiStore[cleanCode].home.name = "";
     saveToDisk();
   }
 
