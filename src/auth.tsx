@@ -6,7 +6,8 @@ import {
   signInWithCredential,
   signOut,
 } from "firebase/auth";
-import { auth } from "./firebase";
+import { collection, getDocs, limit, query, where } from "firebase/firestore";
+import { auth, db } from "./firebase";
 
 interface AuthContextValue {
   user: User | null;
@@ -40,6 +41,46 @@ const GIS_SCRIPT_ID = "google-identity-services";
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
+function clearStaleHouseholdSession() {
+  try {
+    localStorage.removeItem("astro_home_code");
+    localStorage.removeItem("astro_user_id");
+    for (let i = localStorage.length - 1; i >= 0; i--) {
+      const key = localStorage.key(i);
+      if (key?.startsWith("astro_mobile_nav_items_")) localStorage.removeItem(key);
+    }
+  } catch {
+    // Storage can be unavailable in restricted browser contexts.
+  }
+}
+
+async function detectHomeForAccount(currentUser: User): Promise<string | null> {
+  const uid = currentUser.uid;
+  const email = currentUser.email?.trim().toLowerCase() || "";
+
+  try {
+    const byUid = await getDocs(
+      query(collection(db, "nests"), where("authorizedUids", "array-contains", uid), limit(1))
+    );
+    if (!byUid.empty) return byUid.docs[0].id;
+  } catch (error) {
+    console.warn("[AstroHogar] No se pudo buscar hogar por UID:", error);
+  }
+
+  if (email) {
+    try {
+      const byEmail = await getDocs(
+        query(collection(db, "nests"), where("authorizedEmails", "array-contains", email), limit(1))
+      );
+      if (!byEmail.empty) return byEmail.docs[0].id;
+    } catch (error) {
+      console.warn("[AstroHogar] No se pudo buscar hogar por correo:", error);
+    }
+  }
+
+  return null;
+}
+
 function loadGoogleIdentityServices(): Promise<void> {
   if (typeof window === "undefined") return Promise.reject(new Error("Google Identity Services solo puede ejecutarse en el navegador."));
   if (window.google?.accounts?.id) return Promise.resolve();
@@ -70,7 +111,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
-      setLoading(false);
+      setLoading(true);
 
       if (currentUser) {
         localStorage.setItem("astro_auth_uid", currentUser.uid);
@@ -84,13 +125,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         } catch (error) {
           console.warn("[Firebase Auth] No se pudo obtener el ID token:", error);
         }
+
+        const detectedHome = await detectHomeForAccount(currentUser);
+        if (detectedHome) {
+          localStorage.setItem("astro_home_code", detectedHome);
+        } else {
+          clearStaleHouseholdSession();
+        }
       } else {
         localStorage.removeItem("astro_auth_uid");
         localStorage.removeItem("astro_auth_email");
         localStorage.removeItem("astro_auth_name");
         localStorage.removeItem("astro_auth_photo");
         localStorage.removeItem("astro_auth_id_token");
+        clearStaleHouseholdSession();
       }
+
+      setLoading(false);
     });
 
     return unsubscribe;
@@ -101,20 +152,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const previousFetch = window.fetch.bind(window);
     const authenticatedFetch = async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
-      if (!auth.currentUser) {
-        return previousFetch(input, init);
-      }
+      if (!auth.currentUser) return previousFetch(input, init);
 
       try {
         const idToken = await auth.currentUser.getIdToken();
         localStorage.setItem("astro_auth_id_token", idToken);
         const headers = new Headers(input instanceof Request ? input.headers : init?.headers);
         headers.set("Authorization", `Bearer ${idToken}`);
-
-        return previousFetch(input, {
-          ...(init || {}),
-          headers,
-        });
+        return previousFetch(input, { ...(init || {}), headers });
       } catch (error) {
         console.warn("[Firebase Auth] No se pudo adjuntar el ID token; continuando sin él:", error);
         return previousFetch(input, init);
@@ -136,15 +181,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     user,
     loading,
     signInWithGoogle: async () => {
-      if (!AUTH_CLIENT_ID) {
-        throw new Error("Falta configurar VITE_GOOGLE_CLIENT_ID en el entorno de la aplicación.");
-      }
-
+      if (!AUTH_CLIENT_ID) throw new Error("Falta configurar VITE_GOOGLE_CLIENT_ID en el entorno de la aplicación.");
       await loadGoogleIdentityServices();
 
       return new Promise<User>((resolve, reject) => {
         let settled = false;
-
         const finish = (action: () => void) => {
           if (settled) return;
           settled = true;
