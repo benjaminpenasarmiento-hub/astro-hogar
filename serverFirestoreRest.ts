@@ -1,5 +1,5 @@
 import { AsyncLocalStorage } from "node:async_hooks";
-import firebaseConfig from "./firebase-applet-config.json";
+import firebaseConfig from "./firebase-applet-config.json" with { type: "json" };
 
 const PROJECT_ID = firebaseConfig.projectId;
 const DATABASE_ID = firebaseConfig.firestoreDatabaseId;
@@ -208,9 +208,6 @@ export async function writeHomeDocument(homeCode: string, data: any, expectedRev
   const documentName = `${API_BASE}/${documentPath("nests", homeCode)}`;
   const historyName = `${documentName}/history/${nextRevision}`;
 
-  // Create/update the parent first. Firestore security rules for the history
-  // document read the parent, so a brand-new home must exist before history can
-  // be written.
   await commitWithRetry([
     {
       update: { name: documentName, fields: encodeFields(merged) },
@@ -218,8 +215,6 @@ export async function writeHomeDocument(homeCode: string, data: any, expectedRev
     },
   ], "FIRESTORE_HOME_COMMIT");
 
-  // History is supplemental. Failure here must not make an otherwise valid new
-  // home look like a failed onboarding operation.
   try {
     await commitWithRetry([
       {
