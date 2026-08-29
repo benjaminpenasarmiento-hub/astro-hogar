@@ -8,22 +8,79 @@
     <link rel="icon" type="image/jpeg" href="/icon-192.jpg" />
     <link rel="apple-touch-icon" href="/icon-192.jpg" />
     <title>Hogar de Mafe & Benja 🏡</title>
-    <!-- Google Fonts for a soft, extremely cute and round aesthetics -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-      body {
-        font-family: 'Plus Jakarta Sans', sans-serif;
-      }
-      h1, h2, h3, h4, .text-cute {
-        font-family: 'Quicksand', sans-serif;
-      }
+      body { font-family: 'Plus Jakarta Sans', sans-serif; }
+      h1, h2, h3, h4, .text-cute { font-family: 'Quicksand', sans-serif; }
     </style>
   </head>
   <body class="bg-[#FAF7F2] text-[#2C2723]">
     <div id="root"></div>
+    <script>
+      (() => {
+        const SESSION_KEYS = ["astro_onboarding_email", "astro_onboarding_name", "astro_onboarding_home", "astro_onboarding_birthDate", "astro_onboarding_birthTime", "astro_onboarding_birthPlace"];
+        const clearOnboardingDraft = () => SESSION_KEYS.forEach((key) => { try { sessionStorage.removeItem(key); } catch {} });
+
+        async function requestNotificationPermission() {
+          if (!("Notification" in window)) return "unsupported";
+          if (Notification.permission !== "default") return Notification.permission;
+          try {
+            const permission = await Notification.requestPermission();
+            try { localStorage.setItem("astro_notifications_permission", permission); } catch {}
+            return permission;
+          } catch {
+            return "denied";
+          }
+        }
+
+        window.AstroHogarNotifications = { requestPermission: requestNotificationPermission };
+
+        document.addEventListener("click", (event) => {
+          const target = event.target instanceof Element ? event.target : null;
+          if (!target) return;
+
+          const fundButton = target.closest("button");
+          const text = fundButton?.textContent?.replace(/\s+/g, " ").trim() || "";
+
+          if (text.includes("Fundar mi nido")) {
+            clearOnboardingDraft();
+            setTimeout(() => {
+              document.querySelectorAll("input").forEach((input) => {
+                input.setAttribute("autocomplete", "off");
+              });
+              const emailLabel = Array.from(document.querySelectorAll("label")).find((label) => label.textContent?.includes("Tu Correo Electrónico"));
+              const emailContainer = emailLabel?.closest(".space-y-1");
+              if (emailContainer) emailContainer.remove();
+
+              document.querySelectorAll('input[type="text"], input[type="date"], input[type="time"]').forEach((input) => {
+                const placeholder = (input.getAttribute("placeholder") || "").toLowerCase();
+                if (placeholder.includes("casa luna") || input.type === "date" || input.type === "time" || input.value === "Bogotá") {
+                  const nativeSetter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
+                  nativeSetter?.call(input, "");
+                  input.dispatchEvent(new Event("input", { bubbles: true }));
+                  input.dispatchEvent(new Event("change", { bubbles: true }));
+                }
+              });
+            }, 50);
+
+            if (!window.__astroNotificationPrompted) {
+              window.__astroNotificationPrompted = true;
+              requestNotificationPermission();
+            }
+          }
+        }, true);
+
+        const observer = new MutationObserver(() => {
+          const emailLabel = Array.from(document.querySelectorAll("label")).find((label) => label.textContent?.includes("Tu Correo Electrónico"));
+          const emailContainer = emailLabel?.closest(".space-y-1");
+          if (emailContainer) emailContainer.remove();
+          document.querySelectorAll("input").forEach((input) => input.setAttribute("autocomplete", "off"));
+        });
+        observer.observe(document.documentElement, { childList: true, subtree: true });
+      })();
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
-
