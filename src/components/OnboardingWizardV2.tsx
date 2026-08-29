@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { ArrowRight, Check, Copy, Link2, Sparkles, Wand2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Copy, Link2, Sparkles, Wand2 } from "lucide-react";
 import { createHomeOnboarding, joinHomeOnboarding } from "../api";
 import { Home, UserProfile } from "../types";
 import { Avatar } from "./Avatar";
@@ -8,7 +8,7 @@ interface OnboardingWizardV2Props {
   onCompleted: (home: Home, user: UserProfile) => void;
 }
 
-type Mode = "profile" | "invitation" | "welcome";
+type Mode = "start" | "profile" | "invitation" | "welcome";
 
 // Keep the existing visual avatars that already belong to AstroHogar.
 const AVATARS = [
@@ -25,10 +25,12 @@ const AVATARS = [
 const inputClass =
   "w-full rounded-2xl border border-[#E6DED2] bg-white px-4 py-3.5 text-sm outline-none transition focus:border-amber-400 focus:ring-4 focus:ring-amber-100";
 const primaryClass =
-  "w-full rounded-2xl bg-[#2C2723] px-5 py-4 text-sm font-black text-white shadow-lg transition hover:translate-y-[-1px] disabled:cursor-not-allowed disabled:opacity-50";
+  "w-full rounded-2xl bg-[#2C2723] px-5 py-4 text-sm font-black text-white shadow-lg transition hover:-translate-y-px disabled:cursor-not-allowed disabled:opacity-50";
+const secondaryClass =
+  "w-full rounded-2xl border-2 border-[#E7E2D5] bg-white px-5 py-4 text-sm font-black text-[#2C2723] shadow-sm transition hover:border-amber-300 hover:bg-[#FCFAF7]";
 
 export default function OnboardingWizardV2({ onCompleted }: OnboardingWizardV2Props) {
-  const [mode, setMode] = useState<Mode>("profile");
+  const [mode, setMode] = useState<Mode>("start");
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState("");
 
@@ -53,6 +55,12 @@ export default function OnboardingWizardV2({ onCompleted }: OnboardingWizardV2Pr
 
   const clearError = () => setError("");
   const remixAvatar = () => setAvatarIndex(Math.floor(Math.random() * AVATARS.length));
+
+  const resetToStart = () => {
+    clearError();
+    setMode("start");
+    setInviteCode("");
+  };
 
   const submitProfile = async () => {
     clearError();
@@ -99,6 +107,15 @@ export default function OnboardingWizardV2({ onCompleted }: OnboardingWizardV2Pr
     } finally {
       setIsProcessing(false);
     }
+  };
+
+  const continueInvitation = () => {
+    clearError();
+    if (!inviteCode.trim()) {
+      setError("Ingresa el código que te compartieron para conectarte al hogar. 🔗");
+      return;
+    }
+    setMode("profile");
   };
 
   const copyCode = async () => {
@@ -151,10 +168,60 @@ export default function OnboardingWizardV2({ onCompleted }: OnboardingWizardV2Pr
     );
   }
 
+  if (mode === "start") {
+    return (
+      <div className="relative min-h-screen w-full overflow-hidden bg-[#FAF7F2] px-4 py-6 text-[#2C2723] sm:flex sm:items-center sm:justify-center">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(245,158,11,0.12),transparent_32%),radial-gradient(circle_at_85%_90%,rgba(236,72,153,0.10),transparent_30%)]" />
+        <div className="relative z-10 w-full max-w-md rounded-[2rem] border border-[#EEE5D8] bg-white/95 p-6 text-center shadow-2xl sm:p-9">
+          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-[1.7rem] bg-gradient-to-br from-amber-100 to-pink-100 text-4xl shadow-inner">🏡</div>
+          <p className="mt-5 text-[10px] font-black uppercase tracking-[0.25em] text-amber-700">AstroHogar</p>
+          <h1 className="mt-2 text-3xl font-black tracking-tight">¿Cómo quieres comenzar?</h1>
+          <p className="mx-auto mt-3 max-w-sm text-sm leading-6 text-[#786F68]">Tu cuenta de Google ya está conectada. Ahora elige cómo quieres vincularte con un hogar.</p>
+
+          <div className="mt-7 space-y-3">
+            <button onClick={() => { clearError(); setInviteCode(""); setMode("profile"); }} className={primaryClass}>
+              <span className="block text-base">✨ Fundar nuevo nido</span>
+              <span className="mt-1 block text-xs font-semibold text-white/70">Crear tu hogar desde cero</span>
+            </button>
+            <button onClick={() => { clearError(); setMode("invitation"); }} className={secondaryClass}>
+              <span className="block text-base">🔗 Ingresar con código</span>
+              <span className="mt-1 block text-xs font-semibold text-[#8A817C]">Unirte a un hogar existente</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (mode === "invitation") {
+    return (
+      <div className="min-h-screen w-full overflow-hidden bg-[#FAF7F2] px-4 py-6 text-[#2C2723] sm:flex sm:items-center sm:justify-center">
+        <div className="w-full max-w-md rounded-[2rem] border border-[#EEE5D8] bg-white/95 p-6 shadow-2xl sm:p-9">
+          <button onClick={resetToStart} className="mb-6 inline-flex items-center gap-2 text-xs font-black text-[#8A817C] hover:text-[#2C2723]"><ArrowLeft size={14} /> Atrás</button>
+          <div className="text-center">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-[1.4rem] bg-amber-50 text-3xl">🔗</div>
+            <p className="mt-5 text-[10px] font-black uppercase tracking-[0.25em] text-amber-700">Conectar cuenta</p>
+            <h1 className="mt-2 text-3xl font-black">Ingresa con código</h1>
+            <p className="mt-3 text-sm leading-6 text-[#786F68]">Usa el código que te compartió alguien que ya pertenece al hogar.</p>
+          </div>
+
+          <label className="mt-7 block">
+            <span className="mb-2 block text-xs font-black">Código del hogar</span>
+            <input autoComplete="off" autoFocus value={inviteCode} onChange={e => setInviteCode(e.target.value.toUpperCase())} placeholder="NIDO-XXXXX" className={inputClass} />
+          </label>
+
+          {error && <div className="mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-700">⚠️ {error}</div>}
+          <button onClick={continueInvitation} className={`${primaryClass} mt-5`}>Continuar <ArrowRight className="ml-2 inline" size={16} /></button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen w-full overflow-hidden bg-[#FAF7F2] px-4 py-6 text-[#2C2723] sm:flex sm:items-center sm:justify-center">
       <div className="w-full max-w-4xl rounded-[2rem] border border-[#EEE5D8] bg-white/95 p-5 shadow-2xl sm:p-8">
         <div className="mx-auto max-w-2xl text-center">
+          <button onClick={() => { clearError(); setMode("start"); }} className="mb-5 inline-flex items-center gap-2 text-xs font-black text-[#8A817C] hover:text-[#2C2723]"><ArrowLeft size={14} /> Atrás</button>
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-50 text-2xl">✨</div>
           <p className="mt-4 text-[10px] font-black uppercase tracking-[0.25em] text-amber-700">Tu cuenta ya está conectada</p>
           <h1 className="mt-2 text-3xl font-black tracking-tight sm:text-4xl">Háblame de ti.</h1>
@@ -166,13 +233,7 @@ export default function OnboardingWizardV2({ onCompleted }: OnboardingWizardV2Pr
             <label className="block"><span className="mb-2 block text-xs font-black">Nombre</span><input autoComplete="off" value={name} onChange={e => setName(e.target.value)} placeholder="¿Cómo quieres que te llamemos?" className={inputClass} /></label>
             <label className="block"><span className="mb-2 block text-xs font-black">Fecha de nacimiento</span><input autoComplete="off" type="date" value={birthDate} onChange={e => setBirthDate(e.target.value)} className={inputClass} /></label>
             <label className="block"><span className="mb-2 block text-xs font-black">¿A qué te dedicas actualmente?</span><input autoComplete="off" value={occupation} onChange={e => setOccupation(e.target.value)} placeholder="Trabajo, estudio, emprendimiento, proyecto personal..." className={inputClass} /></label>
-            <label className="block"><span className="mb-2 block text-xs font-black">Cuéntame sobre ti</span><textarea autoComplete="off" rows={6} value={about} onChange={e => setAbout(e.target.value)} placeholder="Gustos, rutinas, metas, proyectos, cosas importantes, cómo es tu día a día..." className={inputClass} /></label>
-
-            <div className="rounded-2xl border border-dashed border-[#DCCFBF] bg-[#FCFAF7] p-4">
-              <div className="flex items-center gap-2 text-xs font-black"><Link2 size={15} /> ¿Te invitaron a un hogar?</div>
-              <p className="mt-1 text-xs leading-5 text-[#8A817C]">Escribe el código que te compartieron y tu cuenta quedará anclada al mismo hogar. Déjalo vacío para iniciar un hogar nuevo automáticamente.</p>
-              <input autoComplete="off" value={inviteCode} onChange={e => setInviteCode(e.target.value.toUpperCase())} placeholder="NIDO-XXXXX (opcional)" className={`${inputClass} mt-3`} />
-            </div>
+            <label className="block"><span className="mb-2 block text-xs font-black">Cuéntame sobre ti <span className="font-semibold text-[#A49B93]">(opcional)</span></span><textarea autoComplete="off" rows={6} value={about} onChange={e => setAbout(e.target.value)} placeholder="Gustos, rutinas, metas, proyectos, cosas importantes, cómo es tu día a día..." className={inputClass} /></label>
           </div>
 
           <div className="h-fit rounded-[2rem] border border-[#EEE5D8] bg-[#FCFAF7] p-5 text-center">
@@ -187,10 +248,15 @@ export default function OnboardingWizardV2({ onCompleted }: OnboardingWizardV2Pr
           </div>
         </div>
 
-        {error && <div className="mt-5 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-700">⚠️ {error}</div>}
+        {inviteCode && (
+          <div className="mt-5 rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-xs font-bold text-emerald-800">
+            🔗 Vas a conectarte al hogar <span className="font-mono">{inviteCode}</span>.
+          </div>
+        )}
+        {error && <div className="mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-700">⚠️ {error}</div>}
 
         <button onClick={submitProfile} disabled={isProcessing} className={`${primaryClass} mt-6`}>
-          {isProcessing ? "Milo está preparando tu hogar... 🐾" : inviteCode.trim() ? "Unirme a este hogar →" : "Continuar con Milo →"}
+          {isProcessing ? "Milo está preparando tu entrada... 🐾" : inviteCode ? "Unirme al hogar →" : "Continuar con Milo →"}
         </button>
       </div>
     </div>
