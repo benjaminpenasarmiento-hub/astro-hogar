@@ -85,10 +85,28 @@ fs.writeFileSync(storeTempPath, storeSource, "utf8");
 
 let transformedServer = serverSource.replaceAll('"./serverStore"', '"./serverStore.vercel"');
 transformedServer = transformedServer.replace('  loadDatabase,', '  refreshActiveHomeFromFirestore,\n  getPendingPersistence,\n  loadDatabase,');
-transformedServer = `import { requireFirebaseAuth as __requireFirebaseAuth } from "./serverAuthMiddleware";\nimport { runWithFirestoreAuthToken as __runWithFirestoreAuthToken } from "./serverFirestoreRest";\n${transformedServer}`;
+transformedServer = `import { requireFirebaseAuth as __requireFirebaseAuth } from "./serverAuthMiddleware";\nimport { runWithFirestoreAuthToken as __runWithFirestoreAuthToken, writeHomeDocument as __writeHomeDocument } from "./serverFirestoreRest";\n${transformedServer}`;
 
-const persistenceMiddleware = `\n\napp.use(async (req: any, _res: any, next: any) => {\n  const homeCode = String(req.headers["x-home-code"] || "");\n  await refreshActiveHomeFromFirestore(homeCode);\n  next();\n});\n`;
-transformedServer = transformedServer.replace("const app = express();", "const app = express();" + persistenceMiddleware);
+const safePartitionMiddleware = `app.use((req, res, next) => {\n  const rawHomeCode = String(req.headers["x-home-code"] || "").trim();\n  const onboardingCreate = req.path === "/api/onboarding/create-home";\n  const onboardingJoin = req.path === "/api/onboarding/join-home";\n  const onboardingEnter = req.path === "/api/onboarding/enter-home";\n\n  if (!rawHomeCode && !onboardingCreate && !onboardingJoin && !onboardingEnter && req.path !== "/api/health" && req.path !== "/health") {\n    return res.status(400).json({ error: "No hay un hogar activo. Crea o selecciona un hogar antes de consultar sus datos.", code: "HOME_CONTEXT_REQUIRED" });\n  }\n\n  const bodyCode = onboardingJoin ? String(req.body?.inviteCode || "").trim() : "";\n  const homeCode = normalizeHomeCode(rawHomeCode || bodyCode);\n  if (!homeCode) return next();\n  homeContextStorage.run(homeCode, () => next());\n});`;
+transformedServer = transformedServer.replace(
+  /app\.use\(\(req, res, next\) => \{[\s\S]*?homeContextStorage\.run\(homeCode, \(\) => \{\s*next\(\);\s*\}\);\s*\}\);/,
+  safePartitionMiddleware
+);
+
+transformedServer = transformedServer.replace(
+  /app\.post\("\/api\/force-firestore-sync", async \(req, res\) => \{[\s\S]*?\n\}\);/,
+  `app.post("/api/force-firestore-sync", async (req, res) => {\n  try {\n    const code = normalizeHomeCode(String(req.headers["x-home-code"] || ""));\n    if (!code) return res.json({ success: true, skipped: true, reason: "HOME_CONTEXT_REQUIRED" });\n    await restoreFromFirestore();\n    return res.json({ success: true, store: getStore(), syncStatus: getSyncStatus() });\n  } catch (err: any) {\n    return res.status(500).json({ success: false, error: err?.message || "Error during sync" });\n  }\n});`
+);
+
+transformedServer = transformedServer.replace(
+  /app\.post\("\/api\/onboarding\/create-home", async \(req, res\) => \{[\s\S]*?\n\}\);/,
+  `app.post("/api/onboarding/create-home", async (req, res) => {\n  try {\n    const { homeName, userName, email, birthDate, birthTime, birthPlace, emoji } = req.body;\n    if (!homeName?.trim() || !userName?.trim() || !birthDate) return res.status(400).json({ error: "Faltan datos obligatorios para fundar el hogar." });\n    const aiSigns = await calculateAIOldCartaNatal(birthDate, birthTime, birthPlace);\n    const result = onboardingCreateHome(homeName.trim(), userName.trim(), birthDate, birthTime || "12:00", birthPlace || "", emoji, aiSigns || undefined, email || "");\n    await __writeHomeDocument(result.home.code, { data: getStoreByCode(result.home.code) }, 0);\n    return res.json(result);\n  } catch (err: any) {\n    console.error("[Onboarding Create]", err);\n    return res.status(500).json({ error: err?.message || "No se pudo crear el hogar." });\n  }\n});`
+);
+
+transformedServer = transformedServer.replace(
+  /app\.post\("\/api\/onboarding\/join-home", async \(req, res\) => \{[\s\S]*?\n\}\);/,
+  `app.post("/api/onboarding/join-home", async (req, res) => {\n  try {\n    const { inviteCode, userName, email, birthDate, birthTime, birthPlace, emoji } = req.body;\n    const code = normalizeHomeCode(String(inviteCode || ""));\n    if (!code) return res.status(400).json({ error: "Se requiere un código de hogar para ingresar." });\n    if (!doesHomeExist(code)) return res.status(404).json({ error: "El código de invitación ingresado no existe." });\n    const aiSigns = await calculateAIOldCartaNatal(birthDate, birthTime, birthPlace);\n    const result = homeContextStorage.run(code, () => onboardingJoinHome(userName, birthDate, birthTime || "12:00", birthPlace || "", emoji, aiSigns || undefined, email || ""));\n    await __writeHomeDocument(code, { data: getStoreByCode(code) }, undefined);\n    return res.json(result);\n  } catch (err: any) {\n    console.error("[Onboarding Join]", err);\n    return res.status(500).json({ error: err?.message || "No se pudo unir al hogar." });\n  }\n});`
+);
 
 if (!transformedServer.includes("startServer();")) throw new Error("No se encontró el arranque esperado de server.ts");
 transformedServer = transformedServer.replace(/\nstartServer\(\);\s*$/, '\n\nexport { app, __requireFirebaseAuth, __runWithFirestoreAuthToken };\n\nif (process.env.VERCEL !== "1") startServer();\n');
