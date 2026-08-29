@@ -10,3 +10,5 @@ coverage/
 # Local-only development data and backups
 /db_sim.json
 /backups/
+
+# Cleanup marker
