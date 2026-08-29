@@ -22,13 +22,20 @@ jobs:
       - name: Normalize automatic Google onboarding
         run: python3 .github/scripts/normalize_onboarding.py
 
+      - name: Simplify onboarding choices
+        run: python3 .github/scripts/simplify_onboarding.py
+
       - name: Verify no legacy household fallbacks remain
         run: |
-          if grep -RIn --exclude-dir=.git --exclude='*.md' --exclude='cleanup_legacy.py' --exclude='normalize_onboarding.py' -E 'HOGARPELUDO|Hogar de Mafe y Benjamin|NIDO-YCV5W' server.ts serverStore.ts src; then
+          if grep -RIn --exclude-dir=.git --exclude='*.md' --exclude='cleanup_legacy.py' --exclude='normalize_onboarding.py' --exclude='simplify_onboarding.py' -E 'HOGARPELUDO|Hogar de Mafe y Benjamin|NIDO-YCV5W' server.ts serverStore.ts src; then
             echo "Legacy household fallback detected."
             exit 1
           fi
           echo "Legacy household fallbacks not detected."
+          if grep -RIn --exclude-dir=.git -E 'Fundar mi nido|Volver a mi nido' src; then
+            echo "Obsolete onboarding wording detected."
+            exit 1
+          fi
 
       - name: Commit cleanup
         run: |
