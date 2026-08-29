@@ -6,8 +6,7 @@ import {
   signInWithCredential,
   signOut,
 } from "firebase/auth";
-import { collection, getDocs, limit, query, where } from "firebase/firestore";
-import { auth, db } from "./firebase";
+import { auth } from "./firebase";
 
 interface AuthContextValue {
   user: User | null;
@@ -55,30 +54,24 @@ function clearStaleHouseholdSession() {
 }
 
 async function detectHomeForAccount(currentUser: User): Promise<string | null> {
-  const uid = currentUser.uid;
-  const email = currentUser.email?.trim().toLowerCase() || "";
-
   try {
-    const byUid = await getDocs(
-      query(collection(db, "nests"), where("authorizedUids", "array-contains", uid), limit(1))
-    );
-    if (!byUid.empty) return byUid.docs[0].id;
-  } catch (error) {
-    console.warn("[AstroHogar] No se pudo buscar hogar por UID:", error);
-  }
-
-  if (email) {
-    try {
-      const byEmail = await getDocs(
-        query(collection(db, "nests"), where("authorizedEmails", "array-contains", email), limit(1))
-      );
-      if (!byEmail.empty) return byEmail.docs[0].id;
-    } catch (error) {
-      console.warn("[AstroHogar] No se pudo buscar hogar por correo:", error);
+    const idToken = await currentUser.getIdToken();
+    const response = await fetch("/api/onboarding/detect-home", {
+      method: "GET",
+      headers: { Authorization: `Bearer ${idToken}` },
+    });
+    if (!response.ok) {
+      console.warn("[AstroHogar] No se pudo detectar el hogar de la cuenta:", response.status);
+      return null;
     }
+    const payload = await response.json().catch(() => ({}));
+    return typeof payload.homeCode === "string" && payload.homeCode.trim()
+      ? payload.homeCode.trim().toUpperCase()
+      : null;
+  } catch (error) {
+    console.warn("[AstroHogar] Error detectando hogar por cuenta:", error);
+    return null;
   }
-
-  return null;
 }
 
 function loadGoogleIdentityServices(): Promise<void> {
