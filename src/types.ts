@@ -1,21 +1,21 @@
 /**
- * Types and Interfaces for Hogar de Mafe & Benja
+ * Types and Interfaces for AstroHogar
  */
 
 export type UserId = "mafe" | "benja" | string;
 
 export interface DailyEmotionalCheckin {
   userId: UserId;
-  date: string; // YYYY-MM-DD
+  date: string;
   mood: "calm" | "tired" | "energetic" | "sensitive";
   connectionFeeling: "high" | "medium" | "low";
   homePerception: "light" | "normal" | "heavy";
 }
 
 export interface AstroTransitData {
-  emotionalSensitivity: number; // 0-100
-  communicationEnergy: number;   // 0-100
-  homeHarmonyInfluence: number;  // 0-100
+  emotionalSensitivity: number;
+  communicationEnergy: number;
+  homeHarmonyInfluence: number;
 }
 
 export interface AstroProfile {
@@ -27,11 +27,11 @@ export interface AstroProfile {
 }
 
 export interface HomePersonality {
-  emotionalStability: number; // 0-100
-  socialConnection: number;  // 0-100
-  activityLevel: number;     // 0-100
-  stressResistance: number;  // 0-100
-  harmonyIndex: number;      // 0-100
+  emotionalStability: number;
+  socialConnection: number;
+  activityLevel: number;
+  stressResistance: number;
+  harmonyIndex: number;
 }
 
 export interface HomePersonalityState {
@@ -66,9 +66,11 @@ export interface UserProfile {
   birthDate: string;
   email?: string;
   authUid?: string;
-  birthTime?: string; // HH:MM
+  occupation?: string;
+  about?: string;
+  birthTime?: string;
   birthPlace?: string;
-  zodiacSign: string; // Solar Sign
+  zodiacSign: string;
   lunarSign?: string;
   ascendantSign?: string;
   mercurySign?: string;
