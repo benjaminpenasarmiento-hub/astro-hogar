@@ -539,7 +539,7 @@ export function updateUserProfile(
 export const homeContextStorage = new AsyncLocalStorage<string>();
 
 export function getActiveHomeCode(): string {
-  return homeContextStorage.getStore() || "HOGARPELUDO"; // fallback code during bootstrap
+  return homeContextStorage.getStore() || "";
 }
 
 let multiStore: { [code: string]: DBStore } = {};
@@ -901,12 +901,14 @@ let firestoreSaveTimer: NodeJS.Timeout | null = null;
 
 // 1. Save all households synchronously to db_sim.json first (Primary Source of Truth)
 export function saveToDisk() {
-  try {
-    fs.writeFileSync(DB_FILE, JSON.stringify(multiStore, null, 2), "utf8");
-    hasUnsyncedChanges = true;
-  } catch (err) {
-    console.error("Error saving database to disk db_sim.json:", err);
+  if (process.env.NODE_ENV !== "production") {
+    try {
+      fs.writeFileSync(DB_FILE, JSON.stringify(multiStore, null, 2), "utf8");
+    } catch (err) {
+      console.error("Error saving local development database:", err);
+    }
   }
+  hasUnsyncedChanges = true;
 
   // If Firestore is disabled or quota exhausted, remain 100% local without creating gRPC streams
   if (!firestore || isFirestoreQuotaExhausted) {
@@ -1132,61 +1134,38 @@ export async function restoreFromFirestore() {
   }
 }
 
-// Load all households from disk db_sim.json as Primary Source of Truth
+// Load local development data only outside production.
 export function loadDatabase() {
+  if (process.env.NODE_ENV === "production") {
+    multiStore = {};
+    return UNSCOPED_STORE;
+  }
+
   try {
     if (fs.existsSync(DB_FILE)) {
       const content = fs.readFileSync(DB_FILE, "utf8");
       const parsed = JSON.parse(content);
-      
-      // Auto-migrate legacy format databases containing only one single home
       if (parsed && parsed.home && (parsed.home.id !== undefined || parsed.home.name !== undefined)) {
-        console.log("Migrando base de datos legacy a estructura multi-nido en db_sim.json...");
-        const code = (parsed.home.name || "HOGARPELUDO").toUpperCase().trim().replace(/\s+/g, "");
-        if (!parsed.home.code) {
-          parsed.home.code = code;
-        }
-        multiStore = {
-          [code]: parsed
-        };
-        saveToDisk();
+        const code = normalizeHomeCode(parsed.home.code || "");
+        multiStore = code ? { [code]: sanitizeStoreData(parsed) } : {};
       } else {
         multiStore = parsed || {};
       }
-      console.log(`✅ Base de datos principal cargada exitosamente desde db_sim.json. Nidos activos: ${Object.keys(multiStore).join(", ")}`);
-      // Ensure an initial complete backup exists in backups/
-      if (listBackupsDisk().length === 0) {
-        try {
-          createBackupDisk("auto-initial-boot");
-        } catch (bErr) {
-          console.warn("No se pudo generar backup inicial al arrancar:", bErr);
-        }
-      }
     } else {
       multiStore = {};
-      saveToDisk();
-      console.log("Inicializado nuevo archivo local db_sim.json.");
     }
   } catch (err) {
-    console.error("Error al cargar db_sim.json desde disco:", err);
+    console.error("Error al cargar base local de desarrollo:", err);
     multiStore = {};
   }
-  
-  // Asynchronously attempt secondary Firestore sync after 3s if available & not in quota cooldown
-  if (firestore && !isFirestoreQuotaExhausted) {
-    setTimeout(() => {
-      restoreFromFirestore().catch(() => {});
-    }, 3000);
-  }
-  
   return getStore();
 }
 
 export function normalizeHomeCode(code: string): string {
-  if (!code) return "NIDO-YCV5W";
-  let clean = code.toUpperCase().trim();
-  if (clean === "HOGARPELUDO" || clean === "HOGAR-PELUDO" || clean === "NIDO-HOGARPELUDO" || clean === "HOGAR PELUDO") {
-    return "NIDO-YCV5W";
+  let clean = String(code || "").toUpperCase().trim();
+  if (!clean) return "";
+  if (["HOGARPELUDO", "HOGAR-PELUDO", "NIDO-HOGARPELUDO", "HOGAR PELUDO", "NIDO-YCV5W"].includes(clean)) {
+    return "";
   }
   if (!clean.startsWith("NIDO-") && clean.length === 5) {
     clean = "NIDO-" + clean;
@@ -1194,74 +1173,16 @@ export function normalizeHomeCode(code: string): string {
   return clean;
 }
 
+const UNSCOPED_STORE: DBStore = JSON.parse(JSON.stringify(INITIAL_DATA));
+
 export function getStoreByCode(code: string): DBStore {
   const cleanCode = normalizeHomeCode(code);
+  if (!cleanCode) return UNSCOPED_STORE;
   if (!multiStore[cleanCode]) {
     multiStore[cleanCode] = JSON.parse(JSON.stringify(INITIAL_DATA));
     multiStore[cleanCode].home.id = `home-${cleanCode}`;
     multiStore[cleanCode].home.code = cleanCode;
     multiStore[cleanCode].home.name = `Hogar de Mafe y Benjamin`;
-    saveToDisk();
-  }
-
-  // Dynamic seed / recovery for any home partition that has no users
-  if (!multiStore[cleanCode].users || multiStore[cleanCode].users.length === 0) {
-    const userMafe: UserProfile = {
-      id: "mafe",
-      name: "Mafe",
-      birthDate: "1997-10-24",
-      birthTime: "08:30",
-      birthPlace: "Bogotá",
-      zodiacSign: "Escorpio ♏",
-      lunarSign: "Cáncer ♋",
-      ascendantSign: "Sagitario ♐",
-      mercurySign: "Libra ♎",
-      venusSign: "Sagitario ♐",
-      marsSign: "Acuario ♒",
-      emoji: "cat_cosmic",
-      photoUrl: "https://api.dicebear.com/7.x/adventurer/svg?seed=Mafe&backgroundColor=ffd5dc",
-      horoscopeToday: "¡Un día fantástico miau! Sientes la energía del amor puro rodeando el nido.",
-      horoscopeConsejo: "Dale un ronroneo cariñoso a Benja hoy."
-    };
-
-    const userBenja: UserProfile = {
-      id: "benja",
-      name: "Benja",
-      birthDate: "1997-03-24",
-      birthTime: "14:15",
-      birthPlace: "Bogotá",
-      zodiacSign: "Aries ♈",
-      lunarSign: "Libra ♎",
-      ascendantSign: "Leo ♌",
-      mercurySign: "Aries ♈",
-      venusSign: "Tauro ♉",
-      marsSign: "Géminis ♊",
-      emoji: "cat_ginger",
-      photoUrl: "https://api.dicebear.com/7.x/adventurer/svg?seed=Benja&backgroundColor=d1e4ff",
-      horoscopeToday: "¡La energía cósmica de Aries te llena de motivación hoy para lograr tus metas!",
-      horoscopeConsejo: "Estira las patitas y regala una caricia terna a Mafe."
-    };
-
-    multiStore[cleanCode].users = [userMafe, userBenja];
-    multiStore[cleanCode].home.members = ["mafe", "benja"];
-    
-    // Ensure array structures exist without injecting fake mock data
-    if (!multiStore[cleanCode].budgetAccounts) {
-      multiStore[cleanCode].budgetAccounts = [];
-    }
-    if (!multiStore[cleanCode].wishes) {
-      multiStore[cleanCode].wishes = [];
-    }
-    if (!multiStore[cleanCode].pets) {
-      multiStore[cleanCode].pets = [];
-    }
-    if (!multiStore[cleanCode].plants) {
-      multiStore[cleanCode].plants = [];
-    }
-    if (!multiStore[cleanCode].closetGarments) {
-      multiStore[cleanCode].closetGarments = [];
-    }
-
     saveToDisk();
   }
 
@@ -1304,10 +1225,6 @@ export function validateUserAccess(homeCode: string, userId: string): boolean {
   // Check if user is registered in store users or home members
   const isMember = store.home?.members?.some(m => m.toLowerCase() === userId.toLowerCase()) ||
                    store.users?.some(u => u.id.toLowerCase() === userId.toLowerCase() || u.name.toLowerCase() === userId.toLowerCase());
-  // Allow Mafe and Benja by default for primary home
-  if (!isMember && (userId.toLowerCase() === 'mafe' || userId.toLowerCase() === 'benja' || userId.toLowerCase() === 'benjamín')) {
-    return true;
-  }
   return isMember;
 }
 
@@ -1568,8 +1485,6 @@ export function getUserName(userId: string): string {
   const store = getStore();
   const user = store.users.find(u => u.id === userId);
   if (user) return user.name;
-  if (userId === "mafe") return "Mafe";
-  if (userId === "benja") return "Benja";
   return userId || "Alguien";
 }
 
