@@ -12,18 +12,19 @@ service cloud.firestore {
       );
     }
 
+    match /account_homes/{uid} {
+      allow get: if signedIn() && request.auth.uid == uid;
+      allow list: if false;
+      allow create, update: if signedIn() && request.auth.uid == uid;
+      allow delete: if signedIn() && request.auth.uid == uid;
+    }
+
     match /nests/{homeCode} {
-      // Exact document reads are authenticated. This is required so a signed-in
-      // user can validate an invite code before joining a home.
       allow get: if signedIn();
       allow list: if false;
 
-      // A newly created home must explicitly authorize the creator.
       allow create: if signedIn() && hasHomeAccess(request.resource.data);
 
-      // Existing members can update/delete. A new authenticated UID/email may
-      // be added when joining with a valid home code; existing authorizations
-      // cannot be removed by that join operation.
       allow update: if signedIn() && (
         hasHomeAccess(resource.data) ||
         (
@@ -41,9 +42,6 @@ service cloud.firestore {
       );
     }
 
-    // Legacy/auxiliary collections are no longer public. They require a
-    // Firebase-authenticated session; household data itself remains centralized
-    // under nests/{homeCode}.
     match /milo_daily_updates/{updateId} { allow read, write: if signedIn(); }
     match /notifications/{notificationId} { allow read, write: if signedIn(); }
     match /audit_logs/{logId} { allow read, write: if signedIn(); }
@@ -58,7 +56,6 @@ service cloud.firestore {
     match /wishes/{wishId} { allow read, write: if signedIn(); }
     match /goals/{wishId} { allow read, write: if signedIn(); }
 
-    // Everything else is denied by default.
     match /{document=**} {
       allow read, write: if false;
     }
