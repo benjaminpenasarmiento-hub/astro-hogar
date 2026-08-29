@@ -9,11 +9,12 @@ permissions:
 
 jobs:
   patch-settings:
-    if: ${{ !contains(github.event.head_commit.message, 'Integrate account data controls') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Integrate account controls
         shell: bash
@@ -41,11 +42,20 @@ jobs:
               raise SystemExit('Could not find general settings anchor.')
           text = text.replace(old_anchor, new_anchor, 1)
 
-          # Close the wrapper opened above immediately before the next top-level section.
-          old_close = '''          </div>\n        </div>\n      ) : activeSection === "mobile" ? ('''
-          new_close = '''          </div>\n        </div>\n      ) : activeSection === "mobile" ? ('''
-          if old_close not in text:
-              raise SystemExit('Could not verify general settings closing anchor.')
+          # The original general section already has two closing divs:
+          # one for the outer grid and one for the card. We need one more for
+          # the new wrapper, immediately before the conditional branch closes.
+          branch_marker = '''      ) : activeSection === "mobile" ? ('''
+          idx = text.find(branch_marker)
+          if idx == -1:
+              raise SystemExit('Could not find mobile settings branch.')
+
+          prefix = text[:idx]
+          suffix = text[idx:]
+          if not prefix.rstrip().endswith('</div>'):
+              raise SystemExit('General settings does not end with a div.')
+          prefix = prefix.rstrip() + '\n        </div>\n'
+          text = prefix + suffix
 
           path.write_text(text, encoding='utf-8')
           print('Integrated account data controls.')
@@ -61,5 +71,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add src/components/SettingsModule.tsx
-          git commit -m "Integrate account data controls into settings"
+          git commit -m "Integrate account data controls into settings [skip ci]"
           git push
