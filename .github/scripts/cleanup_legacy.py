@@ -19,6 +19,16 @@ needle = 'export function getStoreByCode(code: string): DBStore {\n  const clean
 replacement = 'const UNSCOPED_STORE: DBStore = JSON.parse(JSON.stringify(INITIAL_DATA));\n\nexport function getStoreByCode(code: string): DBStore {\n  const cleanCode = normalizeHomeCode(code);\n  if (!cleanCode) return UNSCOPED_STORE;'
 s = s.replace(needle, replacement)
 
+# Idempotent guard against duplicate insertion from repeated cleanup runs.
+count = s.count('const UNSCOPED_STORE: DBStore = JSON.parse(JSON.stringify(INITIAL_DATA));')
+if count > 1:
+    first = s.find('const UNSCOPED_STORE: DBStore = JSON.parse(JSON.stringify(INITIAL_DATA));')
+    second = s.find('const UNSCOPED_STORE: DBStore = JSON.parse(JSON.stringify(INITIAL_DATA));', first + 1)
+    s = s[:second] + s[second + len('const UNSCOPED_STORE: DBStore = JSON.parse(JSON.stringify(INITIAL_DATA));\n\n'):]
+
+s = s.replace('  if (!cleanCode) return UNSCOPED_STORE;\n  if (!cleanCode) return UNSCOPED_STORE;\n', '  if (!cleanCode) return UNSCOPED_STORE;\n')
+s = s.replace('    multiStore[cleanCode].home.name = `Hogar de Mafe y Benjamin`;', '    multiStore[cleanCode].home.name = "";')
+
 start = s.find('  // Dynamic seed / recovery for any home partition that has no users')
 end = s.find('  // Ensure array structures exist without injecting mock data', start)
 if start != -1 and end != -1:
