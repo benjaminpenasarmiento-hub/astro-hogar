@@ -39,12 +39,17 @@ function replaceFunction(source, functionName, replacement) {
 const serverSource = fs.readFileSync(sourcePath, "utf8");
 let storeSource = fs.readFileSync("serverStore.ts", "utf8");
 
+// Production server must never read the historical local simulation database.
+storeSource = storeSource.replace(
+  'const DB_FILE = path.join(process.cwd(), "db_sim.json");',
+  'const DB_FILE = process.env.VERCEL === "1" ? path.join("/tmp", "astrohogar-production-empty.json") : path.join(process.cwd(), "db_sim.json");'
+);
+
 storeSource = storeSource.replace(
   'deleteDoc } from "firebase/firestore";',
   'deleteDoc } from "firebase/firestore";\nimport { readHomeDocument, writeHomeDocument } from "./serverFirestoreRest";'
 );
 
-// Never bootstrap or seed the legacy AI Studio household in production.
 storeSource = storeSource.replace(
   'return homeContextStorage.getStore() || "HOGARPELUDO"; // fallback code during bootstrap',
   'return homeContextStorage.getStore() || "";'
@@ -69,17 +74,13 @@ storeSource = storeSource.replace(
 );
 
 const productionPersistenceHelpers = `\n\nexport let pendingPersistence: Promise<void> = Promise.resolve();\nconst observedFirestoreRevisions = new Map<string, number>();\n\nexport function getPendingPersistence(): Promise<void> { return pendingPersistence; }\n\nexport async function refreshActiveHomeFromFirestore(code: string): Promise<void> {\n  if (process.env.VERCEL !== "1") return;\n  const cleanCode = normalizeHomeCode(code || getActiveHomeCode());\n  if (!cleanCode) return;\n  try {\n    const snapshot = await readHomeDocument(cleanCode);\n    if (!snapshot.exists) {\n      observedFirestoreRevisions.set(cleanCode, 0);\n      return;\n    }\n    const remote = snapshot.data || {};\n    observedFirestoreRevisions.set(cleanCode, Number(remote.syncRevision || 0));\n    if (remote.data) multiStore[cleanCode] = sanitizeStoreData(remote.data as DBStore);\n  } catch (err) {\n    console.error("[Firestore Sync] Error refreshing active home:", err);\n  }\n}\n\nexport function getObservedFirestoreRevision(code: string): number {\n  return observedFirestoreRevisions.get(normalizeHomeCode(code)) ?? 0;\n}\n`;
-storeSource = storeSource.replace(
-  "export let firestore: Firestore | null = null;",
-  "export let firestore: Firestore | null = null;" + productionPersistenceHelpers
-);
+storeSource = storeSource.replace("export let firestore: Firestore | null = null;", "export let firestore: Firestore | null = null;" + productionPersistenceHelpers);
 
-const productionSaveToDisk = `export function saveToDisk() {\n  if (process.env.VERCEL !== "1") {\n    try {\n      fs.writeFileSync(DB_FILE, JSON.stringify(multiStore, null, 2), "utf8");\n      hasUnsyncedChanges = true;\n    } catch (err) {\n      console.error("Error saving database to disk db_sim.json:", err);\n    }\n    if (!firestore || isFirestoreQuotaExhausted) return;\n    if (firestoreSaveTimer) clearTimeout(firestoreSaveTimer);\n    firestoreSaveTimer = setTimeout(() => { saveToFirestore(); }, 5000);\n    return;\n  }\n\n  hasUnsyncedChanges = true;\n  const active = normalizeHomeCode(getActiveHomeCode());\n  const target = active || Object.keys(multiStore).map(normalizeHomeCode).filter(Boolean).at(-1) || "";\n  if (!target) return;\n  pendingPersistence = pendingPersistence.catch(() => {}).then(() => saveToFirestore([target]));\n}`;
+const productionSaveToDisk = `export function saveToDisk() {\n  if (process.env.VERCEL !== "1") {\n    try { fs.writeFileSync(DB_FILE, JSON.stringify(multiStore, null, 2), "utf8"); hasUnsyncedChanges = true; }\n    catch (err) { console.error("Error saving database to disk db_sim.json:", err); }\n    if (!firestore || isFirestoreQuotaExhausted) return;\n    if (firestoreSaveTimer) clearTimeout(firestoreSaveTimer);\n    firestoreSaveTimer = setTimeout(() => { saveToFirestore(); }, 5000);\n    return;\n  }\n  hasUnsyncedChanges = true;\n  const active = normalizeHomeCode(getActiveHomeCode());\n  const target = active || "";\n  if (!target) return;\n  pendingPersistence = pendingPersistence.catch(() => {}).then(() => saveToFirestore([target]));\n}`;
 storeSource = replaceFunction(storeSource, "saveToDisk", productionSaveToDisk);
 storeSource = storeSource.replace("export async function saveToFirestore()", "export async function saveToFirestoreLegacy()");
 
-const productionSaveToFirestore = `\n\nexport async function saveToFirestore(targetCodes: string[] = []) {\n  if (process.env.VERCEL !== "1") return saveToFirestoreLegacy();\n  if (isFirestoreQuotaExhausted) return;\n  pendingWritesCount++;\n  try {\n    const rawCodes = targetCodes.length ? targetCodes : Object.keys(multiStore);\n    for (const code of rawCodes) {\n      const cleanCode = normalizeHomeCode(code);\n      if (!cleanCode || !multiStore[cleanCode]) continue;\n      const dataCopy = JSON.parse(JSON.stringify(multiStore[cleanCode]));\n      const expectedRevision = getObservedFirestoreRevision(cleanCode);\n      const nextRevision = await writeHomeDocument(cleanCode, { data: dataCopy }, expectedRevision);\n      observedFirestoreRevisions.set(cleanCode, nextRevision);\n    }\n    lastSuccessfulSyncTime = new Date().toISOString();\n    lastSyncError = null;\n    hasUnsyncedChanges = false;\n  } catch (err: any) {\n    if (!handleQuotaError(err, "authenticated REST saveToFirestore")) {\n      lastSyncError = err?.message || "Error al sincronizar con Firestore";\n      console.error("[Firestore Sync] Error en persistencia autenticada:", err);\n    }\n  } finally {\n    pendingWritesCount = Math.max(0, pendingWritesCount - 1);\n  }\n}\n`;
-storeSource += productionSaveToFirestore;
+storeSource += `\n\nexport async function saveToFirestore(targetCodes: string[] = []) {\n  if (process.env.VERCEL !== "1") return saveToFirestoreLegacy();\n  if (isFirestoreQuotaExhausted) return;\n  pendingWritesCount++;\n  try {\n    for (const code of targetCodes) {\n      const cleanCode = normalizeHomeCode(code);\n      if (!cleanCode || !multiStore[cleanCode]) continue;\n      const dataCopy = JSON.parse(JSON.stringify(multiStore[cleanCode]));\n      const expectedRevision = getObservedFirestoreRevision(cleanCode);\n      const nextRevision = await writeHomeDocument(cleanCode, { data: dataCopy }, expectedRevision);\n      observedFirestoreRevisions.set(cleanCode, nextRevision);\n    }\n    lastSuccessfulSyncTime = new Date().toISOString();\n    lastSyncError = null;\n    hasUnsyncedChanges = false;\n  } catch (err: any) {\n    if (!handleQuotaError(err, "authenticated REST saveToFirestore")) {\n      lastSyncError = err?.message || "Error al sincronizar con Firestore";\n      console.error("[Firestore Sync] Error en persistencia autenticada:", err);\n    }\n  } finally {\n    pendingWritesCount = Math.max(0, pendingWritesCount - 1);\n  }\n}\n`;
 fs.writeFileSync(storeTempPath, storeSource, "utf8");
 
 let transformedServer = serverSource.replaceAll('"./serverStore"', '"./serverStore.vercel"');
