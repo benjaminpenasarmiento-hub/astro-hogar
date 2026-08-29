@@ -1175,8 +1175,11 @@ export function normalizeHomeCode(code: string): string {
 
 const UNSCOPED_STORE: DBStore = JSON.parse(JSON.stringify(INITIAL_DATA));
 
+const UNSCOPED_STORE: DBStore = JSON.parse(JSON.stringify(INITIAL_DATA));
+
 export function getStoreByCode(code: string): DBStore {
   const cleanCode = normalizeHomeCode(code);
+  if (!cleanCode) return UNSCOPED_STORE;
   if (!cleanCode) return UNSCOPED_STORE;
   if (!multiStore[cleanCode]) {
     multiStore[cleanCode] = JSON.parse(JSON.stringify(INITIAL_DATA));
