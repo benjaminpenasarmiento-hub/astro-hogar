@@ -1,0 +1,32 @@
+name: Production legacy cleanup
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    if: ${{ !startsWith(github.event.head_commit.message, 'chore(automation):') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Remove legacy runtime fallbacks
+        run: python3 .github/scripts/cleanup_legacy.py
+
+      - name: Commit cleanup
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add serverStore.ts src/index.css
+          if git diff --cached --quiet; then
+            echo "No cleanup changes needed."
+            exit 0
+          fi
+          git commit -m "chore(automation): remove legacy production fallbacks"
+          git push
