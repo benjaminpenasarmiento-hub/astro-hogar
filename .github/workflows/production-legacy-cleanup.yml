@@ -1,50 +1,10 @@
 name: Production legacy cleanup
 
 on:
-  push:
-    branches: [main]
-
-permissions:
-  contents: write
+  workflow_dispatch:
 
 jobs:
-  cleanup:
-    if: ${{ !startsWith(github.event.head_commit.message, 'chore(automation):') }}
+  disabled:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Remove legacy runtime fallbacks
-        run: python3 .github/scripts/cleanup_legacy.py
-
-      - name: Normalize automatic Google onboarding
-        run: python3 .github/scripts/normalize_onboarding.py
-
-      - name: Simplify onboarding choices
-        run: python3 .github/scripts/simplify_onboarding.py
-
-      - name: Verify no legacy household fallbacks remain
-        run: |
-          if grep -RIn --exclude-dir=.git --exclude='*.md' --exclude='cleanup_legacy.py' --exclude='normalize_onboarding.py' --exclude='simplify_onboarding.py' -E 'HOGARPELUDO|Hogar de Mafe y Benjamin|NIDO-YCV5W' server.ts serverStore.ts src; then
-            echo "Legacy household fallback detected."
-            exit 1
-          fi
-          echo "Legacy household fallbacks not detected."
-          if grep -RIn --exclude-dir=.git -E 'Fundar mi nido|Volver a mi nido' src; then
-            echo "Obsolete onboarding wording detected."
-            exit 1
-          fi
-
-      - name: Commit cleanup
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add server.ts serverStore.ts src/main.tsx src/App.tsx src/components/OnboardingWizard.tsx src/auth.tsx src/index.css
-          if git diff --cached --quiet; then
-            echo "No cleanup changes needed."
-            exit 0
-          fi
-          git commit -m "chore(automation): normalize production household flow"
-          git push
+      - run: echo "Legacy cleanup automation disabled; source files are no longer rewritten automatically."
