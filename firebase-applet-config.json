@@ -1,11 +1,11 @@
 {
-  "projectId": "canvas-avenue-r71nt",
-  "appId": "1:589191922747:web:6ae6efb983c69ceb62081e",
-  "apiKey": "AIzaSyBqxdzL2sw4ME8985eo81IF62558obYxXg",
-  "authDomain": "canvas-avenue-r71nt.firebaseapp.com",
-  "firestoreDatabaseId": "ai-studio-hogar-b9a462af-673f-4da8-a729-cccf4f1eb662",
-  "storageBucket": "canvas-avenue-r71nt.firebasestorage.app",
-  "messagingSenderId": "589191922747",
-  "measurementId": "",
+  "projectId": "astro-hogar-26208",
+  "appId": "1:991681851541:web:3720840f0db4510e2dab9c",
+  "apiKey": "AIzaSyAS50_07xuV2XXoSLkjrpUrrHFFxrOD8MM",
+  "authDomain": "astro-hogar-26208.firebaseapp.com",
+  "firestoreDatabaseId": "(default)",
+  "storageBucket": "astro-hogar-26208.firebasestorage.app",
+  "messagingSenderId": "991681851541",
+  "measurementId": "G-ZT8XPEH5B0",
   "recaptchaSiteKey": ""
 }
