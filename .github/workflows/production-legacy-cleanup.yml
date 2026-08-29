@@ -19,6 +19,14 @@ jobs:
       - name: Remove legacy runtime fallbacks
         run: python3 .github/scripts/cleanup_legacy.py
 
+      - name: Verify no legacy household fallbacks remain
+        run: |
+          if grep -RIn --exclude-dir=.git --exclude=cleanup_legacy.py -E 'HOGARPELUDO|Hogar de Mafe y Benjamin|if \(userId === "mafe"\)|if \(userId === "benja"\)' serverStore.ts src/main.tsx src/index.css; then
+            echo "Legacy fallback detected after cleanup."
+            exit 1
+          fi
+          echo "Legacy household fallbacks not detected."
+
       - name: Commit cleanup
         run: |
           git config user.name "github-actions[bot]"
