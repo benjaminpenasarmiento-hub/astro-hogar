@@ -37,38 +37,41 @@
 
         window.AstroHogarNotifications = { requestPermission: requestNotificationPermission };
 
+        const cleanCreateOnboarding = () => {
+          clearOnboardingDraft();
+          setTimeout(() => {
+            document.querySelectorAll("input").forEach((input) => input.setAttribute("autocomplete", "off"));
+
+            const emailLabel = Array.from(document.querySelectorAll("label")).find((label) => label.textContent?.includes("Tu Correo Electrónico"));
+            const emailContainer = emailLabel?.closest(".space-y-1");
+            if (emailContainer) emailContainer.remove();
+
+            document.querySelectorAll('input[type="text"], input[type="date"], input[type="time"]').forEach((input) => {
+              const placeholder = (input.getAttribute("placeholder") || "").toLowerCase();
+              if (placeholder.includes("casa luna") || input.type === "date" || input.type === "time" || input.value === "Bogotá") {
+                const nativeSetter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
+                nativeSetter?.call(input, "");
+                input.dispatchEvent(new Event("input", { bubbles: true }));
+                input.dispatchEvent(new Event("change", { bubbles: true }));
+              }
+            });
+          }, 50);
+        };
+
         document.addEventListener("click", (event) => {
           const target = event.target instanceof Element ? event.target : null;
           if (!target) return;
-
-          const fundButton = target.closest("button");
-          const text = fundButton?.textContent?.replace(/\s+/g, " ").trim() || "";
+          const button = target.closest("button");
+          const text = button?.textContent?.replace(/\s+/g, " ").trim() || "";
 
           if (text.includes("Fundar mi nido")) {
-            clearOnboardingDraft();
-            setTimeout(() => {
-              document.querySelectorAll("input").forEach((input) => {
-                input.setAttribute("autocomplete", "off");
-              });
-              const emailLabel = Array.from(document.querySelectorAll("label")).find((label) => label.textContent?.includes("Tu Correo Electrónico"));
-              const emailContainer = emailLabel?.closest(".space-y-1");
-              if (emailContainer) emailContainer.remove();
+            cleanCreateOnboarding();
+          }
 
-              document.querySelectorAll('input[type="text"], input[type="date"], input[type="time"]').forEach((input) => {
-                const placeholder = (input.getAttribute("placeholder") || "").toLowerCase();
-                if (placeholder.includes("casa luna") || input.type === "date" || input.type === "time" || input.value === "Bogotá") {
-                  const nativeSetter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
-                  nativeSetter?.call(input, "");
-                  input.dispatchEvent(new Event("input", { bubbles: true }));
-                  input.dispatchEvent(new Event("change", { bubbles: true }));
-                }
-              });
-            }, 50);
-
-            if (!window.__astroNotificationPrompted) {
-              window.__astroNotificationPrompted = true;
-              requestNotificationPermission();
-            }
+          // Ask only after the Google session exists, or when the user starts a new nido.
+          if (!window.__astroNotificationPrompted && (localStorage.getItem("astro_auth_uid") || text.includes("Fundar mi nido"))) {
+            window.__astroNotificationPrompted = true;
+            requestNotificationPermission();
           }
         }, true);
 
