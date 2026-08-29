@@ -6,9 +6,38 @@ function getHomeCode(req: any): string {
   return String(req.headers?.["x-home-code"] || "").trim().toUpperCase();
 }
 
+function normalizeRequestPath(req: any): string {
+  const candidates = [String(req.path || ""), String(req.url || ""), String(req.originalUrl || "")];
+  for (const candidate of candidates) {
+    if (!candidate) continue;
+    try {
+      const pathname = candidate.startsWith("http://") || candidate.startsWith("https://")
+        ? new URL(candidate).pathname
+        : candidate.split("?")[0].split("#")[0];
+      if (pathname && pathname !== "/") return pathname;
+    } catch {
+      const pathname = candidate.split("?")[0].split("#")[0];
+      if (pathname && pathname !== "/") return pathname;
+    }
+  }
+  return candidates.find(Boolean) || "";
+}
+
 function isOnboardingPath(path: string): boolean {
-  return path === "/api/health" || path === "/health" ||
-    path === "/api/onboarding/create-home" || path === "/api/onboarding/join-home";
+  const normalized = path.replace(/\/+$/, "");
+  return normalized === "/api/health" || normalized === "/health" ||
+    normalized === "/api/onboarding/create-home" ||
+    normalized === "/onboarding/create-home" ||
+    normalized.endsWith("/api/onboarding/create-home") ||
+    normalized.endsWith("/onboarding/create-home") ||
+    normalized === "/api/onboarding/join-home" ||
+    normalized === "/onboarding/join-home" ||
+    normalized.endsWith("/api/onboarding/join-home") ||
+    normalized.endsWith("/onboarding/join-home") ||
+    normalized === "/api/onboarding/enter-home" ||
+    normalized === "/onboarding/enter-home" ||
+    normalized.endsWith("/api/onboarding/enter-home") ||
+    normalized.endsWith("/onboarding/enter-home");
 }
 
 async function userBelongsToHome(homeCode: string, uid?: string, email?: string): Promise<boolean> {
@@ -70,7 +99,7 @@ async function userBelongsToHome(homeCode: string, uid?: string, email?: string)
 }
 
 export async function requireFirebaseAuth(req: any, res: any, next: any) {
-  const path = String(req.path || req.url || "");
+  const path = normalizeRequestPath(req);
   if (path === "/api/health" || path === "/health") return next();
 
   const token = extractBearerToken(req);
@@ -93,6 +122,7 @@ export async function requireFirebaseAuth(req: any, res: any, next: any) {
   }
 
   return runWithFirestoreAuthToken(token, async () => {
+    // Las rutas de onboarding requieren identidad Google válida, pero NO pertenencia previa a un hogar.
     if (isOnboardingPath(path)) return next();
 
     const homeCode = getHomeCode(req);
