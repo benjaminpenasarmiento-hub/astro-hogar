@@ -13,9 +13,16 @@ type SpeechRecognitionLike = {
 
 export function useMiloVoice(onTranscript?: (text: string) => void) {
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
+  const transcriptHandlerRef = useRef(onTranscript);
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isSupported, setIsSupported] = useState(false);
+  const [interimTranscript, setInterimTranscript] = useState("");
+  const [voiceError, setVoiceError] = useState<string | null>(null);
+
+  useEffect(() => {
+    transcriptHandlerRef.current = onTranscript;
+  }, [onTranscript]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -23,36 +30,68 @@ export function useMiloVoice(onTranscript?: (text: string) => void) {
     const Recognition = w.SpeechRecognition || w.webkitSpeechRecognition;
     const supported = typeof Recognition === "function";
     setIsSupported(supported);
-    if (!supported) return;
+    if (!supported) {
+      setVoiceError("Este navegador no admite reconocimiento de voz para Milo.");
+      return;
+    }
 
     const recognition: SpeechRecognitionLike = new Recognition();
     recognition.lang = "es-CO";
     recognition.continuous = false;
-    recognition.interimResults = false;
+    recognition.interimResults = true;
     recognition.onresult = (event) => {
-      const transcript = Array.from(event.results || [])
-        .map((r: any) => r?.[0]?.transcript || "")
-        .join(" ")
-        .trim();
-      if (transcript) onTranscript?.(transcript);
+      let finalText = "";
+      let partialText = "";
+      for (let i = event.resultIndex || 0; i < event.results.length; i += 1) {
+        const result = event.results[i];
+        const text = result?.[0]?.transcript || "";
+        if (result?.isFinal) finalText += text;
+        else partialText += text;
+      }
+      setInterimTranscript(partialText.trim() || finalText.trim());
+      if (finalText.trim()) {
+        const clean = finalText.trim();
+        setInterimTranscript("");
+        setVoiceError(null);
+        transcriptHandlerRef.current?.(clean);
+      }
     };
-    recognition.onend = () => setIsListening(false);
-    recognition.onerror = () => setIsListening(false);
+    recognition.onend = () => {
+      setIsListening(false);
+      setInterimTranscript("");
+    };
+    recognition.onerror = (event) => {
+      setIsListening(false);
+      setInterimTranscript("");
+      const code = String(event?.error || "");
+      const messages: Record<string, string> = {
+        "not-allowed": "El micrófono está bloqueado. Permite el acceso al micrófono en el navegador.",
+        "service-not-allowed": "El navegador no permitió usar el servicio de voz.",
+        "no-speech": "No escuché una frase. Habla un poco más cerca del micrófono e inténtalo de nuevo.",
+        "audio-capture": "No pude acceder al micrófono del dispositivo.",
+        "network": "El servicio de reconocimiento de voz no está disponible en este momento."
+      };
+      setVoiceError(messages[code] || "No pude escuchar bien. Inténtalo de nuevo.");
+    };
     recognitionRef.current = recognition;
 
     return () => {
       try { recognition.stop(); } catch {}
       recognitionRef.current = null;
     };
-  }, [onTranscript]);
+  }, []);
 
   const startListening = useCallback(() => {
     if (!recognitionRef.current) return false;
+    setVoiceError(null);
+    setInterimTranscript("");
     try {
       recognitionRef.current.start();
       setIsListening(true);
       return true;
-    } catch {
+    } catch (error: any) {
+      setVoiceError(error?.message || "No pude activar el micrófono.");
+      setIsListening(false);
       return false;
     }
   }, []);
@@ -63,19 +102,23 @@ export function useMiloVoice(onTranscript?: (text: string) => void) {
   }, []);
 
   const speak = useCallback((text: string) => {
-    if (typeof window === "undefined" || !("speechSynthesis" in window) || !text.trim()) return;
+    if (typeof window === "undefined" || !("speechSynthesis" in window) || !text.trim()) {
+      setVoiceError("La voz de salida no está disponible en este navegador.");
+      return;
+    }
     try {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text.replace(/[*_#`]/g, ""));
       utterance.lang = "es-CO";
       utterance.rate = 1.02;
       utterance.pitch = 1.05;
-      utterance.onstart = () => setIsSpeaking(true);
+      utterance.onstart = () => { setVoiceError(null); setIsSpeaking(true); };
       utterance.onend = () => setIsSpeaking(false);
-      utterance.onerror = () => setIsSpeaking(false);
+      utterance.onerror = () => { setIsSpeaking(false); setVoiceError("No pude reproducir la respuesta de Milo por voz."); };
       window.speechSynthesis.speak(utterance);
     } catch {
       setIsSpeaking(false);
+      setVoiceError("No pude reproducir la respuesta de Milo por voz.");
     }
   }, []);
 
@@ -86,5 +129,5 @@ export function useMiloVoice(onTranscript?: (text: string) => void) {
     setIsSpeaking(false);
   }, []);
 
-  return { isSupported, isListening, isSpeaking, startListening, stopListening, speak, stopSpeaking };
+  return { isSupported, isListening, isSpeaking, interimTranscript, voiceError, startListening, stopListening, speak, stopSpeaking };
 }
