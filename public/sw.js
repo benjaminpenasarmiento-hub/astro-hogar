@@ -1,5 +1,5 @@
 // AstroHogar PWA Service Worker for Mobile and Desktop
-const CACHE_NAME = "astrohogar-v2";
+const CACHE_NAME = "astrohogar-v3";
 const ASSETS = [
   "/",
   "/index.html",
@@ -11,7 +11,7 @@ const ASSETS = [
 self.addEventListener("install", (e) => {
   e.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log("[Service Worker] Caching app shell assets...");
+      console.log("[Service Worker] Caching app shell assets (v3)...");
       return cache.addAll(ASSETS).catch(err => {
         console.warn("[Service Worker] Cache addAll failed, skipping initial assets:", err);
       });
@@ -21,18 +21,19 @@ self.addEventListener("install", (e) => {
 });
 
 self.addEventListener("activate", (e) => {
-  console.log("[Service Worker] Activated and ready to handle notifications and fetch requests.");
+  console.log("[Service Worker] Activated v3 and ready to handle notifications and fetch requests.");
   e.waitUntil(
     caches.keys().then((keys) => Promise.all(
       keys.map((key) => key !== CACHE_NAME ? caches.delete(key) : undefined)
     ))
   );
-  return self.clients.claim();
+  self.clients.claim();
 });
 
 self.addEventListener("fetch", (e) => {
   if (!e.request.url.startsWith(self.location.origin)) return;
   if (e.request.url.includes("/api/")) return;
+
   e.respondWith(
     fetch(e.request)
       .then((res) => {
