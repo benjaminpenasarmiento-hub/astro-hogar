@@ -1,0 +1,65 @@
+name: Integrate account data controls
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  patch-settings:
+    if: ${{ !contains(github.event.head_commit.message, 'Integrate account data controls') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Integrate account controls
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path('src/components/SettingsModule.tsx')
+          text = path.read_text(encoding='utf-8')
+          marker = 'AccountDataControls homeCode={home?.code}'
+
+          if marker in text:
+              print('Account data controls already integrated.')
+              raise SystemExit(0)
+
+          old_import = 'import { SyncStatusIndicator } from "./SyncStatusIndicator";\n'
+          new_import = old_import + 'import AccountDataControls from "./AccountDataControls";\n'
+          if old_import not in text:
+              raise SystemExit('Could not find SettingsModule import anchor.')
+          text = text.replace(old_import, new_import, 1)
+
+          old_anchor = '''{activeSection === "general" ? (\n        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">'''
+          new_anchor = '''{activeSection === "general" ? (\n        <div className="space-y-6">\n          {/* __ACCOUNT_DATA_CONTROLS_V1__ */}\n          <AccountDataControls homeCode={home?.code} onComplete={onRefreshData} />\n          <div className="grid grid-cols-1 md:grid-cols-12 gap-6">'''
+          if old_anchor not in text:
+              raise SystemExit('Could not find general settings anchor.')
+          text = text.replace(old_anchor, new_anchor, 1)
+
+          # Close the wrapper opened above immediately before the next top-level section.
+          old_close = '''          </div>\n        </div>\n      ) : activeSection === "mobile" ? ('''
+          new_close = '''          </div>\n        </div>\n      ) : activeSection === "mobile" ? ('''
+          if old_close not in text:
+              raise SystemExit('Could not verify general settings closing anchor.')
+
+          path.write_text(text, encoding='utf-8')
+          print('Integrated account data controls.')
+          PY
+
+      - name: Commit integration
+        shell: bash
+        run: |
+          if git diff --quiet -- src/components/SettingsModule.tsx; then
+            echo "No settings changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/components/SettingsModule.tsx
+          git commit -m "Integrate account data controls into settings"
+          git push
