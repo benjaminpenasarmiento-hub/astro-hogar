@@ -77,6 +77,10 @@ const productionSaveToDisk = `export function saveToDisk() {\n  if (process.env.
 storeSource = replaceFunction(storeSource, "saveToDisk", productionSaveToDisk);
 storeSource = storeSource.replace("export async function saveToFirestore()", "export async function saveToFirestoreLegacy()");
 storeSource += `\n\nexport async function saveToFirestore(targetCodes: string[] = []) {\n  if (process.env.VERCEL !== "1") return saveToFirestoreLegacy();\n  if (isFirestoreQuotaExhausted) return;\n  pendingWritesCount++;\n  try {\n    for (const code of targetCodes) {\n      const cleanCode = normalizeHomeCode(code);\n      if (!cleanCode || !multiStore[cleanCode]) continue;\n      const dataCopy = JSON.parse(JSON.stringify(multiStore[cleanCode]));\n      const expectedRevision = getObservedFirestoreRevision(cleanCode);\n      const nextRevision = await writeHomeDocument(cleanCode, { data: dataCopy }, expectedRevision);\n      observedFirestoreRevisions.set(cleanCode, nextRevision);\n    }\n    lastSuccessfulSyncTime = new Date().toISOString();\n    lastSyncError = null;\n    hasUnsyncedChanges = false;\n  } catch (err: any) {\n    if (!handleQuotaError(err, "authenticated REST saveToFirestore")) {\n      lastSyncError = err?.message || "Error al sincronizar con Firestore";\n      console.error("[Firestore Sync] Error en persistencia autenticada:", err);\n    }\n  } finally {\n    pendingWritesCount = Math.max(0, pendingWritesCount - 1);\n  }\n}\n`;
+
+// Defensive, idempotent cleanup: older automated passes may have inserted this helper twice.
+storeSource = storeSource.replace(/(const UNSCOPED_STORE: DBStore = JSON\.parse\(JSON\.stringify\(INITIAL_DATA\)\);\n\s*)+/g, 'const UNSCOPED_STORE: DBStore = JSON.parse(JSON.stringify(INITIAL_DATA));\n\n');
+
 fs.writeFileSync(storeTempPath, storeSource, "utf8");
 
 let transformedServer = serverSource.replaceAll('"./serverStore"', '"./serverStore.vercel"');
