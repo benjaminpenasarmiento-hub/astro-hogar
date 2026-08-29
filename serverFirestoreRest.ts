@@ -207,28 +207,39 @@ export async function writeHomeDocument(homeCode: string, data: any, expectedRev
   };
   const documentName = `${API_BASE}/${documentPath("nests", homeCode)}`;
   const historyName = `${documentName}/history/${nextRevision}`;
-  const writes: any[] = [
+
+  // Create/update the parent first. Firestore security rules for the history
+  // document read the parent, so a brand-new home must exist before history can
+  // be written.
+  await commitWithRetry([
     {
       update: { name: documentName, fields: encodeFields(merged) },
       ...(existing.updateTime ? { currentDocument: { updateTime: existing.updateTime } } : {}),
     },
-    {
-      update: {
-        name: historyName,
-        fields: encodeFields({
-          homeCode,
-          revision: nextRevision,
-          savedAt,
-          actorUserId: auth.authorizedUids.includes(getAuthenticatedClaims().uid || "") ? (getAuthenticatedClaims().uid || "autenticado") : "autenticado",
-          source: "astro-hogar",
-          backupType: "full-home-snapshot",
-          data: merged.data,
-        }),
-      },
-    },
-  ];
+  ], "FIRESTORE_HOME_COMMIT");
 
-  await commitWithRetry(writes, "FIRESTORE_COMMIT");
+  // History is supplemental. Failure here must not make an otherwise valid new
+  // home look like a failed onboarding operation.
+  try {
+    await commitWithRetry([
+      {
+        update: {
+          name: historyName,
+          fields: encodeFields({
+            homeCode,
+            revision: nextRevision,
+            savedAt,
+            actorUserId: auth.authorizedUids.includes(getAuthenticatedClaims().uid || "") ? (getAuthenticatedClaims().uid || "autenticado") : "autenticado",
+            source: "astro-hogar",
+            backupType: "full-home-snapshot",
+            data: merged.data,
+          }),
+        },
+      },
+    ], "FIRESTORE_HISTORY_COMMIT");
+  } catch (historyError) {
+    console.warn("[Firestore Sync] No se pudo guardar el historial inicial del hogar:", historyError);
+  }
 
   const currentUid = getAuthenticatedClaims().uid;
   if (currentUid) {
