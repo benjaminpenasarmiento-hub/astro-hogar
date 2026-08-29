@@ -5,3 +5,12 @@
   text-underline-offset: 2px;
   font-weight: 700;
 }
+
+/* The authenticated Google account supplies the email; never ask for it again in onboarding. */
+label:has(+ input[type="email"]) {
+  display: none !important;
+}
+label:has(+ input[type="email"]) + input[type="email"] {
+  display: none !important;
+}
+label:has(+ input[type="email"]) { pointer-events: none; }
