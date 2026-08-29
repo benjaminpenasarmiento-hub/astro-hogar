@@ -19,16 +19,6 @@ needle = 'export function getStoreByCode(code: string): DBStore {\n  const clean
 replacement = 'const UNSCOPED_STORE: DBStore = JSON.parse(JSON.stringify(INITIAL_DATA));\n\nexport function getStoreByCode(code: string): DBStore {\n  const cleanCode = normalizeHomeCode(code);\n  if (!cleanCode) return UNSCOPED_STORE;'
 s = s.replace(needle, replacement)
 
-# Idempotent guard against duplicate insertion from repeated cleanup runs.
-count = s.count('const UNSCOPED_STORE: DBStore = JSON.parse(JSON.stringify(INITIAL_DATA));')
-if count > 1:
-    first = s.find('const UNSCOPED_STORE: DBStore = JSON.parse(JSON.stringify(INITIAL_DATA));')
-    second = s.find('const UNSCOPED_STORE: DBStore = JSON.parse(JSON.stringify(INITIAL_DATA));', first + 1)
-    s = s[:second] + s[second + len('const UNSCOPED_STORE: DBStore = JSON.parse(JSON.stringify(INITIAL_DATA));\n\n'):]
-
-s = s.replace('  if (!cleanCode) return UNSCOPED_STORE;\n  if (!cleanCode) return UNSCOPED_STORE;\n', '  if (!cleanCode) return UNSCOPED_STORE;\n')
-s = s.replace('    multiStore[cleanCode].home.name = `Hogar de Mafe y Benjamin`;', '    multiStore[cleanCode].home.name = "";')
-
 start = s.find('  // Dynamic seed / recovery for any home partition that has no users')
 end = s.find('  // Ensure array structures exist without injecting mock data', start)
 if start != -1 and end != -1:
@@ -53,11 +43,22 @@ if marker in s:
     replacement_load = '''// Load local development data only outside production.\nexport function loadDatabase() {\n  if (process.env.NODE_ENV === "production") {\n    multiStore = {};\n    return UNSCOPED_STORE;\n  }\n\n  try {\n    if (fs.existsSync(DB_FILE)) {\n      const content = fs.readFileSync(DB_FILE, "utf8");\n      const parsed = JSON.parse(content);\n      if (parsed && parsed.home && (parsed.home.id !== undefined || parsed.home.name !== undefined)) {\n        const code = normalizeHomeCode(parsed.home.code || "");\n        multiStore = code ? { [code]: sanitizeStoreData(parsed) } : {};\n      } else {\n        multiStore = parsed || {};\n      }\n    } else {\n      multiStore = {};\n    }\n  } catch (err) {\n    console.error("Error al cargar base local de desarrollo:", err);\n    multiStore = {};\n  }\n  return getStore();\n}\n'''
     s = s[:i] + replacement_load + s[j:]
 
-server.write_text(s, encoding="utf-8")
+# Ensure the sentinel is declared exactly once, even after repeated cleanup runs.
+sentinel = 'const UNSCOPED_STORE: DBStore = JSON.parse(JSON.stringify(INITIAL_DATA));'
+first = s.find(sentinel)
+if first != -1:
+    tail = s[first + len(sentinel):]
+    tail = tail.replace(sentinel, '')
+    s = s[:first + len(sentinel)] + tail
+else:
+    marker_get = 'export function getStoreByCode(code: string): DBStore {'
+    idx = s.find(marker_get)
+    if idx != -1:
+        s = s[:idx] + sentinel + '\n\n' + s[idx:]
 
-css = ROOT / "src/index.css"
-c = css.read_text(encoding="utf-8")
-c = re.sub(r'\n/\* The authenticated Google account supplies the email;.*?label:has\(\+ input\[type="email"\]\) \{ pointer-events: none; \}\n', '\n', c, flags=re.S)
-css.write_text(c, encoding="utf-8")
+# Never resurrect a hard-coded household name for an unknown partition.
+s = s.replace('multiStore[cleanCode].home.name = `Hogar de Mafe y Benjamin`;', 'multiStore[cleanCode].home.name = "";')
+
+server.write_text(s, encoding="utf-8")
 
 print("Legacy cleanup applied.")
