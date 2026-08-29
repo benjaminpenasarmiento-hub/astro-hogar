@@ -12,6 +12,10 @@ export interface SyncStatusData {
 
 type Subscriber = (data: SyncStatusData) => void;
 
+let isInitialized = false;
+let activeMutations = 0;
+let holdTimeout: ReturnType<typeof setTimeout> | null = null;
+
 let currentData: SyncStatusData = {
   status: "synced",
   lastSyncTime: null,
