@@ -9,13 +9,9 @@ const cache = new Map<string, { user: VerifiedGoogleUser; expiresAt: number }>()
 const CACHE_TTL_MS = 5 * 60 * 1000;
 
 function getFirebaseApiKey(): string {
-  const configured = process.env.FIREBASE_WEB_API_KEY;
+  const configured = process.env.FIREBASE_WEB_API_KEY || process.env.VITE_FIREBASE_API_KEY;
   if (configured) return configured;
-
-  const projectConfig = {
-    apiKey: "AIzaSyBqxdzL2sw4ME8985eo81IF62558obYxXg"
-  };
-  return projectConfig.apiKey;
+  return "AIzaSyAS50_07xuV2XXoSLkjrpUrrHFFxrOD8MM";
 }
 
 export async function verifyFirebaseIdToken(idToken: string): Promise<VerifiedGoogleUser | null> {
