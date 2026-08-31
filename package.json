@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx server.ts",
-    "build": "node prepare-onboarding-build.mjs && node prepare-smart-home-build.mjs && node prepare-milo-sanitize.mjs && node prepare-milo-build.mjs && node prepare-ux-polish.mjs && node prepare-minimal-ui.mjs && node prepare-requested-ui.mjs && node prepare-placement-fix.mjs && node prepare-final-requested-layout.mjs && vite build && node build-server.mjs",
+    "build": "node prepare-onboarding-build.mjs && node prepare-smart-home-build.mjs && node prepare-milo-sanitize.mjs && node prepare-milo-build.mjs && node prepare-ux-polish.mjs && node prepare-minimal-ui.mjs && node prepare-requested-ui.mjs && node prepare-placement-fix.mjs && node prepare-final-requested-layout.mjs && node prepare-final-home-fix.mjs && vite build && node build-server.mjs",
     "start": "node dist/server.cjs",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit"
@@ -14,7 +14,7 @@
     "@google/genai": "^2.4.0",
     "@tailwindcss/vite": "^4.1.14",
     "@vitejs/plugin-react": "^5.0.0",
-    "canvas-confetti": "1.9.4",
+    "canvas-confetti": "1.9.0",
     "dotenv": "^17.2.3",
     "express": "^4.21.2",
     "firebase": "^12.15.0",
