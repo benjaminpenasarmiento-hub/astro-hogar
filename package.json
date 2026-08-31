@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx server.ts",
-    "build": "node prepare-onboarding-build.mjs && node prepare-smart-home-build.mjs && node prepare-milo-sanitize.mjs && node prepare-ux-polish.mjs && node prepare-stable-ui-fix.mjs && node prepare-milo-context-final.mjs && node prepare-stable-milo-cosmos.mjs && node prepare-milo-voice-controls.mjs && node prepare-cosmos-color-natural.mjs && node prepare-cosmos-color-final.mjs && vite build && node build-server.mjs",
+    "build": "node prepare-onboarding-build.mjs && node prepare-smart-home-build.mjs && node prepare-milo-sanitize.mjs && node prepare-ux-polish.mjs && node prepare-stable-ui-fix.mjs && node prepare-milo-context-final.mjs && node prepare-stable-milo-cosmos.mjs && node prepare-milo-voice-controls.mjs && node prepare-cosmos-color-natural.mjs && node prepare-cosmos-color-final.mjs && node prepare-home-dashboard-final.mjs && vite build && node build-server.mjs",
     "start": "node dist/server.cjs",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit"
