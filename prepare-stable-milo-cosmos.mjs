@@ -3,14 +3,13 @@ import fs from "node:fs";
 const appPath = "src/App.tsx";
 let app = fs.readFileSync(appPath, "utf8");
 
-const replaceImport = (source, symbol, path) => {
-  const re = new RegExp(`import\\s+${symbol}\\s+from\\s+[\"']\\.\\/components\\/[^\"']+[\"'];`);
-  const next = `import ${symbol} from \"./components/${path}\";`;
-  return re.test(source) ? source.replace(re, next) : `${next}\n${source}`;
-};
+const chatImportRegex = /import\s+GatitoAiChat\s+from\s+["']\.\/components\/GatitoAiChat(?:Stable|VoiceHome)?["'];/;
+const newChat = 'import GatitoAiChat from "./components/GatitoAiChatVoiceHome";';
+app = app.replace(chatImportRegex, newChat);
 
-app = replaceImport(app, "GatitoAiChat", "GatitoAiChatVoiceHome");
-app = replaceImport(app, "CosmosModule", "CosmosModuleStable");
+const cosmosImportRegex = /import\s+CosmosModule\s+from\s+["']\.\/components\/CosmosModule(?:Stable)?["'];/;
+const newCosmos = 'import CosmosModule from "./components/CosmosModule";';
+app = app.replace(cosmosImportRegex, newCosmos);
 
 fs.writeFileSync(appPath, app, "utf8");
-console.log("[AstroHogar] Milo and Cosmos imports forced to stable components.");
+console.log("[AstroHogar] Milo voice active + original Cosmos restored.");
