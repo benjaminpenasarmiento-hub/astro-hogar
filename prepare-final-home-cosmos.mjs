@@ -4,28 +4,35 @@ function removeParentDivContaining(source, marker) {
   const markerIndex = source.indexOf(marker);
   if (markerIndex < 0) return source;
 
-  const before = source.slice(0, markerIndex);
-  let depth = 0;
-  let parentStart = -1;
-  const divOpen = /<div\b[^>]*>/g;
-  let match;
-  while ((match = divOpen.exec(before))) {
-    parentStart = match.index;
-    depth += 1;
-  }
-  if (parentStart < 0) return source;
-
-  let i = parentStart;
-  let balance = 0;
+  // Find the nearest unmatched <div> that actually contains the marker.
   const token = /<div\b[^>]*>|<\/div>/g;
-  token.lastIndex = parentStart;
+  const stack = [];
+  let match;
+  let containingStart = -1;
+
+  token.lastIndex = 0;
+  while ((match = token.exec(source)) && match.index < markerIndex) {
+    if (match[0].startsWith("<div")) {
+      stack.push(match.index);
+    } else if (stack.length) {
+      stack.pop();
+    }
+  }
+
+  if (stack.length) containingStart = stack[stack.length - 1];
+  if (containingStart < 0) return source;
+
+  // Remove exactly that containing div, including all nested divs, without touching siblings.
+  let balance = 0;
+  token.lastIndex = containingStart;
   while ((match = token.exec(source))) {
     if (match[0].startsWith("<div")) balance += 1;
     else balance -= 1;
     if (balance === 0) {
-      return source.slice(0, parentStart) + source.slice(token.lastIndex);
+      return source.slice(0, containingStart) + source.slice(token.lastIndex);
     }
   }
+
   return source;
 }
 
