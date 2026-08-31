@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx server.ts",
-    "build": "node prepare-onboarding-build.mjs && node prepare-smart-home-build.mjs && node prepare-milo-sanitize.mjs && node prepare-milo-build.mjs && node prepare-ux-polish.mjs && node prepare-minimal-ui.mjs && vite build && node build-server.mjs",
+    "build": "node prepare-onboarding-build.mjs && node prepare-smart-home-build.mjs && node prepare-milo-sanitize.mjs && node prepare-milo-build.mjs && node prepare-ux-polish.mjs && node prepare-minimal-ui.mjs && node prepare-requested-ui.mjs && vite build && node build-server.mjs",
     "start": "node dist/server.cjs",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit"
@@ -12,6 +12,7 @@
   "dependencies": {
     "@google-cloud/firestore": "^8.6.0",
     "@google/genai": "^2.4.0",
+    "@tailwindcss/vite": "^4.1.14",
     "@tailwindcss/vite": "^4.1.14",
     "@vitejs/plugin-react": "^5.0.4",
     "canvas-confetti": "1.9.4",
@@ -33,7 +34,6 @@
     "autoprefixer": "^10.4.21",
     "esbuild": "^0.25.0",
     "tailwindcss": "^4.1.14",
-    "typescript": "~5.8.2",
     "tsx": "^4.21.0"
   }
 }
