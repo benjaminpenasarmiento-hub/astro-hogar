@@ -35,7 +35,6 @@ const moonCard = `      {/* 🌌 TARJETA 2: LUNA, CICLO Y ASTROS EN BOGOTÁ */}
         return (
           <div className="lg:col-span-5 bg-gradient-to-br from-[#1A162B] via-[#231C38] to-[#120E20] text-white rounded-3xl p-5 sm:p-6 border-4 border-purple-900/40 shadow-sm space-y-4 relative overflow-hidden flex flex-col justify-between">
             <div className="absolute right-0 top-0 w-40 h-40 bg-purple-600/15 rounded-full blur-3xl pointer-events-none" />
-
             <div className="space-y-3">
               <div className="flex items-center justify-between border-b border-purple-800/60 pb-3">
                 <div className="flex items-center gap-2">
@@ -47,7 +46,6 @@ const moonCard = `      {/* 🌌 TARJETA 2: LUNA, CICLO Y ASTROS EN BOGOTÁ */}
                 </div>
                 <span className="text-[10px] font-extrabold px-2.5 py-0.5 bg-purple-950 text-purple-200 border border-purple-700/60 rounded-full">Hemisferio Norte 📍</span>
               </div>
-
               <div className="bg-purple-950/70 p-3.5 rounded-2xl border border-purple-800/60 flex items-center justify-between gap-3">
                 <div className="space-y-1">
                   <span className="text-[9.5px] font-black uppercase tracking-wider text-purple-300 block">Fase Lunar Hoy</span>
@@ -59,7 +57,6 @@ const moonCard = `      {/* 🌌 TARJETA 2: LUNA, CICLO Y ASTROS EN BOGOTÁ */}
                   <span className="text-[9.5px] text-purple-300 block">{lunarAge.toFixed(1)} días de edad</span>
                 </div>
               </div>
-
               <div className="bg-purple-950/50 p-3 rounded-2xl border border-purple-800/50 space-y-2">
                 <div className="flex items-center justify-between text-[9.5px] font-black uppercase tracking-wider text-purple-300">
                   <span>Recorrido lunar</span>
@@ -72,7 +69,7 @@ const moonCard = `      {/* 🌌 TARJETA 2: LUNA, CICLO Y ASTROS EN BOGOTÁ */}
                       {lunarStages.map((stage, idx) => {
                         const active = idx === phaseIndex;
                         return (
-                          <div key={stage.label + idx} className={"flex flex-col items-center gap-1 transition-transform " + (active ? "scale-110" : "") }>
+                          <div key={stage.label + idx} className={"flex flex-col items-center gap-1 transition-transform " + (active ? "scale-110" : "")}>
                             <span className={"w-8 h-8 rounded-full flex items-center justify-center border " + (active ? "bg-amber-200 border-amber-300 shadow-lg" : "bg-purple-950/95 border-purple-700")}>{stage.icon}</span>
                             <span className="text-[7.5px] text-purple-300 text-center leading-tight">{stage.label}</span>
                             <span className={"text-[7px] text-center " + (active ? "text-amber-200 font-black" : "text-purple-400")}>{dateForAge(stage.age)}</span>
@@ -80,12 +77,11 @@ const moonCard = `      {/* 🌌 TARJETA 2: LUNA, CICLO Y ASTROS EN BOGOTÁ */}
                         );
                       })}
                     </div>
-                    <span className="absolute -top-1 h-12 w-0.5 bg-amber-200/90" style={{ left: `calc(12px + (100% - 24px) * ${currentProgress / 100})` }} />
+                    <span className="absolute -top-1 h-12 w-0.5 bg-amber-200/90" style={{ left: "calc(12px + (100% - 24px) * " + (currentProgress / 100) + ")" }} />
                   </div>
                 </div>
               </div>
             </div>
-
             <div className="pt-2 border-t border-purple-800/50 space-y-2">
               <div className="bg-gradient-to-r from-indigo-950/60 to-purple-950/60 p-3 rounded-2xl border border-indigo-800/50 space-y-1">
                 <span className="text-[9.5px] font-black uppercase tracking-wider text-indigo-300 flex items-center gap-1"><Sparkles size={12} className="text-amber-300" /> Próximo evento astronómico</span>
