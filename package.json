@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx server.ts",
-    "build": "node prepare-onboarding-build.mjs && node prepare-smart-home-build.mjs && node prepare-milo-sanitize.mjs && node prepare-milo-build.mjs && node prepare-ux-polish.mjs && vite build && node build-server.mjs",
+    "build": "node prepare-onboarding-build.mjs && node prepare-smart-home-build.mjs && node prepare-milo-sanitize.mjs && node prepare-milo-build.mjs && node prepare-ux-polish.mjs && node prepare-minimal-ui.mjs && vite build && node build-server.mjs",
     "start": "node dist/server.cjs",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit"
