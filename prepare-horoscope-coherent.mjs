@@ -3,10 +3,10 @@ import fs from "node:fs";
 const path = "server.ts";
 let source = fs.readFileSync(path, "utf8");
 
-const start = source.indexOf('// 2. Custom Personalized Zodiac Horoscope for Home Members');
+const start = source.indexOf("// 2. Custom Personalized Zodiac Horoscope for Home Members");
 const routeStart = source.indexOf('app.get("/api/ai/horoscope"', start);
-const instructionStart = source.indexOf('  const systemInstruction = `', routeStart);
-const instructionEnd = source.indexOf('\n\n  const randomFactOrWord', instructionStart);
+const instructionStart = source.indexOf("  const systemInstruction = `", routeStart);
+const instructionEnd = source.indexOf("\n\n  const randomFactOrWord", instructionStart);
 if (instructionStart < 0 || instructionEnd < 0) throw new Error("No se encontró el bloque de instrucciones del horóscopo.");
 
 const newInstruction = `  const systemInstruction = \`Eres Milo, el astrólogo cercano del hogar. Escribe en español claro, cálido y natural.
@@ -32,12 +32,11 @@ REGLAS DE COHERENCIA:
 13. Nada de 'Mafe y Benja' a menos que esos nombres aparezcan realmente entre los usuarios registrados.
 
 Devuelve JSON exactamente con: userPredictions, homeCompatibility y astralClimate.\`;
-`;
 
 source = source.slice(0, instructionStart) + newInstruction + source.slice(instructionEnd);
 
-const fallbackStart = source.indexOf('  const fallbackPredictions = activeUsers.map(u => {', routeStart);
-const fallbackEnd = source.indexOf('\n\n  // Deterministic Climate Fallback', fallbackStart);
+const fallbackStart = source.indexOf("  const fallbackPredictions = activeUsers.map(u => {", routeStart);
+const fallbackEnd = source.indexOf("\n\n  // Deterministic Climate Fallback", fallbackStart);
 if (fallbackStart < 0 || fallbackEnd < 0) throw new Error("No se encontró el fallback del horóscopo.");
 
 const newFallback = `  const weekdayColors = [
@@ -50,7 +49,6 @@ const newFallback = `  const weekdayColors = [
     ["Azul", "calma y recuperación"]
   ];
   const fallbackPredictions = activeUsers.map((u) => {
-    const transit = getAstroProfile(u.id, summary.today).transitData;
     const normalizedSign = String(u.zodiacSign || "").replace(/[♈-♓]/g, "").trim() || "tu signo";
     const seed = Math.abs(Array.from(String(u.id) + summary.today + normalizedSign).reduce((n, ch) => (n * 31 + ch.charCodeAt(0)) >>> 0, 7));
     const themePool = ["foco", "calma", "comunicación", "iniciativa", "conexión", "descanso"];
@@ -75,16 +73,16 @@ const newFallback = `  const weekdayColors = [
     return {
       userId: u.id,
       userName: u.name,
-      prediction: `Hoy el tema para ti es ${theme}. Tu signo ${u.zodiacSign || "solar"} favorece ${signAction}; lo importante será mantener esa línea durante el día.`,
-      predictionSalud: `En bienestar, prioriza ${theme}: haz una pausa cuando la necesites y cuida tu energía sin exigirte de más.`,
-      predictionAmor: `En la convivencia, expresa lo que necesitas con claridad y deja espacio para escuchar; esa será la mejor forma de cuidar el vínculo hoy.`,
-      predictionTrabajo: `En trabajo y propósito, concentra tus esfuerzos en una prioridad concreta y evita repartir tu atención entre demasiadas cosas.`,
-      predictionEspiritualidad: `Para cerrar el día, busca unos minutos de silencio o calma que te permitan volver a tu centro.`,
-      advice: `Consejo de Milo: ${signAction} y no conviertas el día en una carrera.`,
-      luckyColor: `${colorForDay[0]}`,
-      luckyColorDesc: `${colorForDay[0]} puede acompañarte hoy porque favorece ${colorForDay[1]} y encaja con el ritmo de tu día.`,
+      prediction: "Hoy el tema para ti es " + theme + ". Tu signo " + (u.zodiacSign || "solar") + " favorece " + signAction + "; lo importante será mantener esa línea durante el día.",
+      predictionSalud: "En bienestar, prioriza " + theme + ": haz una pausa cuando la necesites y cuida tu energía sin exigirte de más.",
+      predictionAmor: "En la convivencia, expresa lo que necesitas con claridad y deja espacio para escuchar; esa será la mejor forma de cuidar el vínculo hoy.",
+      predictionTrabajo: "En trabajo y propósito, concentra tus esfuerzos en una prioridad concreta y evita repartir tu atención entre demasiadas cosas.",
+      predictionEspiritualidad: "Para cerrar el día, busca unos minutos de silencio o calma que te permitan volver a tu centro.",
+      advice: "Consejo de Milo: " + signAction + " y no conviertas el día en una carrera.",
+      luckyColor: colorForDay[0],
+      luckyColorDesc: colorForDay[0] + " puede acompañarte hoy porque favorece " + colorForDay[1] + " y encaja con el ritmo de tu día.",
       recommendedActivities: [
-        `Reserva 10 minutos para avanzar en algo que represente tu tema de ${theme}.`,
+        "Reserva 10 minutos para avanzar en algo que represente tu tema de " + theme + ".",
         "Comparte un momento tranquilo en casa sin multitarea."
       ]
     };
