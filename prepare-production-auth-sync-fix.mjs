@@ -15,9 +15,12 @@ if (!auth.includes("readAccountHomeIndex")) {
 const memberNeedle = `    const member = Boolean(\n      (uid && authorizedUids.includes(uid)) ||\n      (normalizedEmail && authorizedEmails.includes(normalizedEmail)) ||\n      legacyMember\n    );\n\n    if (!member) return false;`;
 const memberReplacement = `    let member = Boolean(\n      (uid && authorizedUids.includes(uid)) ||\n      (normalizedEmail && authorizedEmails.includes(normalizedEmail)) ||\n      legacyMember\n    );\n\n    // Legacy repair: an authenticated account may already be linked to this home\n    // through account_homes/{uid} even when the nest metadata arrays are stale.\n    if (!member && uid) {\n      try {\n        const accountIndex = await readAccountHomeIndex(uid);\n        if (accountIndex.homeCode === homeCode) {\n          member = true;\n        }\n      } catch (indexError) {\n        console.warn("[Firebase AuthZ] No se pudo consultar account_homes:", indexError);\n      }\n    }\n\n    if (!member) return false;`;
 
-if (!auth.includes("Legacy repair: an authenticated account")) {
-  if (!auth.includes(memberNeedle)) throw new Error("No se encontró el bloque de pertenencia al hogar esperado");
-  auth = auth.replace(memberNeedle, memberReplacement);
+if (!auth.includes("Legacy repair: an authenticated account") && !auth.includes("Source of truth for an authenticated account")) {
+  if (auth.includes(memberNeedle)) {
+    auth = auth.replace(memberNeedle, memberReplacement);
+  } else {
+    console.warn("[AstroHogar] Legacy membership block not found; leaving current auth middleware unchanged.");
+  }
 }
 fs.writeFileSync(authPath, auth, "utf8");
 
