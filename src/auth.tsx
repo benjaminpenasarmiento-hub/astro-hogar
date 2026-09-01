@@ -58,7 +58,12 @@ async function detectHomeForAccount(currentUser: User): Promise<string | null> {
     const idToken = await currentUser.getIdToken();
     const response = await fetch("/api/onboarding/detect-home", {
       method: "GET",
-      headers: { Authorization: `Bearer ${idToken}` },
+      cache: "no-store",
+      headers: {
+        Authorization: `Bearer ${idToken}`,
+        "Cache-Control": "no-cache",
+        Pragma: "no-cache",
+      },
     });
     if (!response.ok) {
       console.warn("[AstroHogar] No se pudo detectar el hogar de la cuenta:", response.status);
