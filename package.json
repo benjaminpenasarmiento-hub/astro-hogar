@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx server.ts",
-    "build": "node prepare-onboarding-build.mjs && node prepare-smart-home-build.mjs && node prepare-dashboard-milo.mjs && node prepare-ux-polish.mjs && node prepare-stable-ui-fix.mjs && node prepare-cosmos-color-natural.mjs && node prepare-cosmos-color-final.mjs && node prepare-home-panels-safe.mjs && node prepare-frasco-persistence.mjs && node prepare-identity-fix.mjs && vite build && node build-server.mjs",
+    "build": "node prepare-onboarding-build.mjs && node prepare-smart-home-build.mjs && node prepare-dashboard-milo.mjs && node prepare-ux-polish.mjs && node prepare-stable-ui-fix.mjs && node prepare-cosmos-color-natural.mjs && node prepare-cosmos-color-final.mjs && node prepare-home-panels-safe.mjs && node prepare-frasco-persistence.mjs && node prepare-identity-fix.mjs && node prepare-identity-isolation.mjs && vite build && node build-server.mjs",
     "start": "node dist/server.cjs",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit"
@@ -23,13 +23,16 @@
     "react-dom": "^19.0.1",
     "react-markdown": "^10.1.0",
     "recharts": "^3.8.1",
+    "recharts": "^3.8.1",
     "vite": "^6.2.3"
   },
   "devDependencies": {
     "@types/canvas-confetti": "^1.9.4",
     "@types/node": "^22.14.0",
     "@vitejs/plugin-react": "^5.0.4",
-    "tailwindcss": "^4.1.14",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "tailwindcss": "^4.1.0",
     "typescript": "~5.8.2",
     "tsx": "^4.21.0"
   }
