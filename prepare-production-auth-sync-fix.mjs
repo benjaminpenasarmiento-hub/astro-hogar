@@ -43,5 +43,25 @@ if (!build.includes("Revision conflict; refreshing remote state and retrying onc
   }
 }
 
+const hydrationImportNeedle = 'import { requireFirebaseAuth as __requireFirebaseAuth } from "./serverAuthMiddleware";';
+const hydrationImport = hydrationImportNeedle + '\nimport { refreshActiveHomeFromFirestore as __refreshActiveHomeFromFirestore } from "./serverStore.vercel";';
+if (!build.includes("__refreshActiveHomeFromFirestore")) {
+  if (build.includes(hydrationImportNeedle)) {
+    build = build.replace(hydrationImportNeedle, hydrationImport);
+  } else {
+    console.warn("[AstroHogar] Could not locate server middleware import block for production hydration.");
+  }
+}
+
+const safePartitionOld = `const safePartitionMiddleware = \`app.use((req, res, next) => {\n  const rawHomeCode = String(req.headers["x-home-code"] || "").trim();\n  const onboardingCreate = req.path === "/api/onboarding/create-home";\n  const onboardingJoin = req.path === "/api/onboarding/join-home";\n  const onboardingEnter = req.path === "/api/onboarding/enter-home";\n  if (!rawHomeCode && !onboardingCreate && !onboardingJoin && !onboardingEnter && req.path !== "/api/health" && req.path !== "/health") {\n    return res.status(400).json({ error: "No hay un hogar activo.", code: "HOME_CONTEXT_REQUIRED" });\n  }\n  const bodyCode = onboardingJoin ? String(req.body?.inviteCode || "").trim() : "";\n  const homeCode = normalizeHomeCode(rawHomeCode || bodyCode);\n  if (!homeCode) return next();\n  homeContextStorage.run(homeCode, () => next());\n});\`;`;
+const safePartitionNew = `const safePartitionMiddleware = \`app.use((req, res, next) => {\n  const rawHomeCode = String(req.headers["x-home-code"] || "").trim();\n  const onboardingCreate = req.path === "/api/onboarding/create-home";\n  const onboardingJoin = req.path === "/api/onboarding/join-home";\n  const onboardingEnter = req.path === "/api/onboarding/enter-home";\n  if (!rawHomeCode && !onboardingCreate && !onboardingJoin && !onboardingEnter && req.path !== "/api/health" && req.path !== "/health") {\n    return res.status(400).json({ error: "No hay un hogar activo.", code: "HOME_CONTEXT_REQUIRED" });\n  }\n  const bodyCode = onboardingJoin ? String(req.body?.inviteCode || "").trim() : "";\n  const homeCode = normalizeHomeCode(rawHomeCode || bodyCode);\n  if (!homeCode) return next();\n  homeContextStorage.run(homeCode, async () => {\n    try {\n      if (!onboardingCreate && !onboardingJoin && !onboardingEnter) {\n        await __refreshActiveHomeFromFirestore(homeCode);\n      }\n    } catch (hydrationError) {\n      console.warn("[AstroHogar] No se pudo hidratar el hogar activo desde Firestore; continuando con el estado disponible:", hydrationError);\n    }\n    next();\n  });\n});\`;`;
+if (!build.includes("await __refreshActiveHomeFromFirestore(homeCode)")) {
+  if (build.includes(safePartitionOld)) {
+    build = build.replace(safePartitionOld, safePartitionNew);
+  } else {
+    console.warn("[AstroHogar] Production partition middleware text changed; skipping hydration rewrite.");
+  }
+}
+
 fs.writeFileSync(buildPath, build, "utf8");
-console.log("Production auth recovery and Firestore conflict handling prepared.");
+console.log("Production auth recovery, Firestore hydration, and conflict handling prepared.");
