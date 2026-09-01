@@ -33,9 +33,15 @@ if (!app.includes('const authenticatedProfile = users.find((u) =>')) {
 const headerStart = app.indexOf('      {/* MOBILE TOP HEADER */}');
 const headerEnd = app.indexOf('      {/* Sidebar navigation */}', headerStart);
 if (headerStart >= 0 && headerEnd > headerStart) {
-  const cleanHeader = `      {/* MOBILE TOP HEADER */}\n      <header className="md:hidden flex items-center justify-between gap-3 px-4 py-3.5 bg-white/95 backdrop-blur-md border-b border-[#E7E2D5] shrink-0 select-none shadow-sm">\n        <div className="flex items-center gap-2.5 min-w-0">\n          <div className="w-9 h-9 bg-[#FFE5D9] rounded-xl flex items-center justify-center text-base shadow-inner leading-none shrink-0">\n            🏡\n          </div>\n          <div className="min-w-0">\n            <h1 className="font-bold text-cute text-xs text-[#2C2723] leading-tight truncate">{home?.name}</h1>\n            <p className="text-[10px] text-[#625B57] font-semibold truncate mt-0.5">\n              Sesión: <strong className="text-[#2C2723] font-black">{authUser?.displayName || authenticatedProfile?.name || "Usuario"}</strong>\n            </p>\n          </div>\n        </div>\n\n        <div className="flex items-center gap-2 shrink-0">\n          <SyncStatusIndicator\n            showLabel={true}\n            onForceRefresh={forceFullDataRefresh}\n            className="px-2.5 py-1.5"\n          />\n\n          <button\n            onClick={handleOpenNotificationCenter}\n            className="p-2 bg-[#FAF7F2] hover:bg-amber-100 rounded-xl text-amber-900 border border-[#E7E2D5] transition-all cursor-pointer relative shrink-0"\n            title="Ver notificaciones miau 🔔"\n          >\n            <Bell size={15} className={unreadCount > 0 ? "animate-bounce" : ""} />\n            {unreadCount > 0 && (\n              <span className="absolute -top-1.5 -right-1.5 bg-rose-500 text-white font-extrabold text-[8px] px-1 rounded-full border border-white flex items-center justify-center min-w-[14px] h-[14px]">\n                {unreadCount}\n              </span>\n            )}\n          </button>\n\n          <button\n            onClick={() => setShowInstallModal(true)}\n            className="p-2 bg-[#FAF7F2] hover:bg-amber-100 rounded-xl text-amber-900 border border-[#E7E2D5] transition-all cursor-pointer shrink-0"\n            title="Instalar App en Celular"\n          >\n            <Download size={15} />\n          </button>\n        </div>\n      </header>\n\n`;
+  const cleanHeader = `      {/* MOBILE TOP HEADER */}\n      <header className="md:hidden flex items-center justify-between gap-3 px-4 py-3.5 bg-white/95 backdrop-blur-md border-b border-[#E7E2D5] shrink-0 select-none shadow-sm">\n        <div className="flex items-center gap-2.5 min-w-0">\n          <div className="w-9 h-9 bg-[#FFE5D9] rounded-xl flex items-center justify-center text-base shadow-inner leading-none shrink-0">\n            🏡\n          </div>\n          <div className="min-w-0">\n            <h1 className="font-bold text-cute text-xs text-[#2C2723] leading-tight truncate">{home?.name}</h1>\n            <p className="text-[10px] text-[#625B57] font-semibold truncate mt-0.5">\n              Sesión: <strong className="text-[#2C2723] font-black">{authenticatedProfile?.name || authUser?.displayName || "Usuario"}</strong>\n            </p>\n          </div>\n        </div>\n\n        <div className="flex items-center gap-2 shrink-0">\n          <SyncStatusIndicator\n            showLabel={true}\n            onForceRefresh={forceFullDataRefresh}\n            className="px-2.5 py-1.5"\n          />\n\n          <button\n            onClick={handleOpenNotificationCenter}\n            className="p-2 bg-[#FAF7F2] hover:bg-amber-100 rounded-xl text-amber-900 border border-[#E7E2D5] transition-all cursor-pointer relative shrink-0"\n            title="Ver notificaciones miau 🔔"\n          >\n            <Bell size={15} className={unreadCount > 0 ? "animate-bounce" : ""} />\n            {unreadCount > 0 && (\n              <span className="absolute -top-1.5 -right-1.5 bg-rose-500 text-white font-extrabold text-[8px] px-1 rounded-full border border-white flex items-center justify-center min-w-[14px] h-[14px]">\n                {unreadCount}\n              </span>\n            )}\n          </button>\n\n          <button\n            onClick={() => setShowInstallModal(true)}\n            className="p-2 bg-[#FAF7F2] hover:bg-amber-100 rounded-xl text-amber-900 border border-[#E7E2D5] transition-all cursor-pointer shrink-0"\n            title="Instalar App en Celular"\n          >\n            <Download size={15} />\n          </button>\n        </div>\n      </header>\n\n`;
   app = app.slice(0, headerStart) + cleanHeader + app.slice(headerEnd);
 }
+
+// Make the active authenticated profile the sole account target for profile editing.
+app = app.replace(
+  'const handleOpenProfile = (user: UserProfile, tab: "natal" | "edit" | "synastry" | "settings" = "natal") => {\n    setSelectedUserForAstro(user);\n    setAstroProfileInitialTab(tab);\n  };',
+  'const handleOpenProfile = (user: UserProfile, tab: "natal" | "edit" | "synastry" | "settings" = "natal") => {\n    const accountUser = authenticatedProfile || user;\n    setSelectedUserForAstro(tab === "edit" || tab === "settings" ? accountUser : user);\n    setAstroProfileInitialTab(tab);\n  };'
+);
 
 fs.writeFileSync(appPath, app);
 
@@ -81,6 +87,31 @@ profile = profile.replace(
   '  }, [activeUser, allUsers]);',
   '  }, [activeUser, allUsers, authenticatedEmail]);'
 );
+
+// Account tab: when the current authenticated user is active, prevent showing another member's email.
+const emailInputPattern = /(<label className="block text-xs font-extrabold text-gray-500 mb-1">\s*Correo Electrónico[\s\S]*?<input[\s\S]*?value=\{email\}[\s\S]*?onChange=\{\(e\) => setEmail\(e\.target\.value\)\}[\s\S]*?\/>)/;
+profile = profile.replace(emailInputPattern, (block) => {
+  return block
+    .replace('onChange={(e) => setEmail(e.target.value)}', 'onChange={(e) => setEmail(e.target.value)} disabled={Boolean(activeUserId && activeUser.id === activeUserId && authUser?.email)}')
+    .replace('/>', '/>\n            {activeUserId && activeUser.id === activeUserId && authUser?.email && (\n              <p className="text-[9px] text-emerald-700 font-bold mt-1">Cuenta de Google autenticada · correo administrado por Google.</p>\n            )}');
+});
+
 fs.writeFileSync(profilePath, profile);
 
-console.log("Mobile header, unified sync state, and authenticated profile email fixed.");
+// Active-user greeting: the dashboard must address only the user whose session is active.
+const dashboardPath = "src/components/HomeDashboard.tsx";
+let dashboard = fs.readFileSync(dashboardPath, "utf8");
+if (!dashboard.includes('const activeUser = users.find(u => u.id === activeUserId)')) {
+  dashboard = dashboard.replace(
+    '  const activeUser = users.find(u => u.id === activeUserId) || users[0] || { id: "mafe", name: "Mafe" };',
+    '  const activeUser = users.find(u => u.id === activeUserId) || users[0] || { id: "", name: "Usuario" };\n  const activeUserName = activeUser.name || "Usuario";'
+  );
+}
+// Replace the old multi-user greeting with the active session greeting only.
+dashboard = dashboard.replace(
+  'Hola {users.length > 0 ? users.map(u => u.name).join(" & ") : "Inquilinos Cósmicos"}',
+  'Hola {activeUserName}'
+);
+fs.writeFileSync(dashboardPath, dashboard);
+
+console.log("Unified active-user identity, account context, and dashboard greeting.");
