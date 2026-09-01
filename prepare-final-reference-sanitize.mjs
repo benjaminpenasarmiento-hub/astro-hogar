@@ -24,10 +24,8 @@ function sanitizeText(source, file) {
   let next = source;
   for (const [bad, good] of REPLACEMENTS) next = next.split(bad).join(good);
 
-  // HomeDashboard uses activeUser in several render-time lookups. Avoid
-  // Array.find here because the production minifier produced a TDZ collision
-  // in the generated bundle around this callback.
   if (file.endsWith("src/components/HomeDashboard.tsx")) {
+    // Avoid minified temporal-dead-zone collisions inside Array.find callbacks.
     const activeUserLine = '  const activeUser = users.find(u => u.id === activeUserId) || users[0] || { id: "mafe", name: "Mafe" };';
     const safeActiveUserBlock = `  let activeUser = users[0] || { id: "mafe", name: "Mafe" };
   if (activeUserId) {
@@ -61,8 +59,34 @@ function sanitizeText(source, file) {
     }
   }
 
-  // Older build patches could append this declaration twice. Keep one source
-  // declaration so esbuild can bundle serverStore.vercel.ts reliably.
+  if (file.endsWith("src/App.tsx")) {
+    // The authenticatedProfile lookup is injected during build and was also
+    // observed as an Array.find callback in the crashing production bundle.
+    const oldProfile = `  const authenticatedProfile = users.find((u) =>
+    (authUser?.uid && String(u?.authUid || "").trim() === authUser.uid) ||
+    (authUser?.email && String(u?.email || "").trim().toLowerCase() === authUser.email.trim().toLowerCase())
+  );`;
+    const safeProfile = `  let authenticatedProfile: UserProfile | undefined;
+  for (const candidateUser of users) {
+    const matchesUid = Boolean(authUser?.uid && String(candidateUser?.authUid || "").trim() === authUser.uid);
+    const matchesEmail = Boolean(authUser?.email && String(candidateUser?.email || "").trim().toLowerCase() === authUser.email.trim().toLowerCase());
+    if (matchesUid || matchesEmail) {
+      authenticatedProfile = candidateUser;
+      break;
+    }
+  }`;
+    if (next.includes(oldProfile)) next = next.replace(oldProfile, safeProfile);
+  }
+
+  if (file.endsWith("src/auth.tsx")) {
+    // Never allow an auth-linking build patch to reference an out-of-scope token.
+    next = next.replace(
+      'Authorization: `Bearer ${idToken}`',
+      'Authorization: `Bearer ${await currentUser.getIdToken()}`'
+    );
+  }
+
+  // Keep a single UNSCOPED_STORE declaration after legacy build patches.
   if (file === "serverStore.ts" || file.endsWith("/serverStore.ts")) {
     next = next.replace(
       /const UNSCOPED_STORE: DBStore = JSON\.parse\(JSON\.stringify\(INITIAL_DATA\)\);\n\s*const UNSCOPED_STORE: DBStore = JSON\.parse\(JSON\.stringify\(INITIAL_DATA\)\);/g,
