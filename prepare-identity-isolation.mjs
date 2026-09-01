@@ -9,17 +9,21 @@ if (!server.includes(identityImportMarker)) {
   server = server.replace('const app = express();\n', `${identityImportMarker}\nconst astroRequestIdentity = new AsyncLocalStorage<{ uid: string; email: string }>();\n\nconst app = express();\n`);
 }
 
+// Keep identity information request-scoped for Milo and other server consumers,
+// but do NOT add a second authorization gate here. Firebase/Home authorization
+// already lives in serverAuthMiddleware and resolves the active profile from
+// Firestore. A duplicate in-memory check caused valid authenticated requests to
+// receive HOME_ACCOUNT_MISMATCH (403) during production hydration.
 const isolationMarker = "// ASTRO_IDENTITY_ISOLATION_V2";
 if (!server.includes(isolationMarker)) {
   const middlewareAnchor = `app.use((req, res, next) => {\n  const rawHomeCode = req.headers["x-home-code"] as string || "HOGARPELUDO";\n  const homeCode = normalizeHomeCode(rawHomeCode);\n  homeContextStorage.run(homeCode, () => {\n    next();\n  });\n});`;
-  const isolationMiddleware = `${middlewareAnchor}\n\n${isolationMarker}\n// Every authenticated production request must belong to the active nest.\n// Onboarding create/join are the only routes that may establish membership.\napp.use((req, res, next) => {\n  const pathName = String(req.path || req.url || "").split("?")[0].replace(/\\/+$/, "") || "/";\n  const onboardingPath = pathName === "/api/onboarding/create-home" || pathName === "/api/onboarding/join-home" || pathName === "/onboarding/create-home" || pathName === "/onboarding/join-home";\n  if (onboardingPath) return next();\n\n  const authUid = String(req.authUser?.localId || "").trim();\n  const authEmail = String(req.authUser?.email || "").trim().toLowerCase();\n  if (!authUid && !authEmail) return next();\n\n  const store = getStore();\n  const users = Array.isArray(store.users) ? store.users : [];\n  const authorized = Boolean(\n    (Array.isArray(store.home?.authorizedUids) && authUid && store.home.authorizedUids.includes(authUid)) ||\n    users.some((u) =>\n      (authUid && String(u?.authUid || "").trim() === authUid) ||\n      (authEmail && String(u?.email || "").trim().toLowerCase() === authEmail)\n    )\n  );\n\n  if (!authorized) return res.status(403).json({ error: "Esta cuenta no pertenece al nido activo.", code: "HOME_ACCOUNT_MISMATCH" });\n  return next();\n});`;
   if (!server.includes(middlewareAnchor)) throw new Error("Home context middleware anchor not found");
-  server = server.replace(middlewareAnchor, isolationMiddleware);
+  server = server.replace(middlewareAnchor, `${middlewareAnchor}\n\n${isolationMarker}\n// Authorization is intentionally centralized in serverAuthMiddleware.\n// This marker remains for build-time compatibility and prevents the old\n// in-memory HOME_ACCOUNT_MISMATCH gate from being reintroduced.`);
 }
 
 const identityMiddlewareMarker = "// ASTRO_REQUEST_IDENTITY_CONTEXT_V3";
 if (!server.includes(identityMiddlewareMarker)) {
-  const anchor = `${isolationMarker}\n// Every authenticated production request must belong to the active nest.`;
+  const anchor = `${isolationMarker}\n// Authorization is intentionally centralized in serverAuthMiddleware.`;
   const injection = `${identityMiddlewareMarker}\n// Keep identity request-scoped so concurrent users can never overwrite each other.\napp.use((req, _res, next) => {\n  astroRequestIdentity.run({\n    uid: String(req.authUser?.localId || "").trim(),\n    email: String(req.authUser?.email || "").trim().toLowerCase()\n  }, next);\n});\n\n`;
   if (!server.includes(anchor)) throw new Error("Identity middleware anchor not found");
   server = server.replace(anchor, `${injection}${anchor}`);
@@ -75,4 +79,4 @@ chat = chat.replace(
 );
 fs.writeFileSync(chatPath, chat);
 
-console.log("Identity isolation + Milo identity context prepared successfully.");
+console.log("Identity context prepared successfully; duplicate authorization gate removed.");
