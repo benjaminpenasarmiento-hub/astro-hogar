@@ -23,10 +23,11 @@ fs.writeFileSync(dashboardPath, dashboard, "utf8");
 const buildPath = "build-server.mjs";
 let build = fs.readFileSync(buildPath, "utf8").replace(/\r\n/g, "\n");
 
-// Replace the generated Vercel save operation regardless of whitespace or of a
-// previous automated pass. The callback always refreshes the remote snapshot
-// before the first write and retries once after a revision race.
-const retryBlock = `      if (!observedFirestoreRevisions.has(cleanCode)) {
+// Replace the generated Vercel save operation exactly once. If an earlier build
+// step already applied the revision retry, leave it untouched to avoid nesting
+// duplicate declarations in the generated function.
+if (!build.includes("Revision conflict; refreshing remote state and retrying once.")) {
+  const retryBlock = `      if (!observedFirestoreRevisions.has(cleanCode)) {
         await refreshActiveHomeFromFirestore(cleanCode);
       }
 
@@ -46,15 +47,15 @@ const retryBlock = `      if (!observedFirestoreRevisions.has(cleanCode)) {
       }
       observedFirestoreRevisions.set(cleanCode, nextRevision);`;
 
-const saveStart = '      const dataCopy = JSON.parse(JSON.stringify(multiStore[cleanCode]));';
-const saveEnd = '      observedFirestoreRevisions.set(cleanCode, nextRevision);';
-const start = build.lastIndexOf(saveStart);
-const endMarker = build.indexOf(saveEnd, start);
-if (start >= 0 && endMarker > start) {
+  const saveStart = '      const dataCopy = JSON.parse(JSON.stringify(multiStore[cleanCode]));';
+  const saveEnd = '      observedFirestoreRevisions.set(cleanCode, nextRevision);';
+  const start = build.lastIndexOf(saveStart);
+  const endMarker = build.indexOf(saveEnd, start);
+  if (start < 0 || endMarker <= start) {
+    throw new Error("No se encontró el bloque de saveToFirestore generado para hardening.");
+  }
   const end = endMarker + saveEnd.length;
   build = build.slice(0, start) + retryBlock + build.slice(end);
-} else if (!build.includes("Revision conflict; refreshing remote state and retrying once.")) {
-  throw new Error("No se encontró el bloque de saveToFirestore generado para hardening.");
 }
 
 // Ensure the production partition hydrates Firestore for every authenticated
@@ -70,9 +71,7 @@ const newPartition = `homeContextStorage.run(homeCode, async () => {
     }
     next();
   });`;
-if (build.includes(oldPartition)) {
-  build = build.replace(oldPartition, newPartition);
-}
+if (build.includes(oldPartition)) build = build.replace(oldPartition, newPartition);
 
 fs.writeFileSync(buildPath, build, "utf8");
 console.log("[AstroHogar] Final runtime hardening applied: activeUserName + Firestore revision hydration/retry.");
