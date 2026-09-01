@@ -26,7 +26,10 @@ function sanitizeText(source, file) {
 
   if (file.endsWith("src/components/HomeDashboard.tsx")) {
     // Avoid minified temporal-dead-zone collisions inside Array.find callbacks.
-    const activeUserLine = '  const activeUser = users.find(u => u.id === activeUserId) || users[0] || { id: "mafe", name: "Mafe" };';
+    // prepare-final-home-fix.mjs may have changed the fallback to `|| null`, so
+    // match both historical forms instead of relying on one exact line.
+    const activeUserRegex = /\s*const activeUser = users\.find\(u => u\.id === activeUserId\) \|\| users\[0\] \|\| (?:\{ id: "mafe", name: "Mafe" \}|
+null);/;
     const safeActiveUserBlock = `  let activeUser = users[0] || { id: "mafe", name: "Mafe" };
   if (activeUserId) {
     for (const candidate of users) {
@@ -36,7 +39,7 @@ function sanitizeText(source, file) {
       }
     }
   }`;
-    if (next.includes(activeUserLine)) next = next.replace(activeUserLine, safeActiveUserBlock);
+    if (activeUserRegex.test(next)) next = next.replace(activeUserRegex, `\n${safeActiveUserBlock}`);
 
     const getUserNameOld = `  const getUserName = (id: string) => {
     const user = users.find(u => u.id === id);
