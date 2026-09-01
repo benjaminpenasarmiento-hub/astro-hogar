@@ -140,19 +140,22 @@ export default function GatitoAiChat({ onRefreshData, onRequestCreate, users = [
       <AnimatePresence>
         {open && (
           <motion.section
-            initial={{ opacity: 0, x: 24, scale: 0.98 }}
-            animate={{ opacity: 1, x: 0, scale: 1 }}
-            exit={{ opacity: 0, x: 24, scale: 0.98 }}
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
             transition={{ duration: 0.18 }}
             className="bg-white rounded-[24px] border-2 border-[#F3EFE6] shadow-[0_18px_55px_rgba(44,39,35,0.22)] overflow-hidden flex flex-col"
             style={{
               position: "fixed",
               zIndex: 999999,
-              right: "20px",
-              top: "72px",
-              width: "min(430px, calc(100vw - 40px))",
-              height: "min(700px, calc(100dvh - 92px))",
-              maxWidth: "calc(100vw - 40px)",
+              right: "clamp(16px, 5vw, 88px)",
+              bottom: "88px",
+              top: "auto",
+              left: "auto",
+              width: "min(430px, calc(100vw - 32px))",
+              maxWidth: "calc(100vw - 32px)",
+              height: "min(700px, calc(100dvh - 104px))",
+              maxHeight: "calc(100dvh - 104px)",
             }}
             role="dialog"
             aria-label="Chat con Milo"
