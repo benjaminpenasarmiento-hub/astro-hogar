@@ -1,5 +1,5 @@
 // AstroHogar PWA Service Worker for Mobile and Desktop
-const CACHE_NAME = "astrohogar-v6";
+const CACHE_NAME = "astrohogar-v7";
 const ASSETS = [
   "/",
   "/index.html",
@@ -11,7 +11,7 @@ const ASSETS = [
 self.addEventListener("install", (e) => {
   e.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log("[Service Worker] Caching app shell assets (v6)...");
+      console.log("[Service Worker] Caching app shell assets (v7)...");
       return cache.addAll(ASSETS).catch(err => {
         console.warn("[Service Worker] Cache addAll failed, skipping initial assets:", err);
       });
@@ -21,7 +21,7 @@ self.addEventListener("install", (e) => {
 });
 
 self.addEventListener("activate", (e) => {
-  console.log("[Service Worker] Activated v6 and ready to handle notifications and fetch requests.");
+  console.log("[Service Worker] Activated v7 and ready to handle notifications and fetch requests.");
   e.waitUntil(
     caches.keys().then((keys) => Promise.all(
       keys.map((key) => key !== CACHE_NAME ? caches.delete(key) : undefined)
@@ -34,8 +34,14 @@ self.addEventListener("fetch", (e) => {
   if (!e.request.url.startsWith(self.location.origin)) return;
   if (e.request.url.includes("/api/")) return;
 
+  // Always revalidate the HTML app shell so a new deployment cannot be hidden
+  // indefinitely behind a previously cached index.html.
+  const request = e.request.mode === "navigate"
+    ? new Request(e.request, { cache: "no-store" })
+    : e.request;
+
   e.respondWith(
-    fetch(e.request)
+    fetch(request)
       .then((res) => {
         if (res && res.status === 200 && res.type === "basic") {
           const resClone = res.clone();
@@ -43,7 +49,7 @@ self.addEventListener("fetch", (e) => {
         }
         return res;
       })
-      .catch(() => caches.match(e.request).then((cachedRes) => cachedRes || fetch(e.request)))
+      .catch(() => caches.match(e.request).then((cachedRes) => cachedRes || fetch(request)))
   );
 });
 
