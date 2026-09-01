@@ -1,17 +1,16 @@
 // AstroHogar PWA Service Worker for Mobile and Desktop
-const CACHE_NAME = "astrohogar-v3";
+const CACHE_NAME = "astrohogar-v4";
 const ASSETS = [
   "/",
   "/index.html",
   "/manifest.json",
-  "/icon-192.jpg",
-  "/icon-512.jpg"
+  "/nido_cozy.jpg"
 ];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log("[Service Worker] Caching app shell assets (v3)...");
+      console.log("[Service Worker] Caching app shell assets (v4)...");
       return cache.addAll(ASSETS).catch(err => {
         console.warn("[Service Worker] Cache addAll failed, skipping initial assets:", err);
       });
@@ -21,7 +20,7 @@ self.addEventListener("install", (e) => {
 });
 
 self.addEventListener("activate", (e) => {
-  console.log("[Service Worker] Activated v3 and ready to handle notifications and fetch requests.");
+  console.log("[Service Worker] Activated v4 and ready to handle notifications and fetch requests.");
   e.waitUntil(
     caches.keys().then((keys) => Promise.all(
       keys.map((key) => key !== CACHE_NAME ? caches.delete(key) : undefined)
@@ -48,15 +47,15 @@ self.addEventListener("fetch", (e) => {
 });
 
 self.addEventListener("push", (e) => {
-  let data = { title: "¡Sintonía AstroHogar! 🐾", body: "Tienes una nueva actualización en el nido.", icon: "/icon-192.jpg" };
+  let data = { title: "¡Sintonía AstroHogar! 🐾", body: "Tienes una nueva actualización en el nido.", icon: "/nido_cozy.jpg" };
   if (e.data) {
     try { data = e.data.json(); }
     catch { data = { ...data, body: e.data.text() }; }
   }
   e.waitUntil(self.registration.showNotification(data.title, {
     body: data.body,
-    icon: data.icon || "/icon-192.jpg",
-    badge: "/icon-192.jpg",
+    icon: data.icon || "/nido_cozy.jpg",
+    badge: "/nido_cozy.jpg",
     vibrate: [100, 50, 100],
     data: { dateOfArrival: Date.now(), primaryKey: 1 }
   }));
@@ -68,8 +67,8 @@ self.addEventListener("message", (e) => {
     const { title, body, icon, tag, eventId } = e.data;
     e.waitUntil(self.registration.showNotification(title || "⏰ Recordatorio de Evento - AstroHogar 🐾", {
       body: body || "Actualización en AstroHogar",
-      icon: icon || "/icon-192.jpg",
-      badge: "/icon-192.jpg",
+      icon: icon || "/nido_cozy.jpg",
+      badge: "/nido_cozy.jpg",
       tag: tag || (eventId ? `cal-1h-${eventId}` : "astrohogar-notif"),
       renotify: true,
       vibrate: [200, 100, 200, 100, 200],
