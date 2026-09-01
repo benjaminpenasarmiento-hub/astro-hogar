@@ -96,18 +96,21 @@ profile = profile.replace(emailInputPattern, (block) => {
     .replace('/>', '/>\n            {activeUserId && activeUser.id === activeUserId && authUser?.email && (\n              <p className="text-[9px] text-emerald-700 font-bold mt-1">Cuenta de Google autenticada · correo administrado por Google.</p>\n            )}');
 });
 
+// Force the account view back to the authenticated user whenever the Edit/Settings tabs are selected.
+const accountGuard = `  useEffect(() => {\n    if ((activeTab === "edit" || activeTab === "settings") && activeUserId) {\n      const accountUser = allUsers.find(u => u.id === activeUserId);\n      if (accountUser && activeUser.id !== accountUser.id) {\n        setActiveUser(accountUser);\n      }\n    }\n  }, [activeTab, activeUserId, allUsers, activeUser.id]);\n`;
+if (!profile.includes('Force the account view back to the authenticated user')) {
+  profile = profile.replace('  // Client Side deterministic fallback algorithms', accountGuard + '\n  // Client Side deterministic fallback algorithms');
+}
+
 fs.writeFileSync(profilePath, profile);
 
 // Active-user greeting: the dashboard must address only the user whose session is active.
 const dashboardPath = "src/components/HomeDashboard.tsx";
 let dashboard = fs.readFileSync(dashboardPath, "utf8");
-if (!dashboard.includes('const activeUser = users.find(u => u.id === activeUserId)')) {
-  dashboard = dashboard.replace(
-    '  const activeUser = users.find(u => u.id === activeUserId) || users[0] || { id: "mafe", name: "Mafe" };',
-    '  const activeUser = users.find(u => u.id === activeUserId) || users[0] || { id: "", name: "Usuario" };\n  const activeUserName = activeUser.name || "Usuario";'
-  );
-}
-// Replace the old multi-user greeting with the active session greeting only.
+dashboard = dashboard.replace(
+  '  const activeUser = users.find(u => u.id === activeUserId) || users[0] || { id: "mafe", name: "Mafe" };',
+  '  const activeUser = users.find(u => u.id === activeUserId) || { id: "", name: "Usuario" };\n  const activeUserName = activeUser.name || "Usuario";'
+);
 dashboard = dashboard.replace(
   'Hola {users.length > 0 ? users.map(u => u.name).join(" & ") : "Inquilinos Cósmicos"}',
   'Hola {activeUserName}'
