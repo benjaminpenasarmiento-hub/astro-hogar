@@ -50,6 +50,24 @@ function sanitizeText(source, file) {
   };`;
     if (next.includes(getUserNameOld)) next = next.replace(getUserNameOld, getUserNameSafe);
 
+    // The Frasco placeholder previously used a third users.find() callback.
+    // Precompute the partner with a plain loop so the minifier cannot create another TDZ collision.
+    const partnerDeclaration = `  let partnerUser: UserProfile | undefined;
+  for (const candidateUser of users) {
+    if (candidateUser?.id !== activeUser.id) {
+      partnerUser = candidateUser;
+      break;
+    }
+  }`;
+    const partnerAnchor = /\n\s*\/\/ Memory showcase selector logic - strictly uses real registered memories/;
+    if (partnerAnchor.test(next) && !next.includes("let partnerUser: UserProfile | undefined;")) {
+      next = next.replace(partnerAnchor, `\n${partnerDeclaration}\n\n  // Memory showcase selector logic - strictly uses real registered memories`);
+    }
+    next = next.replace(
+      'placeholder={`Dejar un lindo mensaje para ${users.find(u => u.id !== activeUser.id)?.name || "tu pareja"} hoy...`}',
+      'placeholder={`Dejar un lindo mensaje para ${partnerUser?.name || "tu pareja"} hoy...`}'
+    );
+
     const activeUserDeclaration = '  const activeUserName = activeUser.name || "Usuario";';
     if (next.includes("activeUserName") && !next.includes(activeUserDeclaration)) {
       const activeUserAnchor = /\n\s*(let activeUser = users\[0\][\s\S]*?\n\s*\})/;
