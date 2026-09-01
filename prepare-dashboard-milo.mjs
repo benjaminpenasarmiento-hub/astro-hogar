@@ -26,8 +26,8 @@ nextHome = nextHome.replace('<Dog size={18} />', '<span className="text-lg leadi
 nextHome = nextHome.replace('Mascotas / Milo', 'Hablar con Milo');
 nextHome = nextHome.replace('Vacunas y comida', 'Tu asistente del hogar 🐾');
 
-// Mount Milo once inside HomeDashboard so the shortcut event always has a listener.
-// GatitoAiChat renders through a portal, so this does not occupy dashboard space.
+// Mount Milo once INSIDE the returned dashboard root so the shortcut event always has a listener.
+// GatitoAiChat renders through a portal, so this mount does not add layout space.
 if (!nextHome.includes('import GatitoAiChat from "./GatitoAiChat";')) {
   const avatarImport = 'import { Avatar } from "./Avatar";';
   if (nextHome.includes(avatarImport)) {
@@ -36,13 +36,15 @@ if (!nextHome.includes('import GatitoAiChat from "./GatitoAiChat";')) {
 }
 
 if (!nextHome.includes('<GatitoAiChat')) {
-  const closingRoot = nextHome.lastIndexOf('\n  );\n}');
+  const closingRoot = nextHome.lastIndexOf('\n    </div>\n  );\n}');
   if (closingRoot !== -1) {
-    const miloMount = `\n      <GatitoAiChat\n        onRefreshData={onRefreshAll}\n        onRequestCreate={onOpenCreateModal}\n        users={users}\n      />\n`;
+    const miloMount = `\n\n      <GatitoAiChat\n        onRefreshData={onRefreshAll}\n        onRequestCreate={onOpenCreateModal}\n        users={users}\n      />`;
     nextHome = nextHome.slice(0, closingRoot) + miloMount + nextHome.slice(closingRoot);
+  } else {
+    throw new Error("No se encontró el cierre del root JSX de HomeDashboard para montar Milo.");
   }
 }
 
 write(homePath, home, nextHome);
 
-console.log("[AstroHogar Milo] Milo montado en HomeDashboard; se abre desde 'Hablar con Milo' como chat flotante compacto.");
+console.log("[AstroHogar Milo] Milo montado dentro de HomeDashboard; acceso desde 'Hablar con Milo' y chat flotante compacto.");
