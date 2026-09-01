@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { MessageSquare, X, Send, Sparkles, Calendar, CheckSquare, PawPrint, Leaf, Gift, Heart, Trash2 } from "lucide-react";
 import { ChatMessage, UserProfile } from "../types";
@@ -134,8 +135,8 @@ export default function GatitoAiChat({ onRefreshData, onRequestCreate, users = [
     localStorage.setItem(historyKey, JSON.stringify([welcome]));
   };
 
-  return (
-    <div className="fixed inset-x-3 bottom-[76px] sm:inset-x-auto sm:right-5 sm:bottom-6 z-[70] pointer-events-none" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
+  const chatUi = (
+    <div className="fixed inset-0 z-[9999] pointer-events-none" aria-hidden={!open}>
       <AnimatePresence>
         {open && (
           <motion.section
@@ -143,7 +144,7 @@ export default function GatitoAiChat({ onRefreshData, onRequestCreate, users = [
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 18, scale: 0.98 }}
             transition={{ duration: 0.18 }}
-            className="pointer-events-auto ml-auto w-full max-w-[430px] h-[min(700px,calc(100dvh-92px))] sm:h-[min(700px,calc(100dvh-48px))] bg-white rounded-[24px] border-2 border-[#F3EFE6] shadow-[0_18px_55px_rgba(44,39,35,0.18)] overflow-hidden flex flex-col"
+            className="pointer-events-auto absolute right-5 top-20 w-[min(430px,calc(100vw-40px))] h-[min(700px,calc(100dvh-110px))] bg-white rounded-[24px] border-2 border-[#F3EFE6] shadow-[0_18px_55px_rgba(44,39,35,0.22)] overflow-hidden flex flex-col"
             role="dialog"
             aria-label="Chat con Milo"
           >
@@ -196,7 +197,10 @@ export default function GatitoAiChat({ onRefreshData, onRequestCreate, users = [
         )}
       </AnimatePresence>
 
-      {!open && <motion.button type="button" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} whileTap={{ scale: 0.95 }} onClick={() => setOpen(true)} className="pointer-events-auto ml-auto w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#2C2723] text-white shadow-[0_12px_35px_rgba(44,39,35,0.28)] flex items-center justify-center" aria-label="Abrir chat de Milo"><MessageSquare size={23} /></motion.button>}
+      {!open && <motion.button type="button" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} whileTap={{ scale: 0.95 }} onClick={() => setOpen(true)} className="pointer-events-auto fixed right-5 bottom-6 w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#2C2723] text-white shadow-[0_12px_35px_rgba(44,39,35,0.28)] flex items-center justify-center" aria-label="Abrir chat de Milo"><MessageSquare size={23} /></motion.button>}
     </div>
   );
+
+  if (typeof document === "undefined") return null;
+  return createPortal(chatUi, document.body);
 }
