@@ -1,4 +1,4 @@
-import { StrictMode, useEffect, useState } from 'react';
+import React, { Component, StrictMode, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
@@ -94,6 +94,38 @@ function NotificationButton() {
       🔔 Activar avisos
     </button>
   );
+}
+
+class AppErrorBoundary extends Component<{ children: React.ReactNode }, { error: Error | null }> {
+  state = { error: null as Error | null };
+
+  static getDerivedStateFromError(error: Error) {
+    return { error };
+  }
+
+  componentDidCatch(error: Error, info: React.ErrorInfo) {
+    console.error("[AstroHogar] React render error:", error, info);
+  }
+
+  render() {
+    const { error } = this.state;
+    if (!error) return this.props.children;
+
+    return (
+      <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center p-6">
+        <div className="w-full max-w-lg rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl">
+          <div className="text-4xl mb-3">🐾</div>
+          <h1 className="text-xl font-black mb-2">AstroHogar encontró un error</h1>
+          <p className="text-sm text-white/70 mb-4">La aplicación no debería mostrar una pantalla blanca. Este es el error real:</p>
+          <pre className="whitespace-pre-wrap break-words rounded-2xl bg-black/30 p-4 text-xs text-rose-200 overflow-auto max-h-48">{error.message || String(error)}</pre>
+          <div className="mt-4 flex gap-2">
+            <button type="button" onClick={() => window.location.reload()} className="rounded-2xl bg-white px-4 py-2 text-sm font-black text-slate-900">Recargar</button>
+            <button type="button" onClick={() => { try { localStorage.clear(); } catch {} window.location.reload(); }} className="rounded-2xl border border-white/15 px-4 py-2 text-sm font-black">Limpiar sesión y recargar</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
 
 function AuthGate() {
@@ -252,8 +284,10 @@ if (typeof window !== "undefined" && 'serviceWorker' in navigator) {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <AuthProvider>
-      <AuthGate />
-    </AuthProvider>
+    <AppErrorBoundary>
+      <AuthProvider>
+        <AuthGate />
+      </AuthProvider>
+    </AppErrorBoundary>
   </StrictMode>,
 );
