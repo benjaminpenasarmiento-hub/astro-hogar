@@ -35,6 +35,15 @@ function sanitizeText(source, file) {
     }
   }
 
+  // Older build patches could append this declaration twice. Keep one source
+  // declaration so esbuild can bundle serverStore.vercel.ts reliably.
+  if (file === "serverStore.ts" || file.endsWith("/serverStore.ts")) {
+    next = next.replace(
+      /const UNSCOPED_STORE: DBStore = JSON\.parse\(JSON\.stringify\(INITIAL_DATA\)\);\n\s*const UNSCOPED_STORE: DBStore = JSON\.parse\(JSON\.stringify\(INITIAL_DATA\)\);/g,
+      'const UNSCOPED_STORE: DBStore = JSON.parse(JSON.stringify(INITIAL_DATA));'
+    );
+  }
+
   return next;
 }
 
