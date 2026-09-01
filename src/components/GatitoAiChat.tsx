@@ -1,9 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
-import { MessageSquare, X, Send, Sparkles, Calendar, CheckSquare, PawPrint, Leaf, Gift, Heart, Trash2 } from "lucide-react";
+import { X, Send, Sparkles, Calendar, CheckSquare, PawPrint, Leaf, Gift, Heart, Trash2, Grip } from "lucide-react";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { ChatMessage, UserProfile } from "../types";
 import { askGatitoChat } from "../api";
+import { db } from "../firebase";
 
 interface Props {
   onRefreshData?: () => void;
@@ -11,8 +13,21 @@ interface Props {
   users?: UserProfile[];
 }
 
+type WidgetPosition = { x: number; y: number };
+const DEFAULT_SIZE = 64;
+const EDGE = 20;
+const BOTTOM = 28;
+
 const cleanText = (value: string) => value.replace(/\*\*/g, "").replace(/__/g, "").replace(/^\s*[\"“”]+|[\"“”]+\s*$/g, "").trim();
 const historyKeyFor = (id?: string) => `milo_chat_history:${id || "unknown"}`;
+
+const clampPosition = (position: WidgetPosition): WidgetPosition => {
+  if (typeof window === "undefined") return position;
+  return {
+    x: Math.max(EDGE, Math.min(position.x, window.innerWidth - DEFAULT_SIZE - EDGE)),
+    y: Math.max(EDGE, Math.min(position.y, window.innerHeight - DEFAULT_SIZE - EDGE)),
+  };
+};
 
 export default function GatitoAiChat({ onRefreshData, onRequestCreate, users = [] }: Props) {
   const activeUser = useMemo(() => {
@@ -27,8 +42,13 @@ export default function GatitoAiChat({ onRefreshData, onRequestCreate, users = [
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
+  const [widgetPosition, setWidgetPosition] = useState<WidgetPosition>(() => ({
+    x: typeof window !== "undefined" ? window.innerWidth - DEFAULT_SIZE - EDGE : 320,
+    y: typeof window !== "undefined" ? window.innerHeight - DEFAULT_SIZE - BOTTOM : 500,
+  }));
   const endRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const dragRef = useRef<{ pointerId: number; startX: number; startY: number; originX: number; originY: number; moved: boolean } | null>(null);
 
   const dailyQuestion = useMemo(() => {
     const questions = [
@@ -51,6 +71,84 @@ export default function GatitoAiChat({ onRefreshData, onRequestCreate, users = [
     { type: "wish", label: "Lista de deseos", icon: Gift },
     { type: "memory", label: "Nuevo recuerdo", icon: Heart },
   ];
+
+  // Load the widget position from Firestore so each household user keeps their own layout.
+  useEffect(() => {
+    let cancelled = false;
+    const loadPosition = async () => {
+      if (!activeUser?.id || typeof window === "undefined") return;
+      const homeCode = localStorage.getItem("astro_home_code");
+      if (!homeCode) return;
+      try {
+        const snapshot = await getDoc(doc(db, "nests", homeCode));
+        const saved = snapshot.data()?.miloWidgetPositions?.[activeUser.id];
+        if (!cancelled && saved && Number.isFinite(saved.x) && Number.isFinite(saved.y)) {
+          setWidgetPosition(clampPosition({ x: Number(saved.x), y: Number(saved.y) }));
+        }
+      } catch {
+        // Keep the safe default position if the preference cannot be loaded.
+      }
+    };
+    void loadPosition();
+    return () => { cancelled = true; };
+  }, [activeUser?.id]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const onResize = () => setWidgetPosition((current) => clampPosition(current));
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  const saveWidgetPosition = async (position: WidgetPosition) => {
+    if (!activeUser?.id || typeof window === "undefined") return;
+    const homeCode = localStorage.getItem("astro_home_code");
+    if (!homeCode) return;
+    try {
+      await setDoc(doc(db, "nests", homeCode), {
+        miloWidgetPositions: {
+          [activeUser.id]: clampPosition(position),
+        },
+      }, { merge: true });
+    } catch {
+      // Position remains usable locally for the current session even if persistence fails.
+    }
+  };
+
+  const handlePointerDown = (event: React.PointerEvent<HTMLButtonElement>) => {
+    event.currentTarget.setPointerCapture(event.pointerId);
+    dragRef.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      originX: widgetPosition.x,
+      originY: widgetPosition.y,
+      moved: false,
+    };
+  };
+
+  const handlePointerMove = (event: React.PointerEvent<HTMLButtonElement>) => {
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    const dx = event.clientX - drag.startX;
+    const dy = event.clientY - drag.startY;
+    if (Math.abs(dx) > 4 || Math.abs(dy) > 4) drag.moved = true;
+    if (!drag.moved) return;
+    setWidgetPosition(clampPosition({ x: drag.originX + dx, y: drag.originY + dy }));
+  };
+
+  const handlePointerUp = async (event: React.PointerEvent<HTMLButtonElement>) => {
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    dragRef.current = null;
+    const finalPosition = clampPosition(widgetPosition);
+    if (drag.moved) {
+      setWidgetPosition(finalPosition);
+      await saveWidgetPosition(finalPosition);
+    } else {
+      setOpen(true);
+    }
+  };
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -213,12 +311,17 @@ export default function GatitoAiChat({ onRefreshData, onRequestCreate, users = [
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           whileTap={{ scale: 0.95 }}
-          onClick={() => setOpen(true)}
-          className="fixed right-5 bottom-6 w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#2C2723] text-white shadow-[0_12px_35px_rgba(44,39,35,0.28)] flex items-center justify-center"
-          style={{ zIndex: 999999 }}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerUp}
+          className="fixed w-16 h-16 rounded-full bg-[#FFE5D9] border-2 border-white text-3xl shadow-[0_12px_35px_rgba(44,39,35,0.28)] flex items-center justify-center select-none touch-none cursor-grab active:cursor-grabbing"
+          style={{ zIndex: 999999, left: widgetPosition.x, top: widgetPosition.y }}
           aria-label="Abrir chat de Milo"
+          title="Milo — arrástrame o tócame"
         >
-          <MessageSquare size={23} />
+          <span aria-hidden="true">🐱</span>
+          <span className="absolute -right-1 -bottom-1 w-5 h-5 rounded-full bg-[#2C2723] text-white flex items-center justify-center border-2 border-white"><Grip size={10} /></span>
         </motion.button>
       )}
     </>
