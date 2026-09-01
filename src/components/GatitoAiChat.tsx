@@ -148,14 +148,12 @@ export default function GatitoAiChat({ onRefreshData, onRequestCreate, users = [
             style={{
               position: "fixed",
               zIndex: 999999,
-              right: "clamp(16px, 5vw, 88px)",
-              bottom: "88px",
-              top: "auto",
-              left: "auto",
+              inset: 0,
+              margin: "auto",
               width: "min(430px, calc(100vw - 32px))",
               maxWidth: "calc(100vw - 32px)",
-              height: "min(700px, calc(100dvh - 104px))",
-              maxHeight: "calc(100dvh - 104px)",
+              height: "min(700px, calc(100dvh - 32px))",
+              maxHeight: "calc(100dvh - 32px)",
             }}
             role="dialog"
             aria-label="Chat con Milo"
