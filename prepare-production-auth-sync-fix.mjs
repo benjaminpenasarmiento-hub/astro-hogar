@@ -12,8 +12,33 @@ if (!auth.includes("readAccountHomeIndex")) {
   );
 }
 
-const memberNeedle = `    const member = Boolean(\n      (uid && authorizedUids.includes(uid)) ||\n      (normalizedEmail && authorizedEmails.includes(normalizedEmail)) ||\n      legacyMember\n    );\n\n    if (!member) return false;`;
-const memberReplacement = `    let member = Boolean(\n      (uid && authorizedUids.includes(uid)) ||\n      (normalizedEmail && authorizedEmails.includes(normalizedEmail)) ||\n      legacyMember\n    );\n\n    // Legacy repair: an authenticated account may already be linked to this home\n    // through account_homes/{uid} even when the nest metadata arrays are stale.\n    if (!member && uid) {\n      try {\n        const accountIndex = await readAccountHomeIndex(uid);\n        if (accountIndex.homeCode === homeCode) {\n          member = true;\n        }\n      } catch (indexError) {\n        console.warn("[Firebase AuthZ] No se pudo consultar account_homes:", indexError);\n      }\n    }\n\n    if (!member) return false;`;
+const memberNeedle = `    const member = Boolean(
+      (uid && authorizedUids.includes(uid)) ||
+      (normalizedEmail && authorizedEmails.includes(normalizedEmail)) ||
+      legacyMember
+    );
+
+    if (!member) return false;`;
+const memberReplacement = `    let member = Boolean(
+      (uid && authorizedUids.includes(uid)) ||
+      (normalizedEmail && authorizedEmails.includes(normalizedEmail)) ||
+      legacyMember
+    );
+
+    // Legacy repair: an authenticated account may already be linked to this home
+    // through account_homes/{uid} even when the nest metadata arrays are stale.
+    if (!member && uid) {
+      try {
+        const accountIndex = await readAccountHomeIndex(uid);
+        if (accountIndex.homeCode === homeCode) {
+          member = true;
+        }
+      } catch (indexError) {
+        console.warn("[Firebase AuthZ] No se pudo consultar account_homes:", indexError);
+      }
+    }
+
+    if (!member) return false;`;
 
 if (!auth.includes("Legacy repair: an authenticated account") && !auth.includes("Source of truth for an authenticated account")) {
   if (auth.includes(memberNeedle)) {
@@ -27,14 +52,37 @@ fs.writeFileSync(authPath, auth, "utf8");
 // Production persistence: establish the remote revision before the first write,
 // then recover once from a concurrent revision conflict instead of leaving the app unsynced.
 const buildPath = "build-server.mjs";
-let build = fs.readFileSync(buildPath, "utf8");
+// Normalize line endings because Vercel may check out this source with CRLF while
+// the generated matcher strings use LF. The build logic itself is line-ending agnostic.
+let build = fs.readFileSync(buildPath, "utf8").replace(/\r\n/g, "\n");
 
 if (!build.includes("Revision conflict; refreshing remote state and retrying once.")) {
   // Match the generated production save block as plain text instead of embedding
   // a fragile regex literal. This avoids JS parser failures caused by nested ')' characters.
-  const saveBlock = `      const dataCopy = JSON.parse(JSON.stringify(multiStore[cleanCode]));\n      const expectedRevision = getObservedFirestoreRevision(cleanCode);\n      const nextRevision = await writeHomeDocument(cleanCode, { data: dataCopy }, expectedRevision);\n      observedFirestoreRevisions.set(cleanCode, nextRevision);`;
+  const saveBlock = `      const dataCopy = JSON.parse(JSON.stringify(multiStore[cleanCode]));
+      const expectedRevision = getObservedFirestoreRevision(cleanCode);
+      const nextRevision = await writeHomeDocument(cleanCode, { data: dataCopy }, expectedRevision);
+      observedFirestoreRevisions.set(cleanCode, nextRevision);`;
 
-  const replacement = `      if (!observedFirestoreRevisions.has(cleanCode)) {\n        await refreshActiveHomeFromFirestore(cleanCode);\n      }\n\n      const dataCopy = JSON.parse(JSON.stringify(multiStore[cleanCode]));\n      let expectedRevision = getObservedFirestoreRevision(cleanCode);\n      let nextRevision;\n      try {\n        nextRevision = await writeHomeDocument(cleanCode, { data: dataCopy }, expectedRevision);\n      } catch (writeError) {\n        const conflictMessage = String(writeError?.message || "");\n        if (!conflictMessage.startsWith("SYNC_CONFLICT:" + cleanCode + ":")) throw writeError;\n        console.warn("[Firestore Sync] Revision conflict; refreshing remote state and retrying once.");\n        await refreshActiveHomeFromFirestore(cleanCode);\n        expectedRevision = getObservedFirestoreRevision(cleanCode);\n        const refreshedDataCopy = JSON.parse(JSON.stringify(multiStore[cleanCode]));\n        nextRevision = await writeHomeDocument(cleanCode, { data: refreshedDataCopy }, expectedRevision);\n      }\n      observedFirestoreRevisions.set(cleanCode, nextRevision);`;
+  const replacement = `      if (!observedFirestoreRevisions.has(cleanCode)) {
+        await refreshActiveHomeFromFirestore(cleanCode);
+      }
+
+      const dataCopy = JSON.parse(JSON.stringify(multiStore[cleanCode]));
+      let expectedRevision = getObservedFirestoreRevision(cleanCode);
+      let nextRevision;
+      try {
+        nextRevision = await writeHomeDocument(cleanCode, { data: dataCopy }, expectedRevision);
+      } catch (writeError) {
+        const conflictMessage = String(writeError?.message || "");
+        if (!conflictMessage.startsWith("SYNC_CONFLICT:" + cleanCode + ":")) throw writeError;
+        console.warn("[Firestore Sync] Revision conflict; refreshing remote state and retrying once.");
+        await refreshActiveHomeFromFirestore(cleanCode);
+        expectedRevision = getObservedFirestoreRevision(cleanCode);
+        const refreshedDataCopy = JSON.parse(JSON.stringify(multiStore[cleanCode]));
+        nextRevision = await writeHomeDocument(cleanCode, { data: refreshedDataCopy }, expectedRevision);
+      }
+      observedFirestoreRevisions.set(cleanCode, nextRevision);`;
 
   if (build.includes(saveBlock)) {
     build = build.replace(saveBlock, replacement);
@@ -53,8 +101,41 @@ if (!build.includes("__refreshActiveHomeFromFirestore")) {
   }
 }
 
-const safePartitionOld = `const safePartitionMiddleware = \`app.use((req, res, next) => {\n  const rawHomeCode = String(req.headers["x-home-code"] || "").trim();\n  const onboardingCreate = req.path === "/api/onboarding/create-home";\n  const onboardingJoin = req.path === "/api/onboarding/join-home";\n  const onboardingEnter = req.path === "/api/onboarding/enter-home";\n  if (!rawHomeCode && !onboardingCreate && !onboardingJoin && !onboardingEnter && req.path !== "/api/health" && req.path !== "/health") {\n    return res.status(400).json({ error: "No hay un hogar activo.", code: "HOME_CONTEXT_REQUIRED" });\n  }\n  const bodyCode = onboardingJoin ? String(req.body?.inviteCode || "").trim() : "";\n  const homeCode = normalizeHomeCode(rawHomeCode || bodyCode);\n  if (!homeCode) return next();\n  homeContextStorage.run(homeCode, () => next());\n});\`;`;
-const safePartitionNew = `const safePartitionMiddleware = \`app.use((req, res, next) => {\n  const rawHomeCode = String(req.headers["x-home-code"] || "").trim();\n  const onboardingCreate = req.path === "/api/onboarding/create-home";\n  const onboardingJoin = req.path === "/api/onboarding/join-home";\n  const onboardingEnter = req.path === "/api/onboarding/enter-home";\n  if (!rawHomeCode && !onboardingCreate && !onboardingJoin && !onboardingEnter && req.path !== "/api/health" && req.path !== "/health") {\n    return res.status(400).json({ error: "No hay un hogar activo.", code: "HOME_CONTEXT_REQUIRED" });\n  }\n  const bodyCode = onboardingJoin ? String(req.body?.inviteCode || "").trim() : "";\n  const homeCode = normalizeHomeCode(rawHomeCode || bodyCode);\n  if (!homeCode) return next();\n  homeContextStorage.run(homeCode, async () => {\n    try {\n      if (!onboardingCreate && !onboardingJoin && !onboardingEnter) {\n        await __refreshActiveHomeFromFirestore(homeCode);\n      }\n    } catch (hydrationError) {\n      console.warn("[AstroHogar] No se pudo hidratar el hogar activo desde Firestore; continuando con el estado disponible:", hydrationError);\n    }\n    next();\n  });\n});\`;`;
+const safePartitionOld = `const safePartitionMiddleware = \`app.use((req, res, next) => {
+  const rawHomeCode = String(req.headers["x-home-code"] || "").trim();
+  const onboardingCreate = req.path === "/api/onboarding/create-home";
+  const onboardingJoin = req.path === "/api/onboarding/join-home";
+  const onboardingEnter = req.path === "/api/onboarding/enter-home";
+  if (!rawHomeCode && !onboardingCreate && !onboardingJoin && !onboardingEnter && req.path !== "/api/health" && req.path !== "/health") {
+    return res.status(400).json({ error: "No hay un hogar activo.", code: "HOME_CONTEXT_REQUIRED" });
+  }
+  const bodyCode = onboardingJoin ? String(req.body?.inviteCode || "").trim() : "";
+  const homeCode = normalizeHomeCode(rawHomeCode || bodyCode);
+  if (!homeCode) return next();
+  homeContextStorage.run(homeCode, () => next());
+});\`;`;
+const safePartitionNew = `const safePartitionMiddleware = \`app.use((req, res, next) => {
+  const rawHomeCode = String(req.headers["x-home-code"] || "").trim();
+  const onboardingCreate = req.path === "/api/onboarding/create-home";
+  const onboardingJoin = req.path === "/api/onboarding/join-home";
+  const onboardingEnter = req.path === "/api/onboarding/enter-home";
+  if (!rawHomeCode && !onboardingCreate && !onboardingJoin && !onboardingEnter && req.path !== "/api/health" && req.path !== "/health") {
+    return res.status(400).json({ error: "No hay un hogar activo.", code: "HOME_CONTEXT_REQUIRED" });
+  }
+  const bodyCode = onboardingJoin ? String(req.body?.inviteCode || "").trim() : "";
+  const homeCode = normalizeHomeCode(rawHomeCode || bodyCode);
+  if (!homeCode) return next();
+  homeContextStorage.run(homeCode, async () => {
+    try {
+      if (!onboardingCreate && !onboardingJoin && !onboardingEnter) {
+        await __refreshActiveHomeFromFirestore(homeCode);
+      }
+    } catch (hydrationError) {
+      console.warn("[AstroHogar] No se pudo hidratar el hogar activo desde Firestore; continuando con el estado disponible:", hydrationError);
+    }
+    next();
+  });
+});\`;`;
 if (!build.includes("await __refreshActiveHomeFromFirestore(homeCode)")) {
   if (build.includes(safePartitionOld)) {
     build = build.replace(safePartitionOld, safePartitionNew);
