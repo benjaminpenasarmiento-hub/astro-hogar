@@ -1,5 +1,5 @@
 import { extractBearerToken, verifyFirebaseIdToken } from "./serverAuth.js";
-import { readHomeDocument, patchHomeMetadata, readAccountHomeIndex } from "./serverFirestoreRest.js";
+import { readHomeDocument, patchHomeMetadata, readAccountHomeIndex, writeAccountHomeIndex } from "./serverFirestoreRest.js";
 import { runWithFirestoreAuthToken } from "./serverFirestoreRest.js";
 
 function getHomeCode(req: any): string {
@@ -137,26 +137,57 @@ export async function requireFirebaseAuth(req: any, res: any, next: any) {
 
     const requestedHomeCode = getHomeCode(req);
     let effectiveHomeCode = requestedHomeCode;
+    let indexedHomeCode = "";
+    let requestedHomeIsMember = false;
 
-    if (verifiedUser.localId) {
+    // Prefer a valid home explicitly supplied by the authenticated browser session.
+    // This prevents a stale account_homes index from hijacking a valid active nest.
+    if (requestedHomeCode) {
+      requestedHomeIsMember = await userBelongsToHome(
+        requestedHomeCode,
+        verifiedUser.localId,
+        verifiedUser.email
+      );
+    }
+
+    if (!requestedHomeIsMember && verifiedUser.localId) {
       try {
         const accountIndex = await readAccountHomeIndex(verifiedUser.localId);
-        const indexedHomeCode = accountIndex.homeCode || "";
-        if (indexedHomeCode) {
-          effectiveHomeCode = indexedHomeCode;
-          req.headers["x-home-code"] = indexedHomeCode;
-        }
+        indexedHomeCode = accountIndex.homeCode || "";
       } catch (indexError) {
         console.warn("[Firebase AuthZ] No se pudo resolver el hogar de la cuenta:", indexError);
       }
     }
 
-    const belongs = await userBelongsToHome(effectiveHomeCode, verifiedUser.localId, verifiedUser.email);
+    if (!requestedHomeIsMember) {
+      effectiveHomeCode = indexedHomeCode || requestedHomeCode;
+      if (effectiveHomeCode) {
+        req.headers["x-home-code"] = effectiveHomeCode;
+      }
+    } else {
+      req.headers["x-home-code"] = effectiveHomeCode;
+    }
+
+    const belongs = requestedHomeIsMember || await userBelongsToHome(
+      effectiveHomeCode,
+      verifiedUser.localId,
+      verifiedUser.email
+    );
+
     if (!belongs) {
       return res.status(403).json({
         error: "Tu cuenta de Google no pertenece a este hogar.",
         code: "HOME_ACCESS_DENIED",
       });
+    }
+
+    // Repair a stale/missing account index after we have positively validated the active nest.
+    if (verifiedUser.localId && effectiveHomeCode && effectiveHomeCode !== indexedHomeCode) {
+      try {
+        await writeAccountHomeIndex(verifiedUser.localId, effectiveHomeCode);
+      } catch (repairError) {
+        console.warn("[Firebase AuthZ] No se pudo reparar account_homes:", repairError);
+      }
     }
 
     // Canonicalize the application-level user id from the authenticated profile.
