@@ -24,14 +24,40 @@ function sanitizeText(source, file) {
   let next = source;
   for (const [bad, good] of REPLACEMENTS) next = next.split(bad).join(good);
 
-  // HomeDashboard uses this identifier in the greeting. Guarantee that the
-  // declaration is emitted even when an earlier build-time replacement misses
-  // because upstream formatting changed.
-  if (file.endsWith("src/components/HomeDashboard.tsx") && next.includes("activeUserName")) {
-    const declaration = /\n\s*const activeUser = users\.find\(u => u\.id === activeUserId\)[^\n]*;/;
-    const hasDeclaration = /\bconst\s+activeUserName\s*=/.test(next);
-    if (!hasDeclaration && declaration.test(next)) {
-      next = next.replace(declaration, (line) => `${line}\n  const activeUserName = activeUser.name || "Usuario";`);
+  // HomeDashboard uses activeUser in several render-time lookups. Avoid
+  // Array.find here because the production minifier produced a TDZ collision
+  // in the generated bundle around this callback.
+  if (file.endsWith("src/components/HomeDashboard.tsx")) {
+    const activeUserLine = '  const activeUser = users.find(u => u.id === activeUserId) || users[0] || { id: "mafe", name: "Mafe" };';
+    const safeActiveUserBlock = `  let activeUser = users[0] || { id: "mafe", name: "Mafe" };
+  if (activeUserId) {
+    for (const candidate of users) {
+      if (candidate?.id === activeUserId) {
+        activeUser = candidate;
+        break;
+      }
+    }
+  }`;
+    if (next.includes(activeUserLine)) next = next.replace(activeUserLine, safeActiveUserBlock);
+
+    const getUserNameOld = `  const getUserName = (id: string) => {
+    const user = users.find(u => u.id === id);
+    return user ? user.name : id;
+  };`;
+    const getUserNameSafe = `  const getUserName = (id: string) => {
+    for (const user of users) {
+      if (user?.id === id) return user.name;
+    }
+    return id;
+  };`;
+    if (next.includes(getUserNameOld)) next = next.replace(getUserNameOld, getUserNameSafe);
+
+    const activeUserDeclaration = '  const activeUserName = activeUser.name || "Usuario";';
+    if (next.includes("activeUserName") && !next.includes(activeUserDeclaration)) {
+      const activeUserAnchor = /\n\s*(let activeUser = users\[0\][\s\S]*?\n\s*\})/;
+      if (activeUserAnchor.test(next)) {
+        next = next.replace(activeUserAnchor, (block) => `${block}\n${activeUserDeclaration}`);
+      }
     }
   }
 
