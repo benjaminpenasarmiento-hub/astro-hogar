@@ -22,3 +22,18 @@ if (!auth.includes(newDetect)) {
   auth = auth.replace(oldDetect, newDetect);
 }
 fs.writeFileSync(authPath, auth);
+
+const onboardingPath = 'src/components/OnboardingWizardV2.tsx';
+let onboarding = fs.readFileSync(onboardingPath, 'utf8');
+if (!onboarding.includes('astrohogar-welcome-bg-embedded')) {
+  onboarding = onboarding.replace('import { Avatar } from "./Avatar";\n', 'import { Avatar } from "./Avatar";\nimport astroHogarWelcomeBg from "../assets/images/astrohogar-welcome-bg-embedded.svg";\n');
+}
+const bgClass = 'min-h-screen w-full overflow-hidden bg-cover bg-center bg-fixed px-4 py-6 text-[#2C2723]';
+onboarding = onboarding.replace(/className="min-h-screen w-full overflow-hidden bg-\[#FAF7F2\] px-4 py-8 text-\[#2C2723\] sm:flex sm:items-center sm:justify-center"/g, `style={{ backgroundImage: \`linear-gradient(rgba(31,24,19,.48), rgba(31,24,19,.58)), url(\${astroHogarWelcomeBg})\` }} className="min-h-screen w-full overflow-hidden bg-cover bg-center bg-fixed px-4 py-8 text-[#2C2723] sm:flex sm:items-center sm:justify-center"`);
+onboarding = onboarding.replace(/className="min-h-screen w-full overflow-hidden bg-\[#FAF7F2\] px-4 py-6 text-\[#2C2723\] sm:flex sm:items-center sm:justify-center"/g, `style={{ backgroundImage: \`linear-gradient(rgba(31,24,19,.48), rgba(31,24,19,.58)), url(\${astroHogarWelcomeBg})\` }} className="min-h-screen w-full overflow-hidden bg-cover bg-center bg-fixed px-4 py-6 text-[#2C2723] sm:flex sm:items-center sm:justify-center"`);
+fs.writeFileSync(onboardingPath, onboarding);
+
+// Ensure the current welcome background asset is used wherever the app imports the old generated background.
+app = fs.readFileSync(appPath, 'utf8');
+app = app.replace('import astroHogarBg from "./assets/images/astro_hogar_bg_1783417893352.jpg";', 'import astroHogarBg from "./assets/images/astrohogar-welcome-bg-embedded.svg";');
+fs.writeFileSync(appPath, app);
