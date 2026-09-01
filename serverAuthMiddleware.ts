@@ -1,5 +1,5 @@
 import { extractBearerToken, verifyFirebaseIdToken } from "./serverAuth.js";
-import { readHomeDocument, patchHomeMetadata } from "./serverFirestoreRest.js";
+import { readHomeDocument, patchHomeMetadata, readAccountHomeIndex } from "./serverFirestoreRest.js";
 import { runWithFirestoreAuthToken } from "./serverFirestoreRest.js";
 
 function getHomeCode(req: any): string {
@@ -60,11 +60,24 @@ async function userBelongsToHome(homeCode: string, uid?: string, email?: string)
       return Boolean(sameUid || sameEmail);
     });
 
-    const member = Boolean(
+    let member = Boolean(
       (uid && authorizedUids.includes(uid)) ||
       (normalizedEmail && authorizedEmails.includes(normalizedEmail)) ||
       legacyMember
     );
+
+    // Source of truth for an authenticated account created/joined through the app.
+    // This repairs stale legacy nest metadata without allowing access to an unrelated home.
+    if (!member && uid) {
+      try {
+        const accountIndex = await readAccountHomeIndex(uid);
+        if (accountIndex.homeCode === homeCode) {
+          member = true;
+        }
+      } catch (indexError) {
+        console.warn("[Firebase AuthZ] No se pudo consultar account_homes:", indexError);
+      }
+    }
 
     if (!member) return false;
 
@@ -122,11 +135,33 @@ export async function requireFirebaseAuth(req: any, res: any, next: any) {
   }
 
   return runWithFirestoreAuthToken(token, async () => {
-    // Las rutas de onboarding requieren identidad Google válida, pero NO pertenencia previa a un hogar.
     if (isOnboardingPath(path)) return next();
 
     const homeCode = getHomeCode(req);
-    const belongs = await userBelongsToHome(homeCode, verifiedUser.localId, verifiedUser.email);
+    let effectiveHomeCode = homeCode;
+
+    // Never trust a stale/missing localStorage home blindly. Resolve the canonical
+    // household from the authenticated account index when available.
+    if (verifiedUser.localId) {
+      try {
+        const accountIndex = await readAccountHomeIndex(verifiedUser.localId);
+        const indexedHomeCode = accountIndex.homeCode || "";
+        if (indexedHomeCode) {
+          if (homeCode && homeCode !== indexedHomeCode) {
+            return res.status(403).json({
+              error: "El hogar activo no corresponde a tu cuenta de Google.",
+              code: "HOME_CONTEXT_MISMATCH",
+            });
+          }
+          effectiveHomeCode = indexedHomeCode;
+          req.headers["x-home-code"] = indexedHomeCode;
+        }
+      } catch (indexError) {
+        console.warn("[Firebase AuthZ] No se pudo resolver el hogar de la cuenta:", indexError);
+      }
+    }
+
+    const belongs = await userBelongsToHome(effectiveHomeCode, verifiedUser.localId, verifiedUser.email);
     if (!belongs) {
       return res.status(403).json({
         error: "Tu cuenta de Google no pertenece a este hogar.",
