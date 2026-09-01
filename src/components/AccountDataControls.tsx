@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { AlertTriangle, Trash2, RotateCcw, X, Loader2 } from "lucide-react";
 import { collection, doc, getDocs, query, where, writeBatch, deleteDoc } from "firebase/firestore";
-import { deleteUser, GoogleAuthProvider, reauthenticateWithPopup, signOut } from "firebase/auth";
+import { signOut } from "firebase/auth";
 import { auth, db } from "../firebase";
 
 const HOME_SCOPED_COLLECTIONS = [
@@ -36,6 +36,7 @@ async function deleteMatchingDocuments(collectionName: string, homeCode: string)
       pending = 0;
     }
   }
+
   if (pending > 0) await batch.commit();
   return deleted;
 }
@@ -133,6 +134,7 @@ export default function AccountDataControls({ homeCode, onComplete }: { homeCode
       setError("No hay una sesión de Google activa.");
       return;
     }
+
     const code = (homeCode || localStorage.getItem("astro_home_code") || "").trim().toUpperCase();
     if (!code) {
       setError("No se encontró el nido activo.");
@@ -141,21 +143,13 @@ export default function AccountDataControls({ homeCode, onComplete }: { homeCode
 
     setBusy(true);
     setError(null);
-    try {
-      await purgeHomeData(code, user.uid);
 
-      if (mode === "delete") {
-        try {
-          await deleteUser(user);
-        } catch (err: any) {
-          if (err?.code === "auth/requires-recent-login") {
-            await reauthenticateWithPopup(user, new GoogleAuthProvider());
-            await deleteUser(user);
-          } else {
-            throw err;
-          }
-        }
-      }
+    try {
+      // The AstroHogar account is represented by the user's app data and account_homes
+      // record. Do not call Firebase client-side deleteUser(): Google OAuth identities
+      // commonly require recent credentials, which can fail with auth/request-had-invalid-
+      // authentication-credentials and leave the deletion half-completed.
+      await purgeHomeData(code, user.uid);
 
       await signOut(auth).catch(() => {});
       await clearClientState();
@@ -163,7 +157,7 @@ export default function AccountDataControls({ homeCode, onComplete }: { homeCode
       window.location.assign("/");
     } catch (err: any) {
       console.error("[AccountDataControls] Error:", err);
-      setError(err?.message || "No se pudieron borrar los datos.");
+      setError(err?.message || "No se pudieron borrar los datos de AstroHogar.");
       setBusy(false);
     }
   };
@@ -172,7 +166,7 @@ export default function AccountDataControls({ homeCode, onComplete }: { homeCode
     <section className="rounded-3xl border-2 border-red-100 bg-red-50/50 p-5 space-y-4">
       <div>
         <h3 className="font-black text-sm text-[#2C2723] flex items-center gap-2"><AlertTriangle size={16} className="text-red-600" /> Cuenta y datos</h3>
-        <p className="text-[11px] text-[#6F6660] mt-1 leading-relaxed">Desde aquí puedes vaciar el nido para empezar de nuevo o eliminar definitivamente tu cuenta de AstroHogar.</p>
+        <p className="text-[11px] text-[#6F6660] mt-1 leading-relaxed">Desde aquí puedes vaciar el nido para empezar de nuevo o eliminar definitivamente tus datos y cuenta de AstroHogar.</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -180,9 +174,10 @@ export default function AccountDataControls({ homeCode, onComplete }: { homeCode
           <div className="flex items-center gap-2 text-sm font-black text-amber-800"><RotateCcw size={16} /> Borrar datos y empezar de nuevo</div>
           <p className="text-[10px] text-[#766E67] mt-1">Borra el nido y sus datos. Tu cuenta de Google permanece.</p>
         </button>
+
         <button type="button" onClick={() => { setMode("delete"); setError(null); setConfirmText(""); }} className="rounded-2xl border-2 border-red-200 bg-white px-4 py-3 text-left hover:bg-red-50 transition-colors">
           <div className="flex items-center gap-2 text-sm font-black text-red-700"><Trash2 size={16} /> Eliminar cuenta de AstroHogar</div>
-          <p className="text-[10px] text-[#766E67] mt-1">Borra los datos del nido y tu cuenta de AstroHogar. No elimina tu cuenta de Google.</p>
+          <p className="text-[10px] text-[#766E67] mt-1">Borra los datos del nido y la cuenta de AstroHogar. No elimina ni modifica tu cuenta de Google.</p>
         </button>
       </div>
 
@@ -191,7 +186,7 @@ export default function AccountDataControls({ homeCode, onComplete }: { homeCode
           <div className="flex items-center justify-between gap-3">
             <div>
               <h4 className="font-black text-sm text-[#2C2723]">{mode === "delete" ? "Eliminar cuenta definitivamente" : "Reiniciar el nido"}</h4>
-              <p className="text-[10px] text-[#766E67] mt-1">{mode === "delete" ? "Esta acción es irreversible." : "Al terminar volverás al inicio para crear o unirte a un nido."}</p>
+              <p className="text-[10px] text-[#766E67] mt-1">{mode === "delete" ? "Esta acción elimina los datos de AstroHogar y cierra la sesión." : "Al terminar volverás al inicio para crear o unirte a un nido."}</p>
             </div>
             <button type="button" disabled={busy} onClick={close} className="p-1 rounded-lg hover:bg-gray-100"><X size={16} /></button>
           </div>
@@ -203,7 +198,7 @@ export default function AccountDataControls({ homeCode, onComplete }: { homeCode
 
           <div className="flex justify-end gap-2">
             <button type="button" disabled={busy} onClick={close} className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-[11px] font-bold">Cancelar</button>
-            <button type="button" disabled={busy || confirmText.trim().toUpperCase() !== (mode === "delete" ? "ELIMINAR" : "REINICIAR")} onClick={execute} className="rounded-xl bg-red-600 px-4 py-2 text-[11px] font-black text-white disabled:cursor-not-allowed disabled:opacity-40">
+            <button type="button" disabled={busy || confirmText.trim().toUpperCase() !== expectedLabel(mode)} onClick={execute} className="rounded-xl bg-red-600 px-4 py-2 text-[11px] font-black text-white disabled:cursor-not-allowed disabled:opacity-40">
               {busy ? <span className="inline-flex items-center gap-1.5"><Loader2 size={13} className="animate-spin" /> Procesando...</span> : mode === "delete" ? "Eliminar definitivamente" : "Reiniciar ahora"}
             </button>
           </div>
@@ -211,4 +206,8 @@ export default function AccountDataControls({ homeCode, onComplete }: { homeCode
       )}
     </section>
   );
+}
+
+function expectedLabel(mode: "reset" | "delete") {
+  return mode === "delete" ? "ELIMINAR" : "REINICIAR";
 }
