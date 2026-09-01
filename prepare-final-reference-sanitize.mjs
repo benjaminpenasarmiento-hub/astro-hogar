@@ -1,3 +1,4 @@
+import "node:fs";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -19,13 +20,30 @@ function walk(dir, files = []) {
   return files;
 }
 
+function sanitizeText(source, file) {
+  let next = source;
+  for (const [bad, good] of REPLACEMENTS) next = next.split(bad).join(good);
+
+  // HomeDashboard uses this identifier in the greeting. Guarantee that the
+  // declaration is emitted even when an earlier build-time replacement misses
+  // because upstream formatting changed.
+  if (file.endsWith("src/components/HomeDashboard.tsx") && next.includes("activeUserName")) {
+    const declaration = /\n\s*const activeUser = users\.find\(u => u\.id === activeUserId\)[^\n]*;/;
+    const hasDeclaration = /\bconst\s+activeUserName\s*=/.test(next);
+    if (!hasDeclaration && declaration.test(next)) {
+      next = next.replace(declaration, (line) => `${line}\n  const activeUserName = activeUser.name || "Usuario";`);
+    }
+  }
+
+  return next;
+}
+
 function sanitizeRoot() {
   let changed = 0;
   for (const file of walk(process.cwd())) {
     let source;
     try { source = fs.readFileSync(file, "utf8"); } catch { continue; }
-    let next = source;
-    for (const [bad, good] of REPLACEMENTS) next = next.split(bad).join(good);
+    const next = sanitizeText(source, path.relative(process.cwd(), file));
     if (next !== source) {
       fs.writeFileSync(file, next, "utf8");
       changed++;
@@ -42,8 +60,7 @@ function sanitizeDist() {
   for (const file of walk(dist)) {
     let source;
     try { source = fs.readFileSync(file, "utf8"); } catch { continue; }
-    let next = source;
-    for (const [bad, good] of REPLACEMENTS) next = next.split(bad).join(good);
+    const next = sanitizeText(source, path.relative(process.cwd(), file));
     if (next !== source) {
       fs.writeFileSync(file, next, "utf8");
       changed++;
