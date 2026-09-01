@@ -38,6 +38,9 @@ if (!server.includes(identitySummaryMarker)) {
   server = server.replace(returnAnchor, returnReplacement);
 }
 
+// Persist the generated server changes before the Vite/server build runs.
+fs.writeFileSync(serverPath, server);
+
 const claimPath = "api/onboarding/claim-user.ts";
 let claim = fs.readFileSync(claimPath, "utf8");
 const claimMarker = "// ASTRO_CLAIM_VERIFIED_IDENTITY_V2";
