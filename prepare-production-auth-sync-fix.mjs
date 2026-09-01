@@ -27,20 +27,16 @@ const buildPath = "build-server.mjs";
 let build = fs.readFileSync(buildPath, "utf8");
 
 if (!build.includes("Revision conflict; refreshing remote state and retrying once.")) {
-  const saveRegex = /      const dataCopy = JSON\.parse\(JSON\.stringify\(multiStore\[cleanCode\]\));\n      const expectedRevision = getObservedFirestoreRevision\(cleanCode\);\n      const nextRevision = await writeHomeDocument\(cleanCode, \{ data: dataCopy \}, expectedRevision\);\n      observedFirestoreRevisions\.set\(cleanCode, nextRevision\);/;
+  // Match the generated production save block as plain text instead of embedding
+  // a fragile regex literal. This avoids JS parser failures caused by nested ')' characters.
+  const saveBlock = `      const dataCopy = JSON.parse(JSON.stringify(multiStore[cleanCode]));\n      const expectedRevision = getObservedFirestoreRevision(cleanCode);\n      const nextRevision = await writeHomeDocument(cleanCode, { data: dataCopy }, expectedRevision);\n      observedFirestoreRevisions.set(cleanCode, nextRevision);`;
 
-  const replacement = `      if (!observedFirestoreRevisions.has(cleanCode)) {\n        await refreshActiveHomeFromFirestore(cleanCode);\n      }\n\n      const dataCopy = JSON.parse(JSON.stringify(multiStore[cleanCode]));\n      let expectedRevision = getObservedFirestoreRevision(cleanCode);\n      let nextRevision;\n      try {\n        nextRevision = await writeHomeDocument(cleanCode, { data: dataCopy }, expectedRevision);\n      } catch (writeError) {\n        const conflictMessage = String(writeError?.message || "");\n        if (!conflictMessage.startsWith(\\`SYNC_CONFLICT:\\${cleanCode}:\\`)) throw writeError;\n        console.warn("[Firestore Sync] Revision conflict; refreshing remote state and retrying once.");\n        await refreshActiveHomeFromFirestore(cleanCode);\n        expectedRevision = getObservedFirestoreRevision(cleanCode);\n        const refreshedDataCopy = JSON.parse(JSON.stringify(multiStore[cleanCode]));\n        nextRevision = await writeHomeDocument(cleanCode, { data: refreshedDataCopy }, expectedRevision);\n      }\n      observedFirestoreRevisions.set(cleanCode, nextRevision);`;
+  const replacement = `      if (!observedFirestoreRevisions.has(cleanCode)) {\n        await refreshActiveHomeFromFirestore(cleanCode);\n      }\n\n      const dataCopy = JSON.parse(JSON.stringify(multiStore[cleanCode]));\n      let expectedRevision = getObservedFirestoreRevision(cleanCode);\n      let nextRevision;\n      try {\n        nextRevision = await writeHomeDocument(cleanCode, { data: dataCopy }, expectedRevision);\n      } catch (writeError) {\n        const conflictMessage = String(writeError?.message || "");\n        if (!conflictMessage.startsWith(`SYNC_CONFLICT:${cleanCode}:`)) throw writeError;\n        console.warn("[Firestore Sync] Revision conflict; refreshing remote state and retrying once.");\n        await refreshActiveHomeFromFirestore(cleanCode);\n        expectedRevision = getObservedFirestoreRevision(cleanCode);\n        const refreshedDataCopy = JSON.parse(JSON.stringify(multiStore[cleanCode]));\n        nextRevision = await writeHomeDocument(cleanCode, { data: refreshedDataCopy }, expectedRevision);\n      }\n      observedFirestoreRevisions.set(cleanCode, nextRevision);`;
 
-  if (saveRegex.test(build)) {
-    build = build.replace(saveRegex, replacement);
+  if (build.includes(saveBlock)) {
+    build = build.replace(saveBlock, replacement);
   } else {
-    // Be tolerant of harmless whitespace/formatting changes in build-server.mjs.
-    const flexibleSaveRegex = /const dataCopy = JSON\.parse\(JSON\.stringify\(multiStore\[cleanCode\]\)\);[\s\S]*?observedFirestoreRevisions\.set\(cleanCode, nextRevision\);/;
-    if (!flexibleSaveRegex.test(build)) {
-      console.warn("[AstroHogar] Production sync block not found; skipping conflict rewrite because build-server may already handle it.");
-    } else {
-      build = build.replace(flexibleSaveRegex, replacement.trim());
-    }
+    console.warn("[AstroHogar] Production sync block not found; skipping conflict rewrite because build-server may already handle it.");
   }
 }
 
