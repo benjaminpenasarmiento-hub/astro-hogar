@@ -3,14 +3,10 @@
   "name": "Hogar de Mafe & Benja 🏡",
   "icons": [
     {
-      "src": "/nido_cozy.jpg",
+      "src": "/icon-192.jpg",
       "type": "image/jpeg",
-      "purpose": "any"
-    },
-    {
-      "src": "/nido_cozy.jpg",
-      "type": "image/jpeg",
-      "purpose": "maskable"
+      "sizes": "192x192",
+      "purpose": "any maskable"
     }
   ],
   "start_url": "/",
