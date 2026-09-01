@@ -16,6 +16,9 @@ export default async function handler(req: any, res: any) {
         if (!uid) return res.status(401).json({ error: "No se pudo identificar la cuenta.", code: "AUTH_IDENTITY_MISSING" });
         return __runWithFirestoreAuthToken(token, async () => {
           const index = await readAccountHomeIndex(uid);
+          res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, private");
+          res.setHeader("Pragma", "no-cache");
+          res.setHeader("Expires", "0");
           return res.json({ homeCode: index.homeCode || null });
         });
       } catch (error: any) {
