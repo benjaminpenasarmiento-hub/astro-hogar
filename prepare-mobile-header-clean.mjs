@@ -43,10 +43,44 @@ fs.writeFileSync(appPath, app);
 const syncPath = "src/components/SyncStatusIndicator.tsx";
 let sync = fs.readFileSync(syncPath, "utf8");
 sync = sync.replace('labelText = "Sincronizado";', 'labelText = "Activo · Sincronizado";');
-sync = sync.replace('labelText = pendingWrites > 0 ? `Offline · ${pendingWrites}` : "Sin conexión";', 'labelText = pendingWrites > 0 ? `Offline · ${pendingWrites}` : "Sin conexión";');
 sync = sync.replace('labelText = "Cuota";', 'labelText = "Activo · Cuota";');
 sync = sync.replace('labelText = pendingWrites > 0 ? `Guardando · ${pendingWrites}` : "Guardando...";', 'labelText = pendingWrites > 0 ? `Activo · Guardando · ${pendingWrites}` : "Activo · Guardando...";');
 sync = sync.replace('labelText = "Error de sync";', 'labelText = "Activo · Error de sync";');
 fs.writeFileSync(syncPath, sync);
 
-console.log("Mobile header cleaned and sync status unified.");
+// Keep the authenticated Google account's email visible in Datos de Perfil.
+const profilePath = "src/components/AstroProfileModal.tsx";
+let profile = fs.readFileSync(profilePath, "utf8");
+if (!profile.includes('import { useAuth } from "../auth";')) {
+  profile = profile.replace(
+    'import React, { useState, useEffect } from "react";\n',
+    'import React, { useState, useEffect } from "react";\nimport { useAuth } from "../auth";\n'
+  );
+}
+if (!profile.includes('const { user: authUser } = useAuth();')) {
+  profile = profile.replace(
+    '}: AstroProfileModalProps) {\n  const [activeUser, setActiveUser] = useState<UserProfile>(user);',
+    '}: AstroProfileModalProps) {\n  const { user: authUser } = useAuth();\n  const [activeUser, setActiveUser] = useState<UserProfile>(user);'
+  );
+}
+if (!profile.includes('const authenticatedEmail =')) {
+  profile = profile.replace(
+    '  // Edit Form States\n',
+    '  // Edit Form States\n  const authenticatedEmail = activeUserId && activeUser.id === activeUserId && authUser?.email\n    ? authUser.email\n    : (activeUser.email || "");\n\n'
+  );
+}
+profile = profile.replace(
+  'const [email, setEmail] = useState(activeUser.email || "");',
+  'const [email, setEmail] = useState(authenticatedEmail);'
+);
+profile = profile.replace(
+  '    setEmail(activeUser.email || "");\n',
+  '    setEmail(authenticatedEmail);\n'
+);
+profile = profile.replace(
+  '  }, [activeUser, allUsers]);',
+  '  }, [activeUser, allUsers, authenticatedEmail]);'
+);
+fs.writeFileSync(profilePath, profile);
+
+console.log("Mobile header, unified sync state, and authenticated profile email fixed.");
