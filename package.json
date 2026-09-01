@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx server.ts",
-    "build": "node prepare-onboarding-build.mjs && node prepare-smart-home-build.mjs && node prepare-dashboard-milo.mjs && node prepare-ux-polish.mjs && node prepare-stable-ui-fix.mjs && node prepare-cosmos-color-natural.mjs && node prepare-cosmos-color-final.mjs && node prepare-home-panels-safe.mjs && node prepare-frasco-persistence.mjs && node prepare-identity-fix.mjs && node prepare-identity-isolation.mjs && node prepare-auth-identity-ui.mjs && node prepare-mobile-header-clean.mjs && node prepare-production-auth-sync-fix.mjs && node prepare-runtime-reference-fix.mjs && vite build && node build-server.mjs",
+    "build": "node prepare-onboarding-build.mjs && node prepare-smart-home-build.mjs && node prepare-dashboard-milo.mjs && node prepare-ux-polish.mjs && node prepare-stable-ui-fix.mjs && node prepare-cosmos-color-natural.mjs && node prepare-cosmos-color-final.mjs && node prepare-home-panels-safe.mjs && node prepare-frasco-persistence.mjs && node prepare-identity-fix.mjs && node prepare-identity-isolation.mjs && node prepare-auth-identity-ui.mjs && node prepare-mobile-header-clean.mjs && node prepare-production-auth-sync-fix.mjs && node prepare-runtime-reference-fix.mjs && node prepare-final-reference-sanitize.mjs && vite build && node prepare-final-reference-sanitize.mjs --dist && node build-server.mjs",
     "start": "node dist/server.cjs",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit"
@@ -14,6 +14,7 @@
     "@google/genai": "^2.4.0",
     "@tailwindcss/vite": "^4.1.14",
     "canvas-confetti": "1.9.4",
+    "@tailwindcss/vite": "^4.1.14",
     "dotenv": "^17.2.3",
     "express": "^4.21.2",
     "firebase": "^12.15.0",
