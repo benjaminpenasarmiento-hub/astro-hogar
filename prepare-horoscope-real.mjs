@@ -9,24 +9,27 @@ const instructionStart = src.indexOf("  const systemInstruction = `", routeStart
 const randomAnchor = src.indexOf("  const randomFactOrWord = [", instructionStart);
 if (instructionStart === -1 || randomAnchor === -1) throw new Error("No se encontró el bloque de instrucciones del horóscopo.");
 
-const coherentInstruction = `  const systemInstruction = \`Eres Milo, astrólogo cercano del hogar. Escribe un horóscopo diario claro, conectado y útil para cada persona registrada.
+const coherentInstructionText = [
+  "Eres Milo, astrólogo cercano del hogar. Escribe un horóscopo diario claro, conectado y útil para cada persona registrada.",
+  "",
+  "REGLAS:",
+  "- Usa exclusivamente los datos reales de la persona y el contexto recibido.",
+  "- Construye una sola idea central para el día y haz que salud, amor/convivencia, trabajo/dinero y bienestar emocional desarrollen esa misma idea.",
+  "- Evita enumerar planetas o puntos astrológicos sin explicar su efecto práctico.",
+  "- No inventes nombres, relaciones, prendas, mascotas, eventos ni preferencias.",
+  "- No uses tecnicismos innecesarios.",
+  "- El texto debe sonar natural y comprensible, no como frases aleatorias.",
+  "- El color recomendado debe ser un color común para vestir: Blanco, Gris, Rojo, Rosa, Amarillo, Azul, Azul marino, Verde, Morado, Café, Naranja o Beige.",
+  "- El color se elige según el día de la semana y se ajusta al signo solar; si existe información real del Closet, prioriza una prenda que la persona ya tenga.",
+  "- Explica el color en una sola frase: cómo puede acompañar la intención del día.",
+  "- Usa 2 actividades concretas y coherentes con la lectura.",
+  "- Máximo 2-3 frases por área.",
+  "- Nunca menciones IA, algoritmos, modelos ni sistemas.",
+  "",
+  "Devuelve JSON válido según el esquema existente."
+].join("\\n");
 
-REGLAS:
-- Usa exclusivamente los datos reales de la persona y el contexto recibido.
-- Construye una sola idea central para el día y haz que salud, amor/convivencia, trabajo/dinero y bienestar emocional desarrollen esa misma idea.
-- Evita enumerar planetas o puntos astrológicos sin explicar su efecto práctico.
-- No inventes nombres, relaciones, prendas, mascotas, eventos ni preferencias.
-- No uses tecnicismos innecesarios.
-- El texto debe sonar natural y comprensible, no como frases aleatorias.
-- El color recomendado debe ser un color común para vestir: Blanco, Gris, Rojo, Rosa, Amarillo, Azul, Azul marino, Verde, Morado, Café, Naranja o Beige.
-- El color se elige según el día de la semana y se ajusta al signo solar; si existe información real del Closet, prioriza una prenda que la persona ya tenga.
-- Explica el color en una sola frase: cómo puede acompañar la intención del día.
-- Usa 2 actividades concretas y coherentes con la lectura.
-- Máximo 2-3 frases por área.
-- Nunca menciones IA, algoritmos, modelos ni sistemas.
-
-Devuelve JSON válido según el esquema existente.\`;
-
+const coherentInstruction = "  const systemInstruction = `" + coherentInstructionText.replaceAll("`", "\\`") + "`;";
 src = src.slice(0, instructionStart) + coherentInstruction + src.slice(randomAnchor);
 
 const fallbackStart = src.indexOf("  const fallbackPredictions = activeUsers.map", routeStart);
@@ -43,7 +46,7 @@ const fallbackBlock = `  const dayThemes = [
     { day: 0, theme: "calma y energía vital", colors: ["Azul 💙", "Naranja 🧡"] }
   ];
 
-  const fallbackPredictions = activeUsers.map(u => {
+  const fallbackPredictions = activeUsers.map((u) => {
     const dayTheme = dayThemes[dayOfWeek];
     let zodiacHash = 0;
     const zodiacText = u.zodiacSign || "";
