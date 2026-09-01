@@ -136,15 +136,24 @@ export default function GatitoAiChat({ onRefreshData, onRequestCreate, users = [
   };
 
   const chatUi = (
-    <div className="fixed inset-0 z-[9999] pointer-events-none" aria-hidden={!open}>
+    <>
       <AnimatePresence>
         {open && (
           <motion.section
-            initial={{ opacity: 0, y: 18, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 18, scale: 0.98 }}
+            initial={{ opacity: 0, x: 24, scale: 0.98 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            exit={{ opacity: 0, x: 24, scale: 0.98 }}
             transition={{ duration: 0.18 }}
-            className="pointer-events-auto absolute right-5 top-20 w-[min(430px,calc(100vw-40px))] h-[min(700px,calc(100dvh-110px))] bg-white rounded-[24px] border-2 border-[#F3EFE6] shadow-[0_18px_55px_rgba(44,39,35,0.22)] overflow-hidden flex flex-col"
+            className="bg-white rounded-[24px] border-2 border-[#F3EFE6] shadow-[0_18px_55px_rgba(44,39,35,0.22)] overflow-hidden flex flex-col"
+            style={{
+              position: "fixed",
+              zIndex: 999999,
+              right: "20px",
+              top: "72px",
+              width: "min(430px, calc(100vw - 40px))",
+              height: "min(700px, calc(100dvh - 92px))",
+              maxWidth: "calc(100vw - 40px)",
+            }}
             role="dialog"
             aria-label="Chat con Milo"
           >
@@ -197,8 +206,21 @@ export default function GatitoAiChat({ onRefreshData, onRequestCreate, users = [
         )}
       </AnimatePresence>
 
-      {!open && <motion.button type="button" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} whileTap={{ scale: 0.95 }} onClick={() => setOpen(true)} className="pointer-events-auto fixed right-5 bottom-6 w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#2C2723] text-white shadow-[0_12px_35px_rgba(44,39,35,0.28)] flex items-center justify-center" aria-label="Abrir chat de Milo"><MessageSquare size={23} /></motion.button>}
-    </div>
+      {!open && (
+        <motion.button
+          type="button"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setOpen(true)}
+          className="fixed right-5 bottom-6 w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#2C2723] text-white shadow-[0_12px_35px_rgba(44,39,35,0.28)] flex items-center justify-center"
+          style={{ zIndex: 999999 }}
+          aria-label="Abrir chat de Milo"
+        >
+          <MessageSquare size={23} />
+        </motion.button>
+      )}
+    </>
   );
 
   if (typeof document === "undefined") return null;
