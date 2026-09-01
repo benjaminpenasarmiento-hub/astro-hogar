@@ -66,8 +66,6 @@ async function userBelongsToHome(homeCode: string, uid?: string, email?: string)
       legacyMember
     );
 
-    // Source of truth for an authenticated account created/joined through the app.
-    // This repairs stale legacy nest metadata without allowing access to an unrelated home.
     if (!member && uid) {
       try {
         const accountIndex = await readAccountHomeIndex(uid);
@@ -140,9 +138,6 @@ export async function requireFirebaseAuth(req: any, res: any, next: any) {
     const requestedHomeCode = getHomeCode(req);
     let effectiveHomeCode = requestedHomeCode;
 
-    // Firebase identity is authoritative. A stale localStorage code must never
-    // cause a valid authenticated account to receive a 403 when account_homes
-    // already resolves its canonical household.
     if (verifiedUser.localId) {
       try {
         const accountIndex = await readAccountHomeIndex(verifiedUser.localId);
@@ -162,6 +157,30 @@ export async function requireFirebaseAuth(req: any, res: any, next: any) {
         error: "Tu cuenta de Google no pertenece a este hogar.",
         code: "HOME_ACCESS_DENIED",
       });
+    }
+
+    // Canonicalize the application-level user id from the authenticated profile.
+    // Downstream endpoints use x-user-id for user-scoped data, so never trust a stale
+    // browser value when the active Firebase account already identifies the profile.
+    try {
+      const homeSnapshot = await readHomeDocument(effectiveHomeCode);
+      const homeUsers = Array.isArray(homeSnapshot.data?.data?.users) ? homeSnapshot.data.data.users : [];
+      const normalizedEmail = verifiedUser.email?.trim().toLowerCase();
+      const activeProfile = homeUsers.find((profile: any) => {
+        const sameUid = verifiedUser.localId && typeof profile?.authUid === "string" && profile.authUid === verifiedUser.localId;
+        const sameEmail = normalizedEmail && typeof profile?.email === "string" && profile.email.trim().toLowerCase() === normalizedEmail;
+        return Boolean(sameUid || sameEmail);
+      });
+
+      if (activeProfile?.id) {
+        req.headers["x-user-id"] = String(activeProfile.id);
+        req.authUser.profileUserId = String(activeProfile.id);
+      } else {
+        req.headers["x-user-id"] = verifiedUser.localId;
+      }
+    } catch (profileError) {
+      console.warn("[Firebase AuthZ] No se pudo resolver el perfil activo; usando UID:", profileError);
+      req.headers["x-user-id"] = verifiedUser.localId;
     }
 
     return next();
