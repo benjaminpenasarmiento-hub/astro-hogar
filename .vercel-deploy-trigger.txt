@@ -1,0 +1,1 @@
+Deployment trigger for Vercel Git integration. This file is intentionally harmless and can be removed after the deployment pipeline is confirmed.
