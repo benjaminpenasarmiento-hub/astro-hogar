@@ -37,7 +37,7 @@ const REFERENCE_NEW_MOON = Date.UTC(2026, 7, 12, 17, 36, 0);
 
 // Exact phase instants for Bogotá used by the visual timeline. Keeping these
 // deterministic prevents Gemini/AI text from inventing or shifting dates.
-const BOGOTA_PHASE_EVENTS: PhaseEvent[] = [
+const BOGOTA_PHASE_EVENT_INPUTS = [
   ["new", "2026-08-12T12:36:00-05:00"],
   ["first-quarter", "2026-08-19T21:46:00-05:00"],
   ["full", "2026-08-27T23:18:00-05:00"],
@@ -58,7 +58,12 @@ const BOGOTA_PHASE_EVENTS: PhaseEvent[] = [
   ["first-quarter", "2026-12-17T00:42:00-05:00"],
   ["full", "2026-12-23T20:28:00-05:00"],
   ["last-quarter", "2026-12-30T13:59:00-05:00"],
-].map(([key, date]) => ({ key, at: new Date(date).getTime() }));
+] as const;
+
+const BOGOTA_PHASE_EVENTS: PhaseEvent[] = BOGOTA_PHASE_EVENT_INPUTS.map(([key, date]) => ({
+  key,
+  at: new Date(date).getTime(),
+}));
 
 function normalizeAge(value: number) {
   const age = Number.isFinite(value) ? value : 0;
