@@ -137,22 +137,17 @@ export async function requireFirebaseAuth(req: any, res: any, next: any) {
   return runWithFirestoreAuthToken(token, async () => {
     if (isOnboardingPath(path)) return next();
 
-    const homeCode = getHomeCode(req);
-    let effectiveHomeCode = homeCode;
+    const requestedHomeCode = getHomeCode(req);
+    let effectiveHomeCode = requestedHomeCode;
 
-    // Never trust a stale/missing localStorage home blindly. Resolve the canonical
-    // household from the authenticated account index when available.
+    // Firebase identity is authoritative. A stale localStorage code must never
+    // cause a valid authenticated account to receive a 403 when account_homes
+    // already resolves its canonical household.
     if (verifiedUser.localId) {
       try {
         const accountIndex = await readAccountHomeIndex(verifiedUser.localId);
         const indexedHomeCode = accountIndex.homeCode || "";
         if (indexedHomeCode) {
-          if (homeCode && homeCode !== indexedHomeCode) {
-            return res.status(403).json({
-              error: "El hogar activo no corresponde a tu cuenta de Google.",
-              code: "HOME_CONTEXT_MISMATCH",
-            });
-          }
           effectiveHomeCode = indexedHomeCode;
           req.headers["x-home-code"] = indexedHomeCode;
         }
