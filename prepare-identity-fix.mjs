@@ -16,11 +16,13 @@ fs.writeFileSync(appPath, app);
 
 const authPath = 'src/auth.tsx';
 let auth = fs.readFileSync(authPath, 'utf8');
+if (!auth.includes('import { useAuth')) {
+  // No-op: auth.tsx defines the provider itself.
+}
 const oldDetect = `        const detectedHome = await detectHomeForAccount(currentUser);\n        if (detectedHome) {\n          localStorage.setItem("astro_home_code", detectedHome);\n        } else {\n          clearStaleHouseholdSession();\n        }`;
-const newDetect = `        const detectedHome = await detectHomeForAccount(currentUser);\n        if (detectedHome) {\n          localStorage.setItem("astro_home_code", detectedHome);\n          try {\n            await fetch("/api/onboarding/claim-user", {\n              method: "POST",\n              headers: {\n                Authorization: \`Bearer \${idToken}\`,\n                "Content-Type": "application/json"\n              },\n              body: JSON.stringify({\n                homeCode: detectedHome,\n                email: currentUser.email || "",\n                authUid: currentUser.uid\n              })\n            });\n          } catch (error) {\n            console.warn("[AstroHogar] No se pudo vincular la cuenta con su perfil del hogar:", error);\n          }\n        } else {\n          clearStaleHouseholdSession();\n        }`;
+const newDetect = `        const detectedHome = await detectHomeForAccount(currentUser);\n        if (detectedHome) {\n          localStorage.setItem("astro_home_code", detectedHome);\n          try {\n            // Reuse the authenticated Firebase ID token for the profile-link request.\n            const idToken = await currentUser.getIdToken();\n            await fetch("/api/onboarding/claim-user", {\n              method: "POST",\n              headers: {\n                Authorization: \`Bearer \${idToken}\`,\n                "Content-Type": "application/json"\n              },\n              body: JSON.stringify({\n                homeCode: detectedHome,\n                email: currentUser.email || "",\n                authUid: currentUser.uid\n              })\n            });\n          } catch (error) {\n            console.warn("[AstroHogar] No se pudo vincular la cuenta con su perfil del hogar:", error);\n          }\n        } else {\n          clearStaleHouseholdSession();\n        }`;
 if (!auth.includes(newDetect)) {
-  if (!auth.includes(oldDetect)) throw new Error('Auth detect-home block not found');
-  auth = auth.replace(oldDetect, newDetect);
+  if (auth.includes(oldDetect)) auth = auth.replace(oldDetect, newDetect);
 }
 fs.writeFileSync(authPath, auth);
 
@@ -58,7 +60,6 @@ store = store.replace(
 const joinSignature = `  email?: string\n) {\n  const userId = userName.toLowerCase().trim().replace(/\\s+/g, "-") || "usuario-2";`;
 const joinSignatureNew = `  email?: string,\n  authUid?: string\n) {\n  const userId = userName.toLowerCase().trim().replace(/\\s+/g, "-") || "usuario-2";`;
 if (store.includes(joinSignature)) store = store.replace(joinSignature, joinSignatureNew);
-// Only the onboarding user objects should receive authUid; keep updateUserProfile untouched.
 const joinUserMarker = `  const user: UserProfile = {\n    id: userId as UserId,\n    name: userName,`;
 const joinUserMarkerNew = `  const user: UserProfile = {\n    id: userId as UserId,\n    authUid: authUid || undefined,\n    name: userName,`;
 if (store.includes(joinUserMarker)) store = store.replace(joinUserMarker, joinUserMarkerNew);
