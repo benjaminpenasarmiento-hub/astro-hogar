@@ -9,7 +9,23 @@ const instructionStart = src.indexOf("  const systemInstruction = `", routeStart
 const randomAnchor = src.indexOf("  const randomFactOrWord = [", instructionStart);
 if (instructionStart === -1 || randomAnchor === -1) throw new Error("No se encontró el bloque de instrucciones del horóscopo.");
 
-const coherentInstruction = `  const systemInstruction = \`Eres Milo, astrólogo cercano del hogar. Escribe un horóscopo diario claro, conectado y útil para cada persona registrada.\n\nREGLAS:\n- Usa exclusivamente los datos reales de la persona y el contexto recibido.\n- Construye una sola idea central para el día y haz que salud, amor/convivencia, trabajo/dinero y bienestar emocional desarrollen esa misma idea.\n- Evita enumerar planetas o puntos astrológicos sin explicar su efecto práctico.\n- No inventes nombres, relaciones, prendas, mascotas, eventos ni preferencias.\n- No uses tecnicismos innecesarios.\n- El texto debe sonar natural y comprensible, no como frases aleatorias.\n- El color recomendado debe ser un color común para vestir: Blanco, Gris, Rojo, Rosa, Amarillo, Azul, Azul marino, Verde, Morado, Café, Naranja o Beige.\n- El color se elige según el día de la semana y se ajusta al signo solar; si existe información real del Closet, prioriza una prenda que la persona ya tenga.\n- Explica el color en una sola frase: cómo puede acompañar la intención del día.\n- Usa 2 actividades concretas y coherentes con la lectura.\n- Máximo 2-3 frases por área.\n- Nunca menciones IA, algoritmos, modelos ni sistemas.\n\nDevuelve JSON válido según el esquema existente.\`;
+const coherentInstruction = `  const systemInstruction = \`Eres Milo, astrólogo cercano del hogar. Escribe un horóscopo diario claro, conectado y útil para cada persona registrada.
+
+REGLAS:
+- Usa exclusivamente los datos reales de la persona y el contexto recibido.
+- Construye una sola idea central para el día y haz que salud, amor/convivencia, trabajo/dinero y bienestar emocional desarrollen esa misma idea.
+- Evita enumerar planetas o puntos astrológicos sin explicar su efecto práctico.
+- No inventes nombres, relaciones, prendas, mascotas, eventos ni preferencias.
+- No uses tecnicismos innecesarios.
+- El texto debe sonar natural y comprensible, no como frases aleatorias.
+- El color recomendado debe ser un color común para vestir: Blanco, Gris, Rojo, Rosa, Amarillo, Azul, Azul marino, Verde, Morado, Café, Naranja o Beige.
+- El color se elige según el día de la semana y se ajusta al signo solar; si existe información real del Closet, prioriza una prenda que la persona ya tenga.
+- Explica el color en una sola frase: cómo puede acompañar la intención del día.
+- Usa 2 actividades concretas y coherentes con la lectura.
+- Máximo 2-3 frases por área.
+- Nunca menciones IA, algoritmos, modelos ni sistemas.
+
+Devuelve JSON válido según el esquema existente.\`;
 
 src = src.slice(0, instructionStart) + coherentInstruction + src.slice(randomAnchor);
 
@@ -17,7 +33,43 @@ const fallbackStart = src.indexOf("  const fallbackPredictions = activeUsers.map
 const fallbackEnd = src.indexOf("  // Deterministic Climate Fallback", fallbackStart);
 if (fallbackStart === -1 || fallbackEnd === -1) throw new Error("No se encontró el fallback del horóscopo.");
 
-const fallbackBlock = `  const dayThemes = [\n    { day: 1, theme: "claridad y nuevos comienzos", colors: ["Blanco 🤍", "Gris claro 🩶"] },\n    { day: 2, theme: "fuerza y movimiento", colors: ["Rojo 🔴", "Rosa 💗"] },\n    { day: 3, theme: "comunicación y enfoque", colors: ["Amarillo 💛", "Azul 💙"] },\n    { day: 4, theme: "expansión y confianza", colors: ["Morado 💜", "Violeta 💜"] },\n    { day: 5, theme: "armonía y bienestar", colors: ["Verde 💚", "Rosa 💗"] },\n    { day: 6, theme: "estabilidad y descanso", colors: ["Café 🟤", "Beige 🤎"] },\n    { day: 0, theme: "calma y energía vital", colors: ["Azul 💙", "Naranja 🧡"] }\n  ];\n\n  const fallbackPredictions = activeUsers.map(u => {\n    const dayTheme = dayThemes[dayOfWeek];\n    let zodiacHash = 0;\n    const zodiacText = u.zodiacSign || "";\n    for (const ch of zodiacText) zodiacHash += ch.charCodeAt(0);\n    const color = dayTheme.colors[(zodiacHash + u.name.length + dayOfMonth) % dayTheme.colors.length];\n    const zodiac = zodiacText || "tu signo";\n\n    const themes = [\n      `Hoy el foco para ${u.name} está en ${dayTheme.theme}. Con ${zodiac}, lo mejor será mantener una sola prioridad y evitar dispersarse.`,\n      `En bienestar: baja un cambio donde notes tensión y deja espacio para recuperar energía. En el nido, una rutina simple te favorecerá más que exigirte de más.`,\n      `En amor y convivencia: habla claro y con calma; una conversación breve y sincera puede resolver más que darle vueltas a las cosas.`,\n      `En trabajo y dinero: ordena primero lo importante y termina una cosa antes de abrir otra. Esa disciplina te dará sensación de avance real.`,\n      `Para cerrar el día: busca un momento tranquilo sin ruido ni pendientes y revisa qué sí funcionó hoy.`,\n    ];\n\n    return {\n      userId: u.id,\n      userName: u.name,\n      prediction: themes[0],\n      predictionSalud: themes[1],\n      predictionAmor: themes[2],\n      predictionTrabajo: themes[3],\n      predictionEspiritualidad: themes[4],\n      advice: `Tu clave de hoy: elige una prioridad y protégela de distracciones.`,\n      luckyColor: color,\n      luckyColorDesc: `Este color acompaña la energía de ${dayTheme.theme} y es fácil de incorporar a tu ropa de hoy.`,\n      recommendedActivities: [\n        `Dedica 10 minutos a ordenar un espacio que uses mucho.`,\n        `Reserva un momento del día para hacer algo que realmente te relaje.`\n      ]\n    };\n  });\n\n`;
+const fallbackBlock = `  const dayThemes = [
+    { day: 1, theme: "claridad y nuevos comienzos", colors: ["Blanco 🤍", "Gris claro 🩶"] },
+    { day: 2, theme: "fuerza y movimiento", colors: ["Rojo 🔴", "Rosa 💗"] },
+    { day: 3, theme: "comunicación y enfoque", colors: ["Amarillo 💛", "Azul 💙"] },
+    { day: 4, theme: "expansión y confianza", colors: ["Morado 💜", "Violeta 💜"] },
+    { day: 5, theme: "armonía y bienestar", colors: ["Verde 💚", "Rosa 💗"] },
+    { day: 6, theme: "estabilidad y descanso", colors: ["Café 🟤", "Beige 🤎"] },
+    { day: 0, theme: "calma y energía vital", colors: ["Azul 💙", "Naranja 🧡"] }
+  ];
+
+  const fallbackPredictions = activeUsers.map(u => {
+    const dayTheme = dayThemes[dayOfWeek];
+    let zodiacHash = 0;
+    const zodiacText = u.zodiacSign || "";
+    for (const ch of zodiacText) zodiacHash += ch.charCodeAt(0);
+    const color = dayTheme.colors[(zodiacHash + u.name.length + dayOfMonth) % dayTheme.colors.length];
+    const zodiac = zodiacText || "tu signo";
+
+    return {
+      userId: u.id,
+      userName: u.name,
+      prediction: "Hoy el foco para " + u.name + " está en " + dayTheme.theme + ". Con " + zodiac + ", lo mejor será mantener una sola prioridad y evitar dispersarse.",
+      predictionSalud: "En bienestar: baja un cambio donde notes tensión y deja espacio para recuperar energía. En el nido, una rutina simple te favorecerá más que exigirte de más.",
+      predictionAmor: "En amor y convivencia: habla claro y con calma; una conversación breve y sincera puede resolver más que darle vueltas a las cosas.",
+      predictionTrabajo: "En trabajo y dinero: ordena primero lo importante y termina una cosa antes de abrir otra. Esa disciplina te dará sensación de avance real.",
+      predictionEspiritualidad: "Para cerrar el día: busca un momento tranquilo sin ruido ni pendientes y revisa qué sí funcionó hoy.",
+      advice: "Tu clave de hoy: elige una prioridad y protégela de distracciones.",
+      luckyColor: color,
+      luckyColorDesc: "Este color acompaña la energía de " + dayTheme.theme + " y es fácil de incorporar a tu ropa de hoy.",
+      recommendedActivities: [
+        "Dedica 10 minutos a ordenar un espacio que uses mucho.",
+        "Reserva un momento del día para hacer algo que realmente te relaje."
+      ]
+    };
+  });
+
+`;
 src = src.slice(0, fallbackStart) + fallbackBlock + src.slice(fallbackEnd);
 fs.writeFileSync(file, src, "utf8");
 console.log("[AstroHogar] Horóscopo: lectura coherente + color diario común y personal por usuario.");
