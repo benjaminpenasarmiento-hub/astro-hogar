@@ -48,6 +48,14 @@ fs.writeFileSync(dashboardPath, dashboard, "utf8");
 let app = fs.readFileSync(appPath, "utf8");
 app = app.replaceAll("activdeUserName", "activeUserName");
 
+// The mobile header preparation script injects a session matcher using users.find().
+// Resolve the authenticated session with an imperative loop to avoid TDZ/minifier
+// collisions in production bundles.
+app = app.replace(
+  /\s*const matched = users\.find\(\(u\) =>\s*\(uid && String\(u\?\.authUid \|\| ""\)\.trim\(\) === uid\) \|\|\s*\(email && String\(u\?\.email \|\| ""\)\.trim\(\)\.toLowerCase\(\) === email\)\s*\);/g,
+  `\n    let matched: UserProfile | undefined;\n    for (const candidateUser of users) {\n      const matchesUid = Boolean(uid && String(candidateUser?.authUid || "").trim() === uid);\n      const matchesEmail = Boolean(email && String(candidateUser?.email || "").trim().toLowerCase() === email);\n      if (matchesUid || matchesEmail) {\n        matched = candidateUser;\n        break;\n      }\n    }`
+);
+
 // Replace every authenticatedProfile users.find() block with a deterministic loop.
 app = app.replace(
   /\s*const authenticatedProfile = users\.find\(\(u\) =>[\s\S]*?\n  \);/g,
@@ -60,7 +68,7 @@ app = app.replace(
   `\n  let activeUserName = "Usuario";\n  for (const candidateUser of users) {\n    const matchesUid = Boolean(authUser?.uid && String(candidateUser?.authUid || "").trim() === authUser.uid);\n    const matchesEmail = Boolean(authUser?.email && String(candidateUser?.email || "").trim().toLowerCase() === authUser.email.trim().toLowerCase());\n    if (matchesUid || matchesEmail) {\n      activeUserName = candidateUser?.name || "Usuario";\n      break;\n    }\n  }`
 );
 
-// Do not allow this build to ship while either known TDZ pattern remains.
+// Nothing known to cause the production TDZ may remain in App or HomeDashboard.
 const errors = [];
 if (/users\s*\.find\s*\(/.test(dashboard)) errors.push(dashboardPath);
 if (/users\s*\.find\s*\(/.test(app)) errors.push(appPath);
