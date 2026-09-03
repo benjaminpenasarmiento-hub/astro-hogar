@@ -48,23 +48,23 @@ fs.writeFileSync(dashboardPath, dashboard, "utf8");
 let app = fs.readFileSync(appPath, "utf8");
 app = app.replaceAll("activdeUserName", "activeUserName");
 
-// The mobile header preparation script injects a session matcher using users.find().
-// Resolve the authenticated session with an imperative loop to avoid TDZ/minifier
-// collisions in production bundles.
+// The mobile-header preparation script can generate several identity lookups.
+// Replace them using a deliberately permissive expression so formatting changes
+// in earlier build passes cannot allow a .find() through to the final bundle.
 app = app.replace(
-  /\s*const matched = users\.find\(\(u\) =>\s*\(uid && String\(u\?\.authUid \|\| ""\)\.trim\(\) === uid\) \|\|\s*\(email && String\(u\?\.email \|\| ""\)\.trim\(\)\.toLowerCase\(\) === email\)\s*\);/g,
+  /\s*const matched\s*=\s*users\.find\(\(u\)\s*=>[\s\S]{0,1600}?\);/g,
   `\n    let matched: UserProfile | undefined;\n    for (const candidateUser of users) {\n      const matchesUid = Boolean(uid && String(candidateUser?.authUid || "").trim() === uid);\n      const matchesEmail = Boolean(email && String(candidateUser?.email || "").trim().toLowerCase() === email);\n      if (matchesUid || matchesEmail) {\n        matched = candidateUser;\n        break;\n      }\n    }`
 );
 
-// Replace every authenticatedProfile users.find() block with a deterministic loop.
+// Replace generated authenticatedProfile lookups with an imperative loop.
 app = app.replace(
-  /\s*const authenticatedProfile = users\.find\(\(u\) =>[\s\S]*?\n  \);/g,
-  `\n  let authenticatedProfile: import("./types").UserProfile | undefined;\n  for (const candidateUser of users) {\n    const matchesUid = Boolean(authUser?.uid && String(candidateUser?.authUid || "").trim() === authUser.uid);\n    const matchesEmail = Boolean(authUser?.email && String(candidateUser?.email || "").trim().toLowerCase() === authUser.email.trim().toLowerCase());\n    if (matchesUid || matchesEmail) {\n      authenticatedProfile = candidateUser;\n      break;\n    }\n  }`
+  /\s*const authenticatedProfile\s*=\s*users\.find\(\(u\)\s*=>[\s\S]{0,1800}?\);/g,
+  `\n  let authenticatedProfile: UserProfile | undefined;\n  for (const candidateUser of users) {\n    const matchesUid = Boolean(authUser?.uid && String(candidateUser?.authUid || "").trim() === authUser.uid);\n    const matchesEmail = Boolean(authUser?.email && String(candidateUser?.email || "").trim().toLowerCase() === authUser.email.trim().toLowerCase());\n    if (matchesUid || matchesEmail) {\n      authenticatedProfile = candidateUser;\n      break;\n    }\n  }`
 );
 
-// Replace the generated activeUserName users.find() declaration if present.
+// Replace generated activeUserName lookup with an imperative loop.
 app = app.replace(
-  /\s*const activeUserName = users\.find\(\(u\) =>[\s\S]*?\n  \)\?\.name \|\| "Usuario";/g,
+  /\s*const activeUserName\s*=\s*users\.find\(\(u\)\s*=>[\s\S]{0,1800}?\);/g,
   `\n  let activeUserName = "Usuario";\n  for (const candidateUser of users) {\n    const matchesUid = Boolean(authUser?.uid && String(candidateUser?.authUid || "").trim() === authUser.uid);\n    const matchesEmail = Boolean(authUser?.email && String(candidateUser?.email || "").trim().toLowerCase() === authUser.email.trim().toLowerCase());\n    if (matchesUid || matchesEmail) {\n      activeUserName = candidateUser?.name || "Usuario";\n      break;\n    }\n  }`
 );
 
