@@ -23,5 +23,21 @@ if (!build.includes(barrierMarker)) {
   build = build.replace(finalizationAnchor, finalizationReplacement);
 }
 
+// Frasco: enforce the persistence barrier at the route itself as an additional
+// guarantee. The generated production server already imports getPendingPersistence.
+const frascoMarker = "ASTRO_FRASCO_PERSISTENCE_BARRIER_V1";
+if (!build.includes(frascoMarker)) {
+  const frascoOpen = 'app.post("/api/salud-hogar/frasco", (req, res) => {';
+  const frascoAsyncOpen = `app.post("/api/salud-hogar/frasco", async (req, res) => {\n    // ${frascoMarker}`;
+  if (build.includes(frascoOpen)) {
+    build = build.replace(frascoOpen, frascoAsyncOpen);
+  }
+  const frascoSave = `    const msg = addFrascoMessage({ senderId, text, emoji });`;
+  const frascoSaveWaited = `${frascoSave}\n    await getPendingPersistence();`;
+  if (build.includes(frascoSave) && !build.includes(frascoSaveWaited)) {
+    build = build.replace(frascoSave, frascoSaveWaited);
+  }
+}
+
 fs.writeFileSync(buildPath, build, "utf8");
-console.log("[AstroHogar] Persistence repair prepared: budget accounts are non-destructive and mutation responses fail loudly when Firestore persistence fails.");
+console.log("[AstroHogar] Persistence repair prepared: budget accounts are non-destructive, mutation responses fail loudly on persistence errors, and Frasco waits for Firestore persistence.");
