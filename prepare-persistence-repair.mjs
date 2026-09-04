@@ -17,10 +17,26 @@ let build = fs.readFileSync(buildPath, "utf8");
 
 const barrierMarker = "ASTRO_PERSISTENCE_RESPONSE_BARRIER_V1";
 if (!build.includes(barrierMarker)) {
-  const appAnchor = "const app = express();";
-  const barrier = `${appAnchor}\n\n// ${barrierMarker}\n// In Vercel, mutation endpoints must wait for Firestore persistence before the response\n// is sent. Otherwise the serverless invocation may finish before the queued write lands.\napp.use((req, res, next) => {\n  if (!["POST", "PUT", "PATCH", "DELETE"].includes(req.method)) return next();\n\n  const originalJson = res.json.bind(res);\n  const originalSend = res.send.bind(res);\n  const waitForPersistence = () => getPendingPersistence().catch((error) => {\n    console.error("[AstroHogar] Persistence barrier error:", error);\n  });\n\n  res.json = ((body) => waitForPersistence().then(() => originalJson(body)));\n  res.send = ((body) => waitForPersistence().then(() => originalSend(body)));\n  next();\n});`;
-  if (!build.includes(appAnchor)) throw new Error("No se encontró const app = express() en build-server.mjs");
-  build = build.replace(appAnchor, barrier);
+  // build-server.mjs constructs a transformedServer string from server.ts. Inject
+  // the barrier into that generated server source, not into build-server itself.
+  const transformedServerAnchor = 'const app = express();';
+  const barrier = `${transformedServerAnchor}\n\n// ${barrierMarker}\n// In Vercel, mutation endpoints must wait for the Firestore persistence queue\n// before the HTTP response is sent. This prevents serverless teardown from\n// dropping writes that were only scheduled in the background.\napp.use((req, res, next) => {\n  if (!["POST", "PUT", "PATCH", "DELETE"].includes(req.method)) return next();\n\n  const originalJson = res.json.bind(res);\n  const originalSend = res.send.bind(res);\n  const waitForPersistence = () => getPendingPersistence().catch((error) => {\n    console.error("[AstroHogar] Persistence barrier error:", error);\n  });\n\n  res.json = ((body) => waitForPersistence().then(() => originalJson(body)));\n  res.send = ((body) => waitForPersistence().then(() => originalSend(body)));\n  next();\n});`;
+
+  const injectionNeedle = 'transformedServer = transformedServer.replaceAll(\'"./serverStore"\', \'"./serverStore.vercel"\');';
+  const injectionReplacement = `${injectionNeedle}\n\n// ${barrierMarker} is inserted into the generated server source below.\n`;
+  if (!build.includes(injectionNeedle)) {
+    throw new Error("No se encontró el ancla de transformedServer en build-server.mjs");
+  }
+  build = build.replace(injectionNeedle, injectionReplacement);
+
+  // Store the barrier source in a dedicated constant that is applied immediately
+  // after the generated server string is finalized.
+  const finalizationAnchor = 'if (!transformedServer.includes("startServer();")) throw new Error("No se encontró el arranque esperado de server.ts");';
+  const finalizationReplacement = `if (!transformedServer.includes("${barrierMarker}")) {\n  if (!transformedServer.includes(transformedServerAnchor)) throw new Error("No se encontró const app = express() en el server generado.");\n  transformedServer = transformedServer.replace(transformedServerAnchor, ${JSON.stringify(barrier)});\n}\n\n${finalizationAnchor}`;
+  if (!build.includes(finalizationAnchor)) {
+    throw new Error("No se encontró el ancla de finalización de transformedServer en build-server.mjs");
+  }
+  build = build.replace(finalizationAnchor, finalizationReplacement);
 }
 
 fs.writeFileSync(buildPath, build, "utf8");
