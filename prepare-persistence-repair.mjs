@@ -23,21 +23,13 @@ if (!build.includes(barrierMarker)) {
   build = build.replace(finalizationAnchor, finalizationReplacement);
 }
 
-// Frasco: enforce the persistence barrier at the route itself as an additional
-// guarantee. The generated production server already imports getPendingPersistence.
-const frascoMarker = "ASTRO_FRASCO_PERSISTENCE_BARRIER_V1";
+const frascoMarker = "ASTRO_FRASCO_PERSISTENCE_BARRIER_V2";
 if (!build.includes(frascoMarker)) {
-  const frascoOpen = 'app.post("/api/salud-hogar/frasco", (req, res) => {';
-  const frascoAsyncOpen = `app.post("/api/salud-hogar/frasco", async (req, res) => {\n    // ${frascoMarker}`;
-  if (build.includes(frascoOpen)) {
-    build = build.replace(frascoOpen, frascoAsyncOpen);
-  }
-  const frascoSave = `    const msg = addFrascoMessage({ senderId, text, emoji });`;
-  const frascoSaveWaited = `${frascoSave}\n    await getPendingPersistence();`;
-  if (build.includes(frascoSave) && !build.includes(frascoSaveWaited)) {
-    build = build.replace(frascoSave, frascoSaveWaited);
-  }
+  const finalizationAnchor = 'if (!transformedServer.includes("startServer();")) throw new Error("No se encontró el arranque esperado de server.ts");';
+  const frascoPatch = `if (!transformedServer.includes("${frascoMarker}")) {\n  const frascoOpen = 'app.post("/api/salud-hogar/frasco", (req, res) => {';\n  if (transformedServer.includes(frascoOpen)) {\n    transformedServer = transformedServer.replace(\n      frascoOpen,\n      'app.post("/api/salud-hogar/frasco", async (req, res) => {\\n    // ${frascoMarker}'\n    );\n  }\n  const frascoSave = '    const msg = addFrascoMessage({ senderId, text, emoji });';\n  if (transformedServer.includes(frascoSave) && !transformedServer.includes('await getPendingPersistence();\\n    const name = getUserName(senderId);')) {\n    transformedServer = transformedServer.replace(\n      frascoSave,\n      frascoSave + '\\n    await getPendingPersistence();'\n    );\n  }\n}\n\n${finalizationAnchor}`;
+  if (!build.includes(finalizationAnchor)) throw new Error("No se encontró el ancla para el barrier de Frasco.");
+  build = build.replace(finalizationAnchor, frascoPatch);
 }
 
 fs.writeFileSync(buildPath, build, "utf8");
-console.log("[AstroHogar] Persistence repair prepared: budget accounts are non-destructive, mutation responses fail loudly on persistence errors, and Frasco waits for Firestore persistence.");
+console.log("[AstroHogar] Persistence repair prepared: budget accounts are non-destructive, mutation responses wait for Firestore, and Frasco explicitly waits for its persistence write.");
