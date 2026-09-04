@@ -29,16 +29,13 @@ fs.writeFileSync(dashboardPath, dashboard, "utf8");
 let app = fs.readFileSync(appPath, "utf8");
 app = app.replaceAll("activdeUserName", "activeUserName");
 
-const loopReplacement = `\n  let __matchedUser: UserProfile | undefined;\n  for (const candidateUser of users) {\n    const matchesUid = Boolean(authUid && candidateUser?.authUid === authUid);\n    const matchesEmail = Boolean(authEmail && typeof candidateUser?.email === "string" && candidateUser.email.trim().toLowerCase() === authEmail);\n    if (matchesUid || matchesEmail) {\n      __matchedUser = candidateUser;\n      break;\n    }\n  }`;
+const matchedUserLoop = `\n    let matchedUser: UserProfile | undefined;\n    for (const candidateUser of users) {\n      const matchesUid = Boolean(authUid && candidateUser?.authUid === authUid);\n      const matchesEmail = Boolean(authEmail && typeof candidateUser?.email === "string" && candidateUser.email.trim().toLowerCase() === authEmail);\n      if (matchesUid || matchesEmail) {\n        matchedUser = candidateUser;\n        break;\n      }\n    }`;
 
 // Eliminate every generated auth-profile find() variant from earlier build passes.
-app = app.replace(/\s*const matchedUser\s*=\s*users\.find\(u\s*=>[\s\S]{0,1600}?\);/g, loopReplacement);
+app = app.replace(/\s*const matchedUser\s*=\s*users\.find\(u\s*=>[\s\S]{0,1600}?\);/g, matchedUserLoop);
 app = app.replace(/\s*const matched\s*=\s*users\.find\(\(u\)\s*=>[\s\S]{0,1600}?\);/g, `\n    let matched: UserProfile | undefined;\n    for (const candidateUser of users) {\n      const matchesUid = Boolean(uid && String(candidateUser?.authUid || "").trim() === uid);\n      const matchesEmail = Boolean(email && String(candidateUser?.email || "").trim().toLowerCase() === email);\n      if (matchesUid || matchesEmail) {\n        matched = candidateUser;\n        break;\n      }\n    }`);
 app = app.replace(/\s*const authenticatedProfile\s*=\s*users\.find\(\(u\)\s*=>[\s\S]{0,1800}?\);/g, `\n  let authenticatedProfile: UserProfile | undefined;\n  for (const candidateUser of users) {\n    const matchesUid = Boolean(authUser?.uid && String(candidateUser?.authUid || "").trim() === authUser.uid);\n    const matchesEmail = Boolean(authUser?.email && String(candidateUser?.email || "").trim().toLowerCase() === authUser.email.trim().toLowerCase());\n    if (matchesUid || matchesEmail) {\n      authenticatedProfile = candidateUser;\n      break;\n    }\n  }`);
 app = app.replace(/\s*const activeUserName\s*=\s*users\.find\(\(u\)\s*=>[\s\S]{0,1800}?\)\?\.name\s*\|\|\s*"Usuario"\s*;/g, `\n  let activeUserName = "Usuario";\n  for (const candidateUser of users) {\n    const matchesUid = Boolean(authUser?.uid && String(candidateUser?.authUid || "").trim() === authUser.uid);\n    const matchesEmail = Boolean(authUser?.email && String(candidateUser?.email || "").trim().toLowerCase() === authUser.email.trim().toLowerCase());\n    if (matchesUid || matchesEmail) {\n      activeUserName = candidateUser?.name || "Usuario";\n      break;\n    }\n  }`);
-
-// If identity-fix emitted matchedUser, bind the existing effect logic to the loop result.
-app = app.replaceAll("matchedUser.id", "__matchedUser?.id");
 
 const remaining = [];
 if (/users\s*\.find\s*\(/.test(dashboard)) remaining.push(dashboardPath);
