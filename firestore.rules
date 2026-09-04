@@ -8,7 +8,8 @@ service cloud.firestore {
     function hasHomeAccess(data) {
       return signedIn() && (
         (data.authorizedUids is list && request.auth.uid in data.authorizedUids) ||
-        (data.authorizedEmails is list && request.auth.token.email != null && request.auth.token.email in data.authorizedEmails)
+        (data.authorizedEmails is list && request.auth.token.email != null && request.auth.token.email in data.authorizedEmails) ||
+        (get(/databases/$(database)/documents/account_homes/$(request.auth.uid)).data.homeCode == data.homeCode)
       );
     }
 
@@ -20,25 +21,32 @@ service cloud.firestore {
     }
 
     match /nests/{homeCode} {
-      allow get: if signedIn();
+      allow get: if signedIn() && (
+        hasHomeAccess(resource.data) ||
+        get(/databases/$(database)/documents/account_homes/$(request.auth.uid)).data.homeCode == homeCode
+      );
       allow list: if false;
 
-      allow create: if signedIn() && hasHomeAccess(request.resource.data);
+      allow create: if signedIn() && (
+        hasHomeAccess(request.resource.data) ||
+        get(/databases/$(database)/documents/account_homes/$(request.auth.uid)).data.homeCode == homeCode
+      );
 
       allow update: if signedIn() && (
         hasHomeAccess(resource.data) ||
+        hasHomeAccess(request.resource.data) ||
         (
-          hasHomeAccess(request.resource.data) &&
-          request.resource.data.authorizedUids.hasAll(resource.data.authorizedUids) &&
-          request.resource.data.authorizedEmails.hasAll(resource.data.authorizedEmails)
+          get(/databases/$(database)/documents/account_homes/$(request.auth.uid)).data.homeCode == homeCode &&
+          request.resource.data.homeCode == homeCode
         )
       );
       allow delete: if hasHomeAccess(resource.data);
     }
 
     match /nests/{homeCode}/history/{revision} {
-      allow read, write: if hasHomeAccess(
-        get(/databases/$(database)/documents/nests/$(homeCode)).data
+      allow read, write: if signedIn() && (
+        hasHomeAccess(get(/databases/$(database)/documents/nests/$(homeCode)).data) ||
+        get(/databases/$(database)/documents/account_homes/$(request.auth.uid)).data.homeCode == homeCode
       );
     }
 
