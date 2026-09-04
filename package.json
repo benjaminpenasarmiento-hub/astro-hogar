@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx server.ts",
-    "build": "node prepare-onboarding-build.mjs && node prepare-smart-home-build.mjs && node prepare-dashboard-milo.mjs && node prepare-ux-polish.mjs && node prepare-stable-ui-fix.mjs && node prepare-cosmos-color-natural.mjs && node prepare-cosmos-color-final.mjs && node prepare-home-panels-safe.mjs && node prepare-frasco-persistence.mjs && node prepare-identity-fix.mjs && node prepare-identity-isolation.mjs && node prepare-auth-identity-ui.mjs && node prepare-mobile-header-clean.mjs && node prepare-production-auth-sync-fix.mjs && node prepare-final-runtime-hardening.mjs && node prepare-runtime-reference-fix.mjs && node prepare-tdz-final.mjs && node prepare-final-reference-sanitize.mjs && node prepare-persistence-repair.mjs && vite build && node prepare-final-reference-sanitize.mjs --dist && node prepare-server-store-safe.mjs && node build-server.mjs",
+    "build": "node prepare-onboarding-build.mjs && node prepare-smart-home-build.mjs && node prepare-dashboard-milo.mjs && node prepare-ux-polish.mjs && node prepare-stable-ui-fix.mjs && node prepare-cosmos-color-natural.mjs && node prepare-cosmos-color-final.mjs && node prepare-home-panels-safe.mjs && node prepare-frasco-persistence.mjs && node prepare-identity-fix.mjs && node prepare-identity-isolation.mjs && node prepare-auth-identity-ui.mjs && node prepare-mobile-header-clean.mjs && node prepare-production-auth-sync-fix.mjs && node prepare-final-runtime-hardening.mjs && node prepare-runtime-reference-fix.mjs && node prepare-tdz-final.mjs && node prepare-final-reference-sanitize.mjs && node prepare-persistence-repair.mjs && node prepare-global-auth-persistence.mjs && vite build && node prepare-final-reference-sanitize.mjs --dist && node prepare-server-store-safe.mjs && node build-server.mjs",
     "start": "node dist/server.cjs",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit"
@@ -12,7 +12,7 @@
   "dependencies": {
     "@google/genai": "^2.4.0",
     "@tailwindcss/vite": "^4.1.14",
-    "canvas-confetti": "1.9.4",
+    "canvas-confetti": "1.9.0",
     "dotenv": "^17.2.3",
     "express": "^4.21.2",
     "firebase": "^12.15.0",
@@ -29,6 +29,7 @@
     "@types/node": "^22.14.0",
     "@vitejs/plugin-react": "^5.0.4",
     "tailwindcss": "^4.1.0",
+    "autoprefixer": "^10.4.21",
     "tsx": "^4.21.0"
   }
 }
